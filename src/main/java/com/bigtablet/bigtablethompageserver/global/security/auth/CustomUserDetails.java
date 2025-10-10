@@ -13,12 +13,7 @@ import java.util.List;
 public class CustomUserDetails implements UserDetails {
 
     private final User user;
-    private Collection<? extends GrantedAuthority> authorities;
-
-    private CustomUserDetails(final User user, final Collection<? extends GrantedAuthority> authorities) {
-        this.user = user;
-        this.authorities = authorities;
-    }
+    private final Collection<? extends GrantedAuthority> authorities;
 
     public CustomUserDetails(final User user) {
         this.user = user;
@@ -40,23 +35,4 @@ public class CustomUserDetails implements UserDetails {
         return user.email();
     }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 }
