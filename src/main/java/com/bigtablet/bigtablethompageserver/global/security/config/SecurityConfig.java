@@ -35,7 +35,6 @@ public class SecurityConfig implements WebMvcConfigurer {
     private final JwtExceptionFilter jwtExceptionFilter;
 
     @Bean
-    @Order(1)
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
