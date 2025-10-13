@@ -1,14 +1,12 @@
 package com.bigtablet.bigtablethompageserver.domain.user.application.response;
 
 import com.bigtablet.bigtablethompageserver.domain.user.client.dto.User;
-import com.bigtablet.bigtablethompageserver.domain.user.domain.enums.UserRole;
 
 import java.time.LocalDateTime;
 
 public record UserResponse(
         String email,
         String name,
-        UserRole userRole,
         LocalDateTime createdAt,
         LocalDateTime modifiedAt
 ) {
@@ -16,7 +14,6 @@ public record UserResponse(
         return new UserResponse(
                 user.email(),
                 user.name(),
-                user.userRole(),
                 user.createdAt(),
                 user.modifiedAt()
         );

@@ -2,11 +2,10 @@ package com.bigtablet.bigtablethompageserver.domain.auth.application.service;
 
 import com.bigtablet.bigtablethompageserver.domain.auth.application.response.JsonWebTokenResponse;
 import com.bigtablet.bigtablethompageserver.domain.auth.application.response.RefreshTokenResponse;
-import com.bigtablet.bigtablethompageserver.domain.user.domain.enums.UserRole;
 
 public interface AuthService {
 
-    JsonWebTokenResponse generateToken(String email, UserRole role);
+    JsonWebTokenResponse generateToken(String email);
 
     RefreshTokenResponse refreshToken(String refreshToken);
 

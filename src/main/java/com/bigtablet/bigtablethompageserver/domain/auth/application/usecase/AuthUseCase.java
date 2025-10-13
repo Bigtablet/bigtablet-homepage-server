@@ -8,7 +8,6 @@ import com.bigtablet.bigtablethompageserver.domain.auth.client.request.SignInReq
 import com.bigtablet.bigtablethompageserver.domain.auth.client.request.SignUpRequest;
 import com.bigtablet.bigtablethompageserver.domain.user.client.dto.User;
 import com.bigtablet.bigtablethompageserver.domain.user.domain.entity.UserEntity;
-import com.bigtablet.bigtablethompageserver.domain.user.domain.enums.UserRole;
 import com.bigtablet.bigtablethompageserver.domain.user.application.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,7 +27,6 @@ public class AuthUseCase {
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
                 .name(request.name())
-                .userRole(UserRole.USER)
                 .build()
         );
     }
@@ -36,7 +34,7 @@ public class AuthUseCase {
     public JsonWebTokenResponse signIn(SignInRequest request) {
         User user = userService.getUser(request.email());
         authService.checkPassword(request.password(), user.password());
-        return authService.generateToken(request.email(), user.userRole());
+        return authService.generateToken(request.email());
     }
 
     public RefreshTokenResponse refresh(RefreshTokenRequest request) {

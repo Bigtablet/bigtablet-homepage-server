@@ -1,6 +1,5 @@
 package com.bigtablet.bigtablethompageserver.global.security.jwt;
 
-import com.bigtablet.bigtablethompageserver.domain.user.domain.enums.UserRole;
 import com.bigtablet.bigtablethompageserver.global.security.jwt.config.JwtProperties;
 import com.bigtablet.bigtablethompageserver.global.security.jwt.enums.JwtType;
 import io.jsonwebtoken.Claims;
@@ -50,7 +49,7 @@ public class JwtProvider {
         }
     }
 
-    public String generateAccessToken(final String email, final UserRole userRole) {
+    public String generateAccessToken(final String email) {
         Instant now = Instant.now();
         return Jwts.builder()
                 .header()
@@ -58,14 +57,13 @@ public class JwtProvider {
                 .and()
                 .subject(email)
                 .claim("token_type", JwtType.ACCESS.name())
-                .claim("authority", userRole.getKey())
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(now.plus(jwtProperties.getExpiration(), ChronoUnit.MILLIS)))
                 .signWith(getSigningKey(), Jwts.SIG.HS256)
                 .compact();
     }
 
-    public String generateRefreshToken(final String email, final UserRole userRole) {
+    public String generateRefreshToken(final String email) {
         Instant now = Instant.now();
         return Jwts.builder()
                 .header()
@@ -73,7 +71,6 @@ public class JwtProvider {
                 .and()
                 .subject(email)
                 .claim("token_type", JwtType.REFRESH.name())
-                .claim("authority", userRole.getKey())
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(now.plus(jwtProperties.getRefreshExpiration(), ChronoUnit.MILLIS)))
                 .signWith(getSigningKey(), Jwts.SIG.HS256)

@@ -1,13 +1,10 @@
 package com.bigtablet.bigtablethompageserver.global.security.config;
 
-import com.bigtablet.bigtablethompageserver.global.security.jwt.filter.JwtAuthenticationFilter;
 import com.bigtablet.bigtablethompageserver.global.security.jwt.filter.JwtExceptionFilter;
-import com.bigtablet.bigtablethompageserver.global.security.jwt.handler.ApiAccessDeniedHandler;
 import com.bigtablet.bigtablethompageserver.global.security.jwt.handler.JwtAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -15,7 +12,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -30,8 +26,6 @@ import java.util.List;
 public class SecurityConfig implements WebMvcConfigurer {
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private final ApiAccessDeniedHandler apiAccessDeniedHandler;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtExceptionFilter jwtExceptionFilter;
 
     @Bean
@@ -45,7 +39,6 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .exceptionHandling(e -> e
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                        .accessDeniedHandler(apiAccessDeniedHandler)
                 )
 //                .redirectToHttps(withDefaults())
                 .authorizeHttpRequests(
@@ -53,9 +46,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                                 .requestMatchers("/auth/**").permitAll()
                                 .anyRequest().authenticated()
                 )
-                .addFilterAfter(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
-
+                .addFilterBefore(jwtExceptionFilter, JwtExceptionFilter.class);
         return http.build();
     }
 

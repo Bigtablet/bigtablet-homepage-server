@@ -3,7 +3,6 @@ package com.bigtablet.bigtablethompageserver.domain.auth.application.service.imp
 import com.bigtablet.bigtablethompageserver.domain.auth.application.response.JsonWebTokenResponse;
 import com.bigtablet.bigtablethompageserver.domain.auth.application.response.RefreshTokenResponse;
 import com.bigtablet.bigtablethompageserver.domain.auth.application.service.AuthService;
-import com.bigtablet.bigtablethompageserver.domain.user.domain.enums.UserRole;
 import com.bigtablet.bigtablethompageserver.domain.user.exception.PasswordWrongException;
 import com.bigtablet.bigtablethompageserver.global.security.jwt.JwtProvider;
 import io.jsonwebtoken.Claims;
@@ -20,10 +19,10 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public JsonWebTokenResponse generateToken(String email, UserRole role) {
+    public JsonWebTokenResponse generateToken(String email) {
         return JsonWebTokenResponse.builder()
-                .accessToken(jwtProvider.generateAccessToken(email, role))
-                .refreshToken(jwtProvider.generateRefreshToken(email, role))
+                .accessToken(jwtProvider.generateAccessToken(email))
+                .refreshToken(jwtProvider.generateRefreshToken(email))
                 .build();
     }
 
@@ -31,8 +30,8 @@ public class AuthServiceImpl implements AuthService {
     public RefreshTokenResponse refreshToken(String refreshToken) {
         Jws<Claims> claims = jwtProvider.getClaims(refreshToken);
         return RefreshTokenResponse.builder()
-                .accessToken(jwtProvider.generateAccessToken(claims.getBody().getSubject(),
-                        (UserRole) claims.getHeader().get("authority"))).build();
+                .accessToken(jwtProvider.generateAccessToken(claims.getBody().getSubject()))
+                .build();
     }
 
     @Override

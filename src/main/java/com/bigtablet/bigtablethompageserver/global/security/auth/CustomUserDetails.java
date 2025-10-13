@@ -13,16 +13,14 @@ import java.util.List;
 public class CustomUserDetails implements UserDetails {
 
     private final User user;
-    private final Collection<? extends GrantedAuthority> authorities;
 
     public CustomUserDetails(final User user) {
         this.user = user;
-        this.authorities = List.of(new SimpleGrantedAuthority(user.userRole().getKey()));
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        return null;
     }
 
     @Override
