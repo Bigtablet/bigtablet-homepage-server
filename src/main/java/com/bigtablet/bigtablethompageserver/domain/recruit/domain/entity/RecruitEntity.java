@@ -5,6 +5,8 @@ import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.Military
 import com.bigtablet.bigtablethompageserver.global.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -47,6 +49,7 @@ public class RecruitEntity extends BaseEntity {
     private String coverLetter;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private EducationLevel educationLevel;
 
     private String schoolName;
@@ -58,6 +61,7 @@ public class RecruitEntity extends BaseEntity {
     private String department;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Military military;
 
     private String attachment1;
