@@ -1,5 +1,6 @@
-package com.bigtablet.bigtablethompageserver.domain.job.api.dto;
+package com.bigtablet.bigtablethompageserver.domain.job.client.dto;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.entity.JobEntity;
+import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Department;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Education;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Location;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.RecruitType;
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
 public record Job(
         Long idx,
         String title,
-        String department,
+        Department department,
         Location location,
         RecruitType recruitType,
         String experiment,

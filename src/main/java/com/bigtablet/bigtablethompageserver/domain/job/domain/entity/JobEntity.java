@@ -1,5 +1,6 @@
 package com.bigtablet.bigtablethompageserver.domain.job.domain.entity;
 
+import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Department;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Education;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Location;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.RecruitType;
@@ -34,7 +35,8 @@ public class JobEntity extends BaseEntity {
     private String title;
 
     @Column(nullable = false)
-    private String department;
+    @Enumerated(EnumType.STRING)
+    private Department department;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
