@@ -50,7 +50,7 @@ jobs:
         id: deploy-prod
         with:
           host: ${{ secrets.HOST_PROD }}
-          username: ubuntu
+          username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           envs: IMAGE,SHA_TAG
