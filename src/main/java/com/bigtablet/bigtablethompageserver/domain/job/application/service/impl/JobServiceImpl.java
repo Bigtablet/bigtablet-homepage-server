@@ -10,6 +10,7 @@ import com.bigtablet.bigtablethompageserver.domain.job.domain.repository.jpa.Job
 import com.bigtablet.bigtablethompageserver.domain.job.exception.JobNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +40,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public List<Job> getAllJob() {
         return jobJpaRepository
-                .findAllOrderByCreatedAtDesc()
+                .findAllByOrderByCreatedAtDesc()
                 .stream()
                 .map(Job::toJob)
                 .toList();

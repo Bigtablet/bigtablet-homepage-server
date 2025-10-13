@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface JobJpaRepository extends JpaRepository<JobEntity, Long> {
 
-    List<JobEntity> findAllOrderByCreatedAtDesc();
+    List<JobEntity> findAllByOrderByCreatedAtDesc();
 
     List<JobEntity> findAllByTitle(String title);
 

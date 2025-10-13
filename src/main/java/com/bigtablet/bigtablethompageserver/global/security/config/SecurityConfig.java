@@ -1,5 +1,6 @@
 package com.bigtablet.bigtablethompageserver.global.security.config;
 
+import com.bigtablet.bigtablethompageserver.global.security.jwt.filter.JwtAuthenticationFilter;
 import com.bigtablet.bigtablethompageserver.global.security.jwt.filter.JwtExceptionFilter;
 import com.bigtablet.bigtablethompageserver.global.security.jwt.handler.JwtAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -26,6 +28,7 @@ import java.util.List;
 public class SecurityConfig implements WebMvcConfigurer {
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtExceptionFilter jwtExceptionFilter;
 
     @Bean
@@ -46,7 +49,8 @@ public class SecurityConfig implements WebMvcConfigurer {
                                 .requestMatchers("/auth/**").permitAll()
                                 .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtExceptionFilter, JwtExceptionFilter.class);
+                .addFilterAfter(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // JWT 인증 필터 추가
+                .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
         return http.build();
     }
 

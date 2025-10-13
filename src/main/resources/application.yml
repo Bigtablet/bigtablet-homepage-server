@@ -5,14 +5,14 @@ spring:
 
   security:
     user:
-      name: test
-      password: test1234!
+      name: ${secrets.SECURITY_USER_NAME}
+      password: ${secrets.SECURITY_USER_PASSWORD}
 
   datasource:
-    url: jdbc:mysql://{DB_URL}:3306/{SCHEMA_NAME}
+    url: ${secrets.DB_URL}
+    username: ${secrets.DB_USERNAME}
+    password: ${secrets.DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: {DB_USERNAME}
-    password: {DB_PASSWORD}
 
   jpa:
     database: mysql
@@ -27,6 +27,6 @@ spring:
 
 application:
   jwt:
-    secretKey: {JWT_SECRET_KEY}
+    secretKey: ${secrets.JWT_SECRET_KEY}
     expiration: 86400000
     refreshExpiration: 604800000
