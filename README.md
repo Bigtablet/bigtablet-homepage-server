@@ -1,8 +1,8 @@
 # Bigtablet Homepage Server
 ### This project was developed using the following technologies.
-- **Spring Boot**
-- **Java**
-- **MySQL**
+- **Spring Boot** (3.5.5)
+- **Java** (21)
+- **MySQL** (8.0)
 ---
 ### Project execution steps:
 1. JDK 21 or higher, Gradle, and Git must be installed.
