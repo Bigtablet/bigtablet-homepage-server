@@ -1,4 +1,4 @@
-package com.bigtablet.bigtablethompageserver.domain.recruit.api.dto;
+package com.bigtablet.bigtablethompageserver.domain.recruit.client.dto;
 
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.entity.RecruitEntity;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.EducationLevel;

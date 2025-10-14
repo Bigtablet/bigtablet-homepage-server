@@ -44,38 +44,50 @@ public class JobApiHandler {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public BaseResponseData<Job> getJob(@RequestParam @NotNull final Long idx) {
-        return BaseResponseData.ok("조회 성공", jobUseCase.getJob(idx));
+        return BaseResponseData.ok(
+                "조회 성공",
+                jobUseCase.getJob(idx));
     }
 
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponseData<List<Job>> getAllJob() {
-        return BaseResponseData.ok("조회 성공", jobUseCase.getAllJob());
+        return BaseResponseData.ok(
+                "조회 성공",
+                jobUseCase.getAllJob());
     }
 
     @GetMapping("/search/{title}")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponseData<List<Job>> searchJobByTitle(@PathVariable("title") @NotBlank final String title) {
-        return BaseResponseData.ok("검색 성공", jobUseCase.searchJobByTitle(title));
+        return BaseResponseData.ok(
+                "검색 성공",
+                jobUseCase.searchJobByTitle(title));
     }
 
     @GetMapping("/search/{department}")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponseData<List<Job>> searchJobByDepartment(@PathVariable("department") @NotNull final Department department) {
-        return BaseResponseData.ok("검색 성공", jobUseCase.searchJobByDepartment(department));
+        return BaseResponseData.ok(
+                "검색 성공",
+                jobUseCase.searchJobByDepartment(department));
     }
 
 
     @GetMapping("/search/{education}")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponseData<List<Job>> searchJobByEducation(@PathVariable("education") @NotNull final Education education) {
-        return BaseResponseData.ok("검색 성공", jobUseCase.searchJobByEducation(education));
+        return BaseResponseData.ok(
+                "검색 성공",
+                jobUseCase.searchJobByEducation(education));
     }
 
     @GetMapping("/search/{recruitType}")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponseData<List<Job>> searchJobByRecruitType(@PathVariable("recruitType") @NotNull final RecruitType recruitType) {
-        return BaseResponseData.ok("검색 성공", jobUseCase.searchJobByRecruitType(recruitType));
+        return BaseResponseData.ok(
+                "검색 성공",
+                jobUseCase.searchJobByRecruitType(recruitType));
     }
 
     @DeleteMapping

@@ -3,5 +3,13 @@ package com.bigtablet.bigtablethompageserver.domain.recruit.domain.repository.jp
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.entity.RecruitEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+import java.util.Optional;
+
 public interface RecruitJpaRepository extends JpaRepository<RecruitEntity, Long> {
+
+    List<RecruitEntity> findAllByJobIdOrderByCreatedAtDesc(Long jobId);
+
+    List<RecruitEntity> findAllByOrderByCreatedAtDesc();
+
 }
