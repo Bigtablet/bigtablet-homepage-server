@@ -3,11 +3,13 @@ package com.bigtablet.bigtablethompageserver.global.infra.gcp.service.impl;
 import com.bigtablet.bigtablethompageserver.global.infra.gcp.exception.FileErrorException;
 import com.bigtablet.bigtablethompageserver.global.infra.gcp.exception.FileIsEmptyException;
 import com.bigtablet.bigtablethompageserver.global.infra.gcp.exception.FileWrongTypeException;
+import com.bigtablet.bigtablethompageserver.global.infra.gcp.service.GcpService;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,7 +17,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
-public class GcpServiceImpl {
+@Service
+public class GcpServiceImpl implements GcpService {
 
     @Value("${spring.cloud.gcp.storage.credentials.location}")
     private String keyFileName;
@@ -23,6 +26,7 @@ public class GcpServiceImpl {
     @Value("${spring.cloud.gcp.storage.bucket}")
     private String bucketName;
 
+    @Override
     public String upload(MultipartFile multipartFile) throws IOException {
         checkFileIsEmpty(multipartFile);
         InputStream keyFile = ResourceUtils.getURL(keyFileName).openStream();
