@@ -61,6 +61,27 @@ public class RecruitApiHandler {
                 recruitUseCase.getAllRecruitByJobId(jobId));
     }
 
+    @GetMapping("/list/status")
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponseData<List<Recruit>> getAllRecruitByStatus(@RequestParam @NotNull final Status status) {
+        return BaseResponseData.ok(
+                "조회 성공",
+                recruitUseCase.getAllRecruitByStatus(status));
+    }
+
+    @GetMapping("/list/status/job")
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponseData<List<Recruit>> getAllRecruitByStatusAndJobId(
+            @RequestParam @NotNull
+            final Status status,
+            @RequestParam @NotNull
+            final Long jobId
+    ) {
+        return BaseResponseData.ok(
+                "조회 성공",
+                recruitUseCase.getAllRecruitByStatusAndJobId(status, jobId));
+    }
+
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)
     public BaseResponse editStatus(

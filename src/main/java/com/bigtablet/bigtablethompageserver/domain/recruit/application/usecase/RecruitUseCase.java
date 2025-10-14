@@ -36,8 +36,13 @@ public class RecruitUseCase {
         return recruitService.getAllRecruitBYJobId(job.idx());
     }
 
-    public Job getJobById(Long jobId){
-        return jobService.getJob(jobId);
+    public List<Recruit> getAllRecruitByStatus(Status status){
+        return recruitService.getAllRecruitByStatus(status);
+    }
+
+    public List<Recruit> getAllRecruitByStatusAndJobId(Status status, Long jobId){
+        Job job = getJobById(jobId);
+        return recruitService.getAllRecruitByStatusAndJobId(status, job.idx());
     }
 
     public void editStatus(Status status, Long idx){
@@ -50,6 +55,10 @@ public class RecruitUseCase {
 
     public void rejectRecruit(Long idx){
         recruitService.rejectRecruit(idx);
+    }
+
+    public Job getJobById(Long jobId){
+        return jobService.getJob(jobId);
     }
 
 }

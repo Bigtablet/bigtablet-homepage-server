@@ -69,6 +69,24 @@ public class RecruitServiceImpl implements RecruitService {
     }
 
     @Override
+    public List<Recruit> getAllRecruitByStatus(Status status) {
+        return recruitJpaRepository
+                .findAllByStatusOrderByCreatedAtAsc(status)
+                .stream()
+                .map(Recruit::toRecruit)
+                .toList();
+    }
+
+    @Override
+    public List<Recruit> getAllRecruitByStatusAndJobId(Status status, Long jobId) {
+        return recruitJpaRepository
+                .findAllByStatusAndJobIdOrderByCreatedAtAsc(status, jobId)
+                .stream()
+                .map(Recruit::toRecruit)
+                .toList();
+    }
+
+    @Override
     @Transactional
     public void editStatus(Status status, Long idx) {
         RecruitEntity entity = getRecruitEntity(idx);

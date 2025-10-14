@@ -17,6 +17,10 @@ public interface RecruitService {
 
     List<Recruit> getAllRecruitBYJobId(Long jobId);
 
+    List<Recruit> getAllRecruitByStatus(Status status);
+
+    List<Recruit> getAllRecruitByStatusAndJobId(Status status, Long jobId);
+
     @Transactional
     void editStatus(Status status, Long idx);
 
