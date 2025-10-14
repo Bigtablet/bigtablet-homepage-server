@@ -1,11 +1,13 @@
 package com.bigtablet.bigtablethompageserver.domain.recruit.application.service.impl;
 
+import com.bigtablet.bigtablethompageserver.domain.recruit.application.service.RecruitService;
 import com.bigtablet.bigtablethompageserver.domain.recruit.client.dto.Recruit;
 import com.bigtablet.bigtablethompageserver.domain.recruit.client.dto.request.RegisterRecruitRequest;
-import com.bigtablet.bigtablethompageserver.domain.recruit.application.service.RecruitService;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.entity.RecruitEntity;
+import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.Status;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.repository.jpa.RecruitJpaRepository;
 import com.bigtablet.bigtablethompageserver.domain.recruit.exception.RecruitNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -64,6 +66,36 @@ public class RecruitServiceImpl implements RecruitService {
                 .stream()
                 .map(Recruit::toRecruit)
                 .toList();
+    }
+
+    @Override
+    @Transactional
+    public void editStatus(Status status, Long idx) {
+        RecruitEntity entity = getRecruitEntity(idx);
+        entity.setStatus(status);
+        recruitJpaRepository.save(entity);
+    }
+
+    @Override
+    @Transactional
+    public void acceptRecruit(Long idx) {
+        RecruitEntity entity = getRecruitEntity(idx);
+        entity.setStatus(Status.ACCEPTED);
+        recruitJpaRepository.save(entity);
+    }
+
+    @Override
+    @Transactional
+    public void rejectRecruit(Long idx) {
+        RecruitEntity entity = getRecruitEntity(idx);
+        entity.setStatus(Status.REJECTED);
+        recruitJpaRepository.save(entity);
+    }
+
+    public RecruitEntity getRecruitEntity(Long idx) {
+        return recruitJpaRepository
+                .findById(idx)
+                .orElseThrow(()-> RecruitNotFoundException.EXCEPTION);
     }
 
 }

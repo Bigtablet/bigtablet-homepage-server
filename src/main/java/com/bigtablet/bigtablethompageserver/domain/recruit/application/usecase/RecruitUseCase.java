@@ -5,6 +5,7 @@ import com.bigtablet.bigtablethompageserver.domain.job.client.dto.Job;
 import com.bigtablet.bigtablethompageserver.domain.recruit.client.dto.Recruit;
 import com.bigtablet.bigtablethompageserver.domain.recruit.client.dto.request.RegisterRecruitRequest;
 import com.bigtablet.bigtablethompageserver.domain.recruit.application.service.RecruitService;
+import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +38,18 @@ public class RecruitUseCase {
 
     public Job getJobById(Long jobId){
         return jobService.getJob(jobId);
+    }
+
+    public void editStatus(Status status, Long idx){
+        recruitService.editStatus(status ,idx);
+    }
+
+    public void acceptRecruit(Long idx){
+        recruitService.acceptRecruit(idx);
+    }
+
+    public void rejectRecruit(Long idx){
+        recruitService.rejectRecruit(idx);
     }
 
 }

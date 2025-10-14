@@ -3,6 +3,7 @@ package com.bigtablet.bigtablethompageserver.domain.recruit.client.dto;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.entity.RecruitEntity;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.EducationLevel;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.Military;
+import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.Status;
 
 import java.time.LocalDateTime;
 
@@ -25,6 +26,7 @@ public record Recruit(
         String attachment1,
         String attachment2,
         String attachment3,
+        Status status,
         LocalDateTime createdAt,
         LocalDateTime modifiedAt
 ) {
@@ -48,6 +50,7 @@ public record Recruit(
                 entity.getAttachment1(),
                 entity.getAttachment2(),
                 entity.getAttachment3(),
+                entity.getStatus(),
                 entity.getCreatedAt(),
                 entity.getModifiedAt()
         );

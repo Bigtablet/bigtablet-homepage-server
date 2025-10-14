@@ -2,6 +2,7 @@ package com.bigtablet.bigtablethompageserver.domain.recruit.domain.entity;
 
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.EducationLevel;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.Military;
+import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.Status;
 import com.bigtablet.bigtablethompageserver.global.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,6 +13,7 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 @Entity
@@ -69,5 +71,10 @@ public class RecruitEntity extends BaseEntity {
     private String attachment2;
 
     private String attachment3;
+
+    @Setter
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
 }
