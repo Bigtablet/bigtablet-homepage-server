@@ -25,6 +25,14 @@ spring:
       ddl-auto: update
     show-sql: false
 
+  cloud:
+    gcp:
+      storage:
+        credentials:
+          location: classpath:bigtablet-homepage-ffe77aff799f.json
+        project-id: bigtablet-homepage
+        bucket: bigtablet-homepage
+
 application:
   jwt:
     secretKey: ${secrets.JWT_SECRET_KEY}

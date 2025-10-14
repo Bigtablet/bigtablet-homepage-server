@@ -19,7 +19,8 @@ jobs:
         with:
           java-version: "21"
           distribution: "temurin"
-      - name: set yml file
+
+      - name: Set application.yml values
         uses: microsoft/variable-substitution@v1
         with:
           files: src/main/resources/application.yml
@@ -30,6 +31,11 @@ jobs:
           spring.datasource.username: ${{ secrets.DB_USERNAME }}
           spring.datasource.password: ${{ secrets.DB_PASSWORD }}
           application.jwt.secretKey: ${{ secrets.JWT_SECRET_KEY }}
+
+      - name: Create GCP Service Account Key File
+        run: |
+          mkdir -p src/main/resources
+          echo '${{ secrets.GCP_SERVICE_KEY }}' > src/main/resources/bigtablet-homepage-ffe77aff799f.json
 
       - name: chmod gradlew
         run: chmod +x ./gradlew
@@ -45,6 +51,7 @@ jobs:
           docker build -f Dockerfile -t $IMAGE:$SHA_TAG -t $IMAGE:latest .
           docker push $IMAGE:$SHA_TAG
           docker push $IMAGE:latest
+
       - name: Deploy to prod (SSH)
         uses: appleboy/ssh-action@master
         id: deploy-prod
