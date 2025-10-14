@@ -1,7 +1,7 @@
 package com.bigtablet.bigtablethompageserver.domain.job.application.service.impl;
 
-import com.bigtablet.bigtablethompageserver.domain.job.client.dto.Job;
 import com.bigtablet.bigtablethompageserver.domain.job.application.service.JobService;
+import com.bigtablet.bigtablethompageserver.domain.job.client.dto.Job;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.entity.JobEntity;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Department;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Education;
@@ -10,7 +10,6 @@ import com.bigtablet.bigtablethompageserver.domain.job.domain.repository.jpa.Job
 import com.bigtablet.bigtablethompageserver.domain.job.exception.JobNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
