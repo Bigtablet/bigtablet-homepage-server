@@ -35,7 +35,7 @@ public class BlogQueryRepositoryImpl  implements BlogQueryRepository {
         return jpaQueryFactory
                 .select(blogConstructorExpression())
                 .from(blogEntity)
-                .where(blogEntity.title.contains(title))
+                .where(blogEntity.titleKr.contains(title).or(blogEntity.titleEn.contains(title)))
                 .offset((long) (request.page() - 1) * request.size())
                 .limit(request.size())
                 .orderBy(blogEntity.createdAt.desc())
@@ -45,8 +45,10 @@ public class BlogQueryRepositoryImpl  implements BlogQueryRepository {
     private ConstructorExpression<Blog> blogConstructorExpression() {
         return Projections.constructor(Blog.class,
                 blogEntity.idx,
-                blogEntity.title,
-                blogEntity.content,
+                blogEntity.titleKr,
+                blogEntity.titleEn,
+                blogEntity.contentKr,
+                blogEntity.contentEn,
                 blogEntity.imageUrl,
                 blogEntity.views
         );

@@ -25,10 +25,16 @@ public class BlogEntity extends BaseEntity {
     private Long idx;
 
     @Column(nullable = false)
-    private String title;
+    private String titleKr;
+
+    @Column(nullable = false)
+    private String titleEn;
 
     @Column(nullable = false, columnDefinition = "LONGTEXT")
-    private String content;
+    private String contentKr;
+
+    @Column(nullable = false, columnDefinition = "LONGTEXT")
+    private String contentEn;
 
     @Column(nullable = false)
     private String imageUrl;

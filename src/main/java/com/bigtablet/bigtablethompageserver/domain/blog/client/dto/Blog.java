@@ -4,16 +4,20 @@ import com.bigtablet.bigtablethompageserver.domain.blog.domain.entity.BlogEntity
 
 public record Blog(
         Long idx,
-        String title,
-        String content,
+        String titleKr,
+        String titleEn,
+        String contentKr,
+        String contentEn,
         String imageUrl,
         int views
 ) {
     public static Blog toBlog(BlogEntity entity) {
         return new Blog(
                 entity.getIdx(),
-                entity.getTitle(),
-                entity.getContent(),
+                entity.getTitleKr(),
+                entity.getTitleEn(),
+                entity.getContentKr(),
+                entity.getContentEn(),
                 entity.getImageUrl(),
                 entity.getViews()
         );

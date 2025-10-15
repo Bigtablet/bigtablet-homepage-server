@@ -19,8 +19,10 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public void saveBlog(RegisterBlogRequest request) {
         blogJpaRepository.save(BlogEntity.builder()
-                .title(request.title())
-                .content(request.content())
+                .titleKr(request.titleKr())
+                .titleEn(request.titleEn())
+                .contentKr(request.contentKr())
+                .contentEn(request.contentEn())
                 .imageUrl(request.imageUrl())
                 .views(0)
                 .build());
