@@ -3,6 +3,7 @@ package com.bigtablet.bigtablethompageserver.domain.blog.application.usecase;
 import com.bigtablet.bigtablethompageserver.domain.blog.application.query.BlogQueryService;
 import com.bigtablet.bigtablethompageserver.domain.blog.application.service.BlogService;
 import com.bigtablet.bigtablethompageserver.domain.blog.client.dto.Blog;
+import com.bigtablet.bigtablethompageserver.domain.blog.client.dto.request.EditBlogRequest;
 import com.bigtablet.bigtablethompageserver.domain.blog.client.dto.request.RegisterBlogRequest;
 import com.bigtablet.bigtablethompageserver.global.common.dto.request.PageRequest;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,10 @@ public class BlogUseCase {
 
     public List<Blog> searchBlogByTitle(PageRequest request, String title) {
         return blogQueryService.searchBlogByTitle(request, title);
+    }
+
+    public void editBlog(EditBlogRequest request) {
+        blogService.editBlog(request);
     }
 
     public void addViews(Long idx) {

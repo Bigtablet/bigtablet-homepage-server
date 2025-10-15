@@ -1,5 +1,7 @@
 package com.bigtablet.bigtablethompageserver.domain.blog.domain.entity;
 
+import com.bigtablet.bigtablethompageserver.domain.blog.client.dto.Blog;
+import com.bigtablet.bigtablethompageserver.domain.blog.client.dto.request.EditBlogRequest;
 import com.bigtablet.bigtablethompageserver.global.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -41,5 +43,13 @@ public class BlogEntity extends BaseEntity {
 
     @Setter
     private int views;
+
+    public void editBlog(EditBlogRequest request) {
+        this.titleKr = request.titleKr();
+        this.titleEn = request.titleEn();
+        this.contentKr = request.contentKr();
+        this.contentEn = request.contentEn();
+        this.imageUrl = request.imageUrl();
+    }
 
 }

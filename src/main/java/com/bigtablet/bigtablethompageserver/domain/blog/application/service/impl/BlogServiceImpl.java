@@ -2,6 +2,7 @@ package com.bigtablet.bigtablethompageserver.domain.blog.application.service.imp
 
 import com.bigtablet.bigtablethompageserver.domain.blog.application.service.BlogService;
 import com.bigtablet.bigtablethompageserver.domain.blog.client.dto.Blog;
+import com.bigtablet.bigtablethompageserver.domain.blog.client.dto.request.EditBlogRequest;
 import com.bigtablet.bigtablethompageserver.domain.blog.client.dto.request.RegisterBlogRequest;
 import com.bigtablet.bigtablethompageserver.domain.blog.domain.entity.BlogEntity;
 import com.bigtablet.bigtablethompageserver.domain.blog.domain.repository.jpa.BlogJpaRepository;
@@ -38,11 +39,29 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     @Transactional
+    public void editBlog(EditBlogRequest request) {
+        BlogEntity entity = getBlogEntity(request.idx());
+        entity.editBlog(request);
+    }
+
+    @Override
+    @Transactional
     public void addViews(Long idx) {
-        BlogEntity entity = blogJpaRepository
+        BlogEntity entity = getBlogEntity(idx);
+        entity.setViews(entity.getViews() + 1);
+    }
+
+    @Override
+    @Transactional
+    public void deleteBlog(Long idx) {
+        Blog blog = getBlog(idx);
+        blogJpaRepository.deleteById(blog.idx());
+    }
+
+    public BlogEntity getBlogEntity(Long idx) {
+        return blogJpaRepository
                 .findByIdxForUpdate(idx)
                 .orElseThrow(()-> BlogNotFoundException.EXCEPTION);
-        entity.setViews(entity.getViews() + 1);
     }
 
 }

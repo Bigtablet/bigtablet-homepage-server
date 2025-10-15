@@ -2,6 +2,7 @@ package com.bigtablet.bigtablethompageserver.domain.blog.client.api;
 
 import com.bigtablet.bigtablethompageserver.domain.blog.application.usecase.BlogUseCase;
 import com.bigtablet.bigtablethompageserver.domain.blog.client.dto.Blog;
+import com.bigtablet.bigtablethompageserver.domain.blog.client.dto.request.EditBlogRequest;
 import com.bigtablet.bigtablethompageserver.domain.blog.client.dto.request.RegisterBlogRequest;
 import com.bigtablet.bigtablethompageserver.global.common.dto.request.PageRequest;
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponse;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -49,6 +51,7 @@ public class BlogApiHandler {
     }
 
     @GetMapping("/list")
+    @ResponseStatus(HttpStatus.OK)
     public BaseResponseData<List<Blog>> getAllBlogList(@ModelAttribute @Valid final PageRequest request) {
         return BaseResponseData.ok(
                 "조회 성공",
@@ -57,6 +60,7 @@ public class BlogApiHandler {
     }
 
     @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
     public BaseResponseData<List<Blog>> searchBlogByTitle(
             @ModelAttribute
             final PageRequest request,
@@ -67,6 +71,13 @@ public class BlogApiHandler {
                 "검색 성공",
                 blogUseCase.searchBlogByTitle(request, title)
         );
+    }
+
+    @PutMapping
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse editBlog(@RequestBody @Valid final EditBlogRequest request) {
+        blogUseCase.editBlog(request);
+        return BaseResponse.ok("수정 성공");
     }
 
     @PatchMapping
