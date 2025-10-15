@@ -6,7 +6,9 @@ import com.bigtablet.bigtablethompageserver.domain.blog.client.dto.request.Regis
 import com.bigtablet.bigtablethompageserver.global.common.dto.request.PageRequest;
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponse;
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponseData;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -31,14 +34,14 @@ public class BlogApiHandler {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public BaseResponse registerBlog(RegisterBlogRequest request) {
+    public BaseResponse registerBlog(@RequestBody @Valid final RegisterBlogRequest request) {
         blogUseCase.registerBlog(request);
         return BaseResponse.created("등록 성공");
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponseData<Blog> getBlog(Long idx) {
+    public BaseResponseData<Blog> getBlog(@RequestParam @NotNull final Long idx) {
         return BaseResponseData.ok(
                 "조회 성공",
                 blogUseCase.getBlog(idx)
@@ -46,7 +49,7 @@ public class BlogApiHandler {
     }
 
     @GetMapping("/list")
-    public BaseResponseData<List<Blog>> getAllBlogList(@ModelAttribute final PageRequest request) {
+    public BaseResponseData<List<Blog>> getAllBlogList(@ModelAttribute @Valid final PageRequest request) {
         return BaseResponseData.ok(
                 "조회 성공",
                 blogUseCase.getAllBlogList(request)
@@ -68,7 +71,7 @@ public class BlogApiHandler {
 
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponse addViews(Long idx) {
+    public BaseResponse addViews(@RequestParam @NotNull final Long idx) {
         blogUseCase.addViews(idx);
         return BaseResponse.ok("수정 성공");
     }
