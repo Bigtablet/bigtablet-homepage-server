@@ -50,7 +50,9 @@ public class BlogQueryRepositoryImpl  implements BlogQueryRepository {
                 blogEntity.contentKr,
                 blogEntity.contentEn,
                 blogEntity.imageUrl,
-                blogEntity.views
+                blogEntity.views,
+                blogEntity.createdAt,
+                blogEntity.modifiedAt
         );
     }
 

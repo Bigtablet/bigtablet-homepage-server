@@ -2,6 +2,8 @@ package com.bigtablet.bigtablethompageserver.domain.blog.client.dto;
 
 import com.bigtablet.bigtablethompageserver.domain.blog.domain.entity.BlogEntity;
 
+import java.time.LocalDateTime;
+
 public record Blog(
         Long idx,
         String titleKr,
@@ -9,7 +11,9 @@ public record Blog(
         String contentKr,
         String contentEn,
         String imageUrl,
-        int views
+        int views,
+        LocalDateTime createdAt,
+        LocalDateTime modifiedAt
 ) {
     public static Blog toBlog(BlogEntity entity) {
         return new Blog(
@@ -19,7 +23,9 @@ public record Blog(
                 entity.getContentKr(),
                 entity.getContentEn(),
                 entity.getImageUrl(),
-                entity.getViews()
+                entity.getViews(),
+                entity.getCreatedAt(),
+                entity.getModifiedAt()
         );
     }
 }
