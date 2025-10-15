@@ -6,7 +6,9 @@ import com.bigtablet.bigtablethompageserver.global.common.dto.request.PageReques
 import java.util.List;
 
 public interface BlogQueryRepository {
+
     List<Blog> findAll(PageRequest request);
 
     List<Blog> findAllByTitle(PageRequest request, String title);
+
 }
