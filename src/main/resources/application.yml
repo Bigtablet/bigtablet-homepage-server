@@ -14,6 +14,11 @@ spring:
     password: ${secrets.DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  data:
+    redis:
+      host: ${secrets.REDIS_HOST}
+      port: ${secrets.REDIS_PORT}
+
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
@@ -32,6 +37,21 @@ spring:
           location: classpath:bigtablet-homepage-ffe77aff799f.json
         project-id: bigtablet-homepage
         bucket: bigtablet-homepage
+
+  mail:
+    host: smtp.gmail.com
+    port: ${secrets.SMTP_PORT}
+    email_noreply: ${secrets.SMTP_EMAIL_NOREPLY}
+    password_noreply: ${secrets.SMTP_PASSWORD_NOREPLY}
+    email_recruit: ${secrets.SMTP_EMAIL_RECRUIT}
+    password_recruit: ${secrets.SMTP_PASSWORD_RECRUIT}
+    properties:
+      mail.smtp.connectiontimeout: 10000
+      mail.smtp.timeout: 10000
+      mail.smtp.writetimeout: 10000
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.starttls.required: true
 
 application:
   jwt:
