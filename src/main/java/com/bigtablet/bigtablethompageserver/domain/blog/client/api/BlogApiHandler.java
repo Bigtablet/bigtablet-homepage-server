@@ -13,6 +13,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -85,6 +86,13 @@ public class BlogApiHandler {
     public BaseResponse addViews(@RequestParam @NotNull final Long idx) {
         blogUseCase.addViews(idx);
         return BaseResponse.ok("수정 성공");
+    }
+
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse deleteBlog(@RequestParam @NotNull final Long idx) {
+        blogUseCase.deleteBlog(idx);
+        return BaseResponse.ok("삭제 성공");
     }
 
 }

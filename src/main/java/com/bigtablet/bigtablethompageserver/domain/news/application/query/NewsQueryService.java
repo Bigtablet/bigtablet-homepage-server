@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface NewsQueryService {
 
-
     List<News> getAllNewsList(PageRequest request);
+
 }

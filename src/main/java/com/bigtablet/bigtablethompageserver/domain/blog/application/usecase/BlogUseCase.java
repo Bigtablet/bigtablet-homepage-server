@@ -38,6 +38,10 @@ public class BlogUseCase {
         blogService.editBlog(request);
     }
 
+    public void deleteBlog(Long idx) {
+        blogService.deleteBlog(idx);
+    }
+
     public void addViews(Long idx) {
         blogService.addViews(idx);
     }
