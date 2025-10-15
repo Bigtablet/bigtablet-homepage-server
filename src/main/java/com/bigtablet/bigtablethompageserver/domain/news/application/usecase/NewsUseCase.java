@@ -3,6 +3,7 @@ package com.bigtablet.bigtablethompageserver.domain.news.application.usecase;
 import com.bigtablet.bigtablethompageserver.domain.news.application.query.NewsQueryService;
 import com.bigtablet.bigtablethompageserver.domain.news.application.service.NewsService;
 import com.bigtablet.bigtablethompageserver.domain.news.client.dto.News;
+import com.bigtablet.bigtablethompageserver.domain.news.client.dto.request.EditNewsRequest;
 import com.bigtablet.bigtablethompageserver.domain.news.client.dto.request.RegisterNewsRequest;
 import com.bigtablet.bigtablethompageserver.global.common.dto.request.PageRequest;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,10 @@ public class NewsUseCase {
 
     public List<News> getAllNewsList(PageRequest request) {
         return newsQueryService.getAllNewsList(request);
+    }
+
+    public void editNews(EditNewsRequest request) {
+        newsService.editNews(request);
     }
 
     public void deleteNews(Long idx) {

@@ -1,5 +1,6 @@
 package com.bigtablet.bigtablethompageserver.domain.news.domain.entity;
 
+import com.bigtablet.bigtablethompageserver.domain.news.client.dto.request.EditNewsRequest;
 import com.bigtablet.bigtablethompageserver.global.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,5 +32,11 @@ public class NewsEntity extends BaseEntity {
 
     @Column(nullable = false)
     private String newsUrl;
+
+    public void editNews(EditNewsRequest request) {
+        this.titleKr = request.titleKr();
+        this.titleEn = request.titleEn();
+        this.newsUrl = request.newsUrl();
+    }
 
 }

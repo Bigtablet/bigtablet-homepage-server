@@ -2,6 +2,7 @@ package com.bigtablet.bigtablethompageserver.domain.news.application.service.imp
 
 import com.bigtablet.bigtablethompageserver.domain.news.application.service.NewsService;
 import com.bigtablet.bigtablethompageserver.domain.news.client.dto.News;
+import com.bigtablet.bigtablethompageserver.domain.news.client.dto.request.EditNewsRequest;
 import com.bigtablet.bigtablethompageserver.domain.news.client.dto.request.RegisterNewsRequest;
 import com.bigtablet.bigtablethompageserver.domain.news.domain.entity.NewsEntity;
 import com.bigtablet.bigtablethompageserver.domain.news.domain.repository.jpa.NewsJpaRepository;
@@ -27,6 +28,13 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional
+    public void editNews(EditNewsRequest request) {
+        NewsEntity entity = getNewsEntity(request.idx());
+        entity.editNews(request);
+    }
+
+    @Override
+    @Transactional
     public void deleteNews(Long idx) {
         News news = getNews(idx);
         newsJpaRepository.deleteById(news.idx());
@@ -36,6 +44,12 @@ public class NewsServiceImpl implements NewsService {
         return newsJpaRepository
                 .findByIdx(idx)
                 .map(News::toNews)
+                .orElseThrow(()-> NewsNotFoundException.EXCEPTION);
+    }
+
+    public NewsEntity getNewsEntity(Long idx) {
+        return newsJpaRepository
+                .findByIdx(idx)
                 .orElseThrow(()-> NewsNotFoundException.EXCEPTION);
     }
 
