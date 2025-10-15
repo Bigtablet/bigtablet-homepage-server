@@ -8,11 +8,6 @@ spring:
       max-file-size: 50MB
       max-request-size: 50MB
 
-  security:
-    user:
-      name: ${secrets.SECURITY_USER_NAME}
-      password: ${secrets.SECURITY_USER_PASSWORD}
-
   datasource:
     url: ${secrets.DB_URL}
     username: ${secrets.DB_USERNAME}
