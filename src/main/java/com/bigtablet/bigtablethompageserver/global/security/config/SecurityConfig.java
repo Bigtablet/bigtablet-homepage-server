@@ -51,6 +51,9 @@ public class SecurityConfig implements WebMvcConfigurer {
                                 .requestMatchers(HttpMethod.GET, "/job/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/recruit").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/gcp").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/blog/**").permitAll()
+                                .requestMatchers(HttpMethod.PATCH, "/blog").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/news").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .addFilterAfter(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // JWT 인증 필터 추가
