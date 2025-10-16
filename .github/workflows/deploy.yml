@@ -3,7 +3,7 @@ name: Release CI/CD using GitHub Actions & Docker
 on:
   push:
     tags:
-      - 'v*'
+      - '*'
 
 jobs:
   release:
