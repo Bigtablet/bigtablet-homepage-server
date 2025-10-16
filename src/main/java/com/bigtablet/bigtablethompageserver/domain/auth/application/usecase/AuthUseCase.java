@@ -26,8 +26,6 @@ public class AuthUseCase {
     private final PasswordEncoder passwordEncoder;
     private final MailTemplateRenderer mailTemplateRenderer;
 
-    private String authCode;
-
     public void signUp(SignUpRequest request) {
         userService.checkUserEmail(request.email());
         userService.save(UserEntity.builder()
@@ -49,17 +47,13 @@ public class AuthUseCase {
     }
 
     public void sendVerificationEmail(String userEmail) {
-        createAuthCode(userEmail);
+        String authCode = authService.createRandomNum(userEmail);
         String content = mailTemplateRenderer.renderAuthCodeEmail(authCode);
         emailService.sendNoReply(userEmail, "Bigtablet Inc Email Verification", content);
     }
 
     public void checkAuthCode(String email, String authCode) {
         authService.checkAuthNum(email, authCode);
-    }
-
-    private void createAuthCode(String email) {
-        authCode = authService.createRandomNum(email);
     }
 
 }

@@ -59,6 +59,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String createRandomNum(String email) {
+        if (redisRepository.getByKey(email, String.class).describeConstable().isPresent()) {
+            redisRepository.delete(email);
+        }
         Random r = new Random();
         StringBuilder randomNumber = new StringBuilder();
         for (int i = 0; i < 6; i++) {

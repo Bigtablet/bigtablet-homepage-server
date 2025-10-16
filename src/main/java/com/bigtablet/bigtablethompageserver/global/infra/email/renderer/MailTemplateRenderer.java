@@ -11,9 +11,9 @@ public class MailTemplateRenderer {
 
     private final TemplateEngine templateEngine;
 
-    public String renderAuthCodeEmail(String tempCode) {
+    public String renderAuthCodeEmail(String authCode) {
         Context context = new Context();
-        context.setVariable("tempCode", tempCode);
+        context.setVariable("authCode", authCode);
         return templateEngine.process("auth-code", context);
     }
 
