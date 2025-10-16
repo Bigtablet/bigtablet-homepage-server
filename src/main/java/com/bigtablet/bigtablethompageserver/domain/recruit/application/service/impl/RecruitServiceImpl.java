@@ -30,6 +30,7 @@ public class RecruitServiceImpl implements RecruitService {
                 .addressDetail(request.addressDetail())
                 .portfolio(request.portfolio())
                 .coverLetter(request.coverLetter())
+                .profileImage(request.profileImage())
                 .educationLevel(request.educationLevel())
                 .schoolName(request.schoolName())
                 .admissionYear(request.admissionYear())

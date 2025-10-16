@@ -27,6 +27,9 @@ public record RegisterRecruitRequest(
         String portfolio,
         @URL(message = "유효한 URL 형식이어야 합니다.")
         String coverLetter,
+        @NotBlank
+        @URL(message = "유효한 URL 형식이어야 합니다.")
+        String profileImage,
         @NotNull
         EducationLevel educationLevel,
         String schoolName,

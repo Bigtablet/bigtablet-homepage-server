@@ -51,6 +51,9 @@ public class RecruitEntity extends BaseEntity {
     private String coverLetter;
 
     @Column(nullable = false)
+    private String profileImage;
+
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private EducationLevel educationLevel;
 
