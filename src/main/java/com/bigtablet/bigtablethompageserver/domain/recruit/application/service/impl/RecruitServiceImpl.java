@@ -40,6 +40,7 @@ public class RecruitServiceImpl implements RecruitService {
                 .attachment1(request.attachment1())
                 .attachment2(request.attachment2())
                 .attachment3(request.attachment3())
+                .status(Status.DOCUMENT)
                 .build());
     }
 
