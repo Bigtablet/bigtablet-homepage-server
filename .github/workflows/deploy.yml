@@ -31,6 +31,14 @@ jobs:
           spring.datasource.username: ${{ secrets.DB_USERNAME }}
           spring.datasource.password: ${{ secrets.DB_PASSWORD }}
           application.jwt.secretKey: ${{ secrets.JWT_SECRET_KEY }}
+          spring.mail.port: ${{ secrets.SMTP_PORT }}
+          spring.mail.email_noreply: ${{ secrets.SMTP_EMAIL_NOREPLY }}
+          spring.mail.password_noreply: ${{ secrets.SMTP_PASSWORD_NOREPLY }}
+          spring.mail.email_recruit: ${{ secrets.SMTP_EMAIL_RECRUIT }}
+          spring.mail.password_recruit: ${{ secrets.SMTP_PASSWORD_RECRUIT }}
+          spring.data.redis.host: ${{ secrets.REDIS_HOST }}
+          spring.data.redis.port: ${{ secrets.REDIS_PORT }}
+          spring.data.redis.password: ${{ secrets.REDIS_PASSWORD }}
 
       - name: Create GCP Service Account Key File
         run: |

@@ -18,6 +18,7 @@ spring:
     redis:
       host: ${secrets.REDIS_HOST}
       port: ${secrets.REDIS_PORT}
+      password: ${secrets.REDIS_PASSWORD}
 
   jpa:
     database: mysql
@@ -46,12 +47,11 @@ spring:
     email_recruit: ${secrets.SMTP_EMAIL_RECRUIT}
     password_recruit: ${secrets.SMTP_PASSWORD_RECRUIT}
     properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
       mail.smtp.connectiontimeout: 10000
       mail.smtp.timeout: 10000
       mail.smtp.writetimeout: 10000
-      mail.smtp.auth: true
-      mail.smtp.starttls.enable: true
-      mail.smtp.starttls.required: true
 
 application:
   jwt:
