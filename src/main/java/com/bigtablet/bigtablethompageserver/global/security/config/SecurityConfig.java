@@ -47,6 +47,7 @@ public class SecurityConfig implements WebMvcConfigurer {
 //                .redirectToHttps(withDefaults())
                 .authorizeHttpRequests(
                         authorize -> authorize
+                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                                 .requestMatchers("/auth/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/job/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/recruit").permitAll()
