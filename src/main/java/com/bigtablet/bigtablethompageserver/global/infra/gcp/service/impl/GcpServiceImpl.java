@@ -2,6 +2,7 @@ package com.bigtablet.bigtablethompageserver.global.infra.gcp.service.impl;
 
 import com.bigtablet.bigtablethompageserver.global.infra.gcp.exception.FileErrorException;
 import com.bigtablet.bigtablethompageserver.global.infra.gcp.exception.FileIsEmptyException;
+import com.bigtablet.bigtablethompageserver.global.infra.gcp.exception.FileNotFoundException;
 import com.bigtablet.bigtablethompageserver.global.infra.gcp.exception.FileWrongTypeException;
 import com.bigtablet.bigtablethompageserver.global.infra.gcp.service.GcpService;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -45,6 +46,32 @@ public class GcpServiceImpl implements GcpService {
                 .getService();
         storage.create(blobInfo, multipartFile.getInputStream());
         return imageUrl;
+    }
+
+    @Override
+    public void delete(String fileUrl) throws IOException {
+        if (fileUrl == null || fileUrl.isBlank()) {
+            throw FileNotFoundException.EXCEPTION;
+        }
+        String fileName = extractFileNameFromUrl(fileUrl);
+        InputStream keyFile = ResourceUtils.getURL(keyFileName).openStream();
+        Storage storage = StorageOptions.newBuilder()
+                .setCredentials(GoogleCredentials.fromStream(keyFile))
+                .build()
+                .getService();
+
+        boolean deleted = storage.delete(bucketName, fileName);
+        if (!deleted) {
+            throw FileNotFoundException.EXCEPTION;
+        }
+    }
+
+    private String extractFileNameFromUrl(String url) {
+        int lastSlashIndex = url.lastIndexOf('/');
+        if (lastSlashIndex == -1 || lastSlashIndex == url.length() - 1) {
+            throw FileNotFoundException.EXCEPTION;
+        }
+        return url.substring(lastSlashIndex + 1);
     }
 
     public void checkFileIsEmpty(MultipartFile multipartFile) {
