@@ -54,7 +54,11 @@ public class GcpServiceImpl implements GcpService {
     }
 
     public void checkFileType(String contentType) {
-        if (!contentType.equalsIgnoreCase("application/pdf")) {
+        if (
+                !contentType.equalsIgnoreCase("application/pdf") &&
+                !contentType.equalsIgnoreCase("image/png") &&
+                !contentType.equalsIgnoreCase("video/mp4")
+        ) {
             throw FileWrongTypeException.EXCEPTION;
         }
     }
