@@ -14,30 +14,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Debug get_latest outputs
-        run: |
-          echo "tag_name: ${{ steps.get_latest.outputs.tag_name }}"
-          echo "id: ${{ steps.get_latest.outputs.id }}"
-          echo "draft: ${{ steps.get_latest.outputs.draft }}"
-          echo "prerelease: ${{ steps.get_latest.outputs.prerelease }}"
-
       - name: Get latest release tag
         id: get_latest
-        uses: pozetroninc/github-action-get-latest-release@master
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          repository: Bigtablet/bigtablet-homepage-server
-
-      - name: Extract version
-        id: version
         run: |
-          RAW_TAG="${{ steps.get_latest.outputs.tag_name }}"
-          CLEAN_TAG="${RAW_TAG#v}"
+          TAG=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          https://api.github.com/repos/Bigtablet/bigtablet-homepage-server/releases/latest | jq -r '.tag_name')
+          CLEAN_TAG="${TAG#v}"
           echo "tag=$CLEAN_TAG" >> $GITHUB_OUTPUT
 
       - name: Print version
         run: |
-          echo "Using release tag: ${{ steps.version.outputs.tag }}"
+          echo "Using release tag: ${{ steps.get_latest.outputs.tag }}"
 
       - name: Set up JDK 21
         uses: actions/setup-java@v2
@@ -81,7 +68,7 @@ jobs:
 
       - name: Docker build & push with release tag
         run: |
-          VERSION=${{ steps.version.outputs.tag }}
+          VERSION=${{ steps.get_latest.outputs.tag }}
           docker build -f Dockerfile -t $IMAGE:$VERSION .
           docker push $IMAGE:$VERSION
 
@@ -95,7 +82,7 @@ jobs:
           envs: IMAGE
           script: |
             set -e
-            VERSION=${{ steps.version.outputs.tag }}
+            VERSION=${{ steps.get_latest.outputs.tag }}
             docker pull $IMAGE:$VERSION
             docker rm -f bigtablet-homepage-server 2>/dev/null || true
             docker run -d \
