@@ -21,6 +21,7 @@ public class EmailServiceImpl implements EmailService {
         this.noreplyMailSender = noreplyMailSender;
         this.recruitMailSender = recruitMailSender;
     }
+
     @Override
     public void sendNoReply(String to, String subject, String content) {
         send(noreplyMailSender, "noreply@bigtablet.com", to, subject, content);

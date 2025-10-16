@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -59,9 +60,8 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String createRandomNum(String email) {
-        if (redisRepository.getByKey(email, String.class).describeConstable().isPresent()) {
-            redisRepository.delete(email);
-        }
+        Optional.ofNullable(redisRepository.getByKey(email, String.class))
+                .ifPresent(value -> redisRepository.delete(email));
         Random r = new Random();
         StringBuilder randomNumber = new StringBuilder();
         for (int i = 0; i < 6; i++) {
