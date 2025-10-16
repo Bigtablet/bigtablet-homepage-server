@@ -50,16 +50,12 @@ public class GcpServiceImpl implements GcpService {
 
     @Override
     public void delete(String fileUrl) throws IOException {
-        if (fileUrl == null || fileUrl.isBlank()) {
-            throw FileNotFoundException.EXCEPTION;
-        }
         String fileName = extractFileNameFromUrl(fileUrl);
         InputStream keyFile = ResourceUtils.getURL(keyFileName).openStream();
         Storage storage = StorageOptions.newBuilder()
                 .setCredentials(GoogleCredentials.fromStream(keyFile))
                 .build()
                 .getService();
-
         boolean deleted = storage.delete(bucketName, fileName);
         if (!deleted) {
             throw FileNotFoundException.EXCEPTION;

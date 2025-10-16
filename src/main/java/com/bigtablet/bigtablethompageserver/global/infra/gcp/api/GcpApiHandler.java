@@ -3,6 +3,7 @@ package com.bigtablet.bigtablethompageserver.global.infra.gcp.api;
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponse;
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponseData;
 import com.bigtablet.bigtablethompageserver.global.infra.gcp.service.GcpService;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.URL;
@@ -38,7 +39,7 @@ public class GcpApiHandler {
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
     public BaseResponse upload(
-            @RequestParam @NotNull
+            @RequestParam @NotBlank
             @URL(message = "유효한 URL 형식이어야 합니다.")
             final String fileUrl
     ) throws IOException {
