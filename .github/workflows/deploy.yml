@@ -73,5 +73,9 @@ jobs:
             set -e
             docker rm -f bigtablet-homepage-server 2>/dev/null || true
             docker pull $IMAGE:$SHA_TAG
-            docker run -d --name bigtablet-homepage-server --restart unless-stopped -p 8080:8080 $IMAGE:$SHA_TAG
+            docker run -d \
+              --name bigtablet-homepage-server \
+              --restart unless-stopped \
+              --network=host \
+              $IMAGE:$SHA_TAG
             docker image prune -f || true
