@@ -1,5 +1,6 @@
 package com.bigtablet.bigtablethompageserver.global.infra.email.renderer;
 
+import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
@@ -17,7 +18,7 @@ public class MailTemplateRenderer {
         return templateEngine.process("auth-code", context);
     }
 
-    public String renderRecruitEmail(String name, String status) {
+    public String renderRecruitEmail(String name, Status status) {
         Context context = new Context();
         context.setVariable("name", name);
         context.setVariable("status", status);

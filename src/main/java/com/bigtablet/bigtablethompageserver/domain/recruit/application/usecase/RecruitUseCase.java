@@ -50,7 +50,10 @@ public class RecruitUseCase {
     }
 
     public void editStatus(Status status, Long idx){
+        Recruit recruit = getRecruit(idx);
+        String content = mailTemplateRenderer.renderRecruitEmail(recruit.name(),  status);
         recruitService.editStatus(status ,idx);
+        emailService.sendRecruit(recruit.email(), "[Bigtablet, Inc. 채용] " + recruit.name() + "님, 면접 전형 안내드립니다", content);
     }
 
     public void acceptRecruit(Long idx){
