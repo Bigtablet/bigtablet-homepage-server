@@ -16,7 +16,7 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @Getter
 @SuperBuilder
-@Table(name = "tb_job")
+@Table(name = "tb_news")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class NewsEntity extends BaseEntity {
 
