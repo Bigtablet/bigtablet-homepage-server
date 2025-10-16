@@ -49,7 +49,7 @@ public class AuthUseCase {
     public void sendVerificationEmail(String userEmail) {
         String authCode = authService.createRandomNum(userEmail);
         String content = mailTemplateRenderer.renderAuthCodeEmail(authCode);
-        emailService.sendNoReply(userEmail, "[Bigtablet Inc] 이메일 인증 코드", content);
+        emailService.sendNoReply(userEmail, "[Bigtablet, Inc.] 이메일 인증 코드", content);
     }
 
     public void checkAuthCode(String email, String authCode) {
