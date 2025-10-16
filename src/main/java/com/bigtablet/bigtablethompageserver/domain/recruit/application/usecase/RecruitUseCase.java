@@ -6,6 +6,8 @@ import com.bigtablet.bigtablethompageserver.domain.recruit.client.dto.Recruit;
 import com.bigtablet.bigtablethompageserver.domain.recruit.client.dto.request.RegisterRecruitRequest;
 import com.bigtablet.bigtablethompageserver.domain.recruit.application.service.RecruitService;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.Status;
+import com.bigtablet.bigtablethompageserver.global.infra.email.renderer.MailTemplateRenderer;
+import com.bigtablet.bigtablethompageserver.global.infra.email.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +18,9 @@ import java.util.List;
 public class RecruitUseCase {
 
     private final RecruitService recruitService;
+    private final EmailService emailService;
     private final JobService jobService;
+    private final MailTemplateRenderer mailTemplateRenderer;
 
     public void registerRecruit(RegisterRecruitRequest request){
         Job job = getJobById(request.jobId());
@@ -50,11 +54,17 @@ public class RecruitUseCase {
     }
 
     public void acceptRecruit(Long idx){
+        Recruit recruit = getRecruit(idx);
+        String content = mailTemplateRenderer.renderAcceptEmail(recruit.name());
         recruitService.acceptRecruit(idx);
+        emailService.sendRecruit(recruit.email(),"Bigtablet Inc - 최종 결과 안내", content);
     }
 
     public void rejectRecruit(Long idx){
+        Recruit recruit = getRecruit(idx);
+        String content = mailTemplateRenderer.renderRejectEmail(recruit.name());
         recruitService.rejectRecruit(idx);
+        emailService.sendRecruit(recruit.email(),"Bigtablet Inc - 최종 결과 안내", content);
     }
 
     public Job getJobById(Long jobId){

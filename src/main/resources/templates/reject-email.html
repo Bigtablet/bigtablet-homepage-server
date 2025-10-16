@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <meta name="x-apple-disable-message-reformatting">
+    <title>Bigtablet Inc. - 채용 결과 안내</title>
+
+    <style>
+        @media only screen and (max-width: 600px) {
+            .container { width: 100% !important; max-width: 100% !important; }
+            .pad-outer { padding: 24px 20px 8px 20px !important; }
+            .pad-card { padding: 16px !important; }
+            .pad-note { padding: 8px 20px 0 20px !important; }
+            .pad-footer { padding: 24px 20px !important; }
+
+            .h1 { font-size: 22px !important; line-height: 1.25 !important; }
+            .h2 { font-size: 18px !important; line-height: 1.25 !important; }
+            .p-base { font-size: 14px !important; line-height: 1.5 !important; }
+        }
+    </style>
+</head>
+<body style="margin:0;padding:0;background-color:#f9fafb;">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#f9fafb;padding:40px 20px;">
+    <tr>
+        <td align="center">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" class="container" style="max-width:600px;background-color:#ffffff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+                <tr>
+                    <td class="pad-outer" style="padding:40px 40px 10px 40px;text-align:center;">
+                        <h1 class="h1" style="margin:20px 0 10px 0;font-family:Arial, sans-serif;color:#111827;font-size:28px;line-height:1.2;">Bigtablet Inc.</h1>
+                        <h2 class="h2" style="margin:0 0 8px 0;font-family:Arial, sans-serif;color:#111827;font-size:22px;line-height:1.2;">채용 결과 안내</h2>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td align="center" style="padding:16px 40px 10px 40px;">
+                        <p class="p-base" style="font-family:Arial, sans-serif;color:#374151;font-size:16px;line-height:1.6;text-align:left;">
+                            안녕하세요, <strong th:text="${name}">홍길동</strong>님.<br><br>
+                            Bigtablet Inc. 채용에 지원해 주셔서 감사드립니다.<br>
+                            심사 결과, 아쉽게도 이번 전형에서는 함께하지 못하게 되었습니다.<br><br>
+                            보내주신 관심과 지원에 진심으로 감사드리며, 좋은 인연으로 다시 만나뵐 수 있기를 바랍니다.
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="pad-note" style="padding:20px 40px;text-align:center;">
+                        <p class="p-base" style="margin:0;font-family:Arial, sans-serif;font-size:14px;color:#6B7280;line-height:1.5;">
+                            문의사항은 아래 이메일로 연락해 주세요.<br>
+                            <a href="mailto:recruit@bigtablet.com" style="color:#111827;text-decoration:underline;">recruit@bigtablet.com</a>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="pad-footer" style="padding:40px;text-align:center;">
+                        <p style="margin:0;font-family:Arial, sans-serif;font-size:12px;color:#9CA3AF;">
+                            © 2025 Bigtablet Inc. 이 메일은 발신 전용 주소에서 발송되었습니다.
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
