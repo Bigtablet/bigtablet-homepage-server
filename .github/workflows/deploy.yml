@@ -19,6 +19,7 @@ jobs:
         uses: pozetroninc/github-action-get-latest-release@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          repository: Bigtablet/bigtablet-homepage-server
 
       - name: Extract version
         id: version
