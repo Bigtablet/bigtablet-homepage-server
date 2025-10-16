@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <meta name="x-apple-disable-message-reformatting">
+    <title>Bigtablet Inc. - Email Verification</title>
+
+    <!--[if mso]>
+    <style type="text/css">
+        .fallback-font { font-family: Arial, sans-serif !important; }
+    </style>
+    <![endif]-->
+
+    <style>
+        @media only screen and (max-width: 600px) {
+            .container { width: 100% !important; max-width: 100% !important; }
+            .pad-outer { padding: 24px 20px 8px 20px !important; }
+            .pad-card { padding: 16px !important; }
+            .pad-note { padding: 8px 20px 0 20px !important; }
+            .pad-footer { padding: 24px 20px !important; }
+
+            .h1 { font-size: 22px !important; line-height: 1.25 !important; }
+            .h2 { font-size: 18px !important; line-height: 1.25 !important; }
+            .p-base { font-size: 14px !important; line-height: 1.5 !important; }
+            .code { font-size: 22px !important; letter-spacing: 2px !important; padding: 14px !important; }
+        }
+
+        u + .body .container { width: 100% !important; }
+    </style>
+</head>
+<body class="body" style="margin:0;padding:0;background-color:#f9fafb;">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#f9fafb;padding:40px 20px;">
+    <tr>
+        <td align="center">
+
+            <!--[if mso]>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600"><tr><td>
+            <![endif]-->
+
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" class="container" style="max-width:600px;background-color:#ffffff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+                <tr>
+                    <td class="pad-outer" style="padding:40px 40px 10px 40px;text-align:center;">
+                        <h1 class="h1 fallback-font" style="margin:20px 0 10px 0;font-family:Arial, sans-serif;color:#111827;font-size:28px;line-height:1.2;">Bigtablet Inc.</h1>
+                        <h2 class="h2 fallback-font" style="margin:0 0 8px 0;font-family:Arial, sans-serif;color:#111827;font-size:22px;line-height:1.2;">Email Verification</h2>
+                        <p class="p-base fallback-font" style="margin:0;font-family:Arial, sans-serif;color:#6B7280;font-size:16px;line-height:1.5;">
+                            Please complete the email verification process below.
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td align="center" style="padding:24px 40px 10px 40px;">
+                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:300px;background-color:#F3F4F6;border-radius:8px;margin:auto;">
+                            <tr>
+                                <td class="pad-card fallback-font" style="font-family:Arial, sans-serif;text-align:center;font-size:26px;font-weight:bold;letter-spacing:3px;color:#111827;padding:20px;">
+                                    <span th:text="${authCode}">123456</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="pad-note" style="padding:10px 40px 0 40px;text-align:center;">
+                        <p class="p-base fallback-font" style="margin:0;font-family:Arial, sans-serif;font-size:14px;color:#6B7280;line-height:1.5;">
+                            Enter the code above in the verification field.
+                        </p>
+                        <p class="p-base fallback-font" style="margin:8px 0 0 0;font-family:Arial, sans-serif;font-size:14px;color:#6B7280;line-height:1.5;">
+                            If you did not request this verification email, please contact us at
+                        </p>
+                        <a href="mailto:info@bigtablet.com" class="fallback-font" style="font-family:Arial, sans-serif;font-size:14px;color:#111827;text-decoration:underline;">info@bigtablet.com</a>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="pad-footer" style="padding:40px;text-align:center;">
+                        <p class="fallback-font" style="margin:0;font-family:Arial, sans-serif;font-size:12px;color:#9CA3AF;">
+                            © 2025 Bigtablet Inc. This email was sent from a no-reply address.
+                        </p>
+                    </td>
+                </tr>
+            </table>
+
+            <!--[if mso]>
+            </td></tr></table>
+            <![endif]-->
+
+        </td>
+    </tr>
+</table>
+</body>
+</html>

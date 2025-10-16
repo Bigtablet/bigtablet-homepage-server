@@ -11,4 +11,8 @@ public interface AuthService {
 
     void checkPassword(String rawPassword, String hashedPassword);
 
+    void checkAuthNum(String email, String authCode);
+
+    String createRandomNum(String email);
+
 }

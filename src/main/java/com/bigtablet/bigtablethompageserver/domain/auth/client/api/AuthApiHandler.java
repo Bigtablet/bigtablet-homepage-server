@@ -3,6 +3,8 @@ package com.bigtablet.bigtablethompageserver.domain.auth.client.api;
 import com.bigtablet.bigtablethompageserver.domain.auth.application.response.JsonWebTokenResponse;
 import com.bigtablet.bigtablethompageserver.domain.auth.application.response.RefreshTokenResponse;
 import com.bigtablet.bigtablethompageserver.domain.auth.application.usecase.AuthUseCase;
+import com.bigtablet.bigtablethompageserver.domain.auth.client.request.EmailCheckRequest;
+import com.bigtablet.bigtablethompageserver.domain.auth.client.request.EmailSendRequest;
 import com.bigtablet.bigtablethompageserver.domain.auth.client.request.RefreshTokenRequest;
 import com.bigtablet.bigtablethompageserver.domain.auth.client.request.SignInRequest;
 import com.bigtablet.bigtablethompageserver.domain.auth.client.request.SignUpRequest;
@@ -69,6 +71,36 @@ public class AuthApiHandler {
                 "재발급 성공",
                 authUseCase.refresh(request)
         );
+    }
+
+    /**
+     * 이메일 전송 API
+     *
+     * @param request email
+     *
+     * @return status, message
+     *
+     * */
+    @PostMapping("/email")
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse sendEmail(@RequestBody @Valid final EmailSendRequest request) {
+        authUseCase.sendVerificationEmail(request.email());
+        return BaseResponse.ok("이메일 전송 성공");
+    }
+
+    /**
+     * 인증번호 확인 API
+     *
+     * @param request email, authCode
+     *
+     * @return status, message
+     *
+     * */
+    @PostMapping("/email/check")
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse checkEmail(@RequestBody @Valid final EmailCheckRequest request) {
+        authUseCase.checkAuthCode(request.email(), request.authCode());
+        return BaseResponse.ok("인증 완료");
     }
 
 }
