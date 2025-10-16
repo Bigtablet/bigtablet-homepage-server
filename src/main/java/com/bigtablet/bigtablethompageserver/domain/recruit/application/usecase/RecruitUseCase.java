@@ -57,14 +57,14 @@ public class RecruitUseCase {
         Recruit recruit = getRecruit(idx);
         String content = mailTemplateRenderer.renderAcceptEmail(recruit.name());
         recruitService.acceptRecruit(idx);
-        emailService.sendRecruit(recruit.email(),"Bigtablet Inc - 최종 결과 안내", content);
+        emailService.sendRecruit(recruit.email(),  "[Bigtablet Inc] " + recruit.name() + "님, 채용 전형 최종 결과 안내드립니다", content);
     }
 
     public void rejectRecruit(Long idx){
         Recruit recruit = getRecruit(idx);
         String content = mailTemplateRenderer.renderRejectEmail(recruit.name());
         recruitService.rejectRecruit(idx);
-        emailService.sendRecruit(recruit.email(),"Bigtablet Inc - 최종 결과 안내", content);
+        emailService.sendRecruit(recruit.email(),"[Bigtablet Inc] " + recruit.name() + "님, 채용 전형 최종 결과 안내드립니다", content);
     }
 
     public Job getJobById(Long jobId){
