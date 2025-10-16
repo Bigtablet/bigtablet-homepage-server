@@ -18,8 +18,8 @@ jobs:
       - name: Extract tag version
         id: version
         run: |
-          RAW_TAG="${GITHUB_REF_NAME}"  # 예: v0.2.0
-          CLEAN_TAG="${RAW_TAG#v}"      # 접두어 v 제거 → 0.2.0
+          RAW_TAG="${GITHUB_REF_NAME}"
+          CLEAN_TAG="${RAW_TAG#v}"
           echo "tag=$CLEAN_TAG" >> $GITHUB_OUTPUT
 
       - name: Print version
