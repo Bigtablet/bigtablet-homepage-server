@@ -73,7 +73,6 @@ public class JobApiHandler {
                 jobUseCase.searchJobByDepartment(department));
     }
 
-
     @GetMapping("/search/{education}")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponseData<List<Job>> searchJobByEducation(@PathVariable("education") @NotNull final Education education) {
