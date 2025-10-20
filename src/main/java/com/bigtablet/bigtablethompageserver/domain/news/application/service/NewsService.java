@@ -8,9 +8,8 @@ public interface NewsService {
 
     void saveNews(RegisterNewsRequest request);
 
-    @Transactional
     void editNews(EditNewsRequest request);
 
-    @Transactional
     void deleteNews(Long idx);
+
 }

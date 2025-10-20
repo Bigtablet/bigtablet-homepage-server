@@ -2,6 +2,7 @@ package com.bigtablet.bigtablethompageserver.domain.job.application.service.impl
 
 import com.bigtablet.bigtablethompageserver.domain.job.application.service.JobService;
 import com.bigtablet.bigtablethompageserver.domain.job.client.dto.Job;
+import com.bigtablet.bigtablethompageserver.domain.job.client.dto.request.EditJobRequest;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.entity.JobEntity;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Department;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Education;
@@ -84,6 +85,15 @@ public class JobServiceImpl implements JobService {
     @Override
     public void deleteJob(Long idx) {
         jobJpaRepository.deleteById(idx);
+    }
+
+    @Override
+    @Transactional
+    public void editJob(EditJobRequest request) {
+        JobEntity entity = jobJpaRepository
+                .findById(request.idx())
+                .orElseThrow(()->JobNotFoundException.EXCEPTION);
+        entity.editJob(request);
     }
 
     @Override
