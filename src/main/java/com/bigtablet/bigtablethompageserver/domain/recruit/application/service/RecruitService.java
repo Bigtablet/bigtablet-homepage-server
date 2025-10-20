@@ -3,7 +3,6 @@ package com.bigtablet.bigtablethompageserver.domain.recruit.application.service;
 import com.bigtablet.bigtablethompageserver.domain.recruit.client.dto.Recruit;
 import com.bigtablet.bigtablethompageserver.domain.recruit.client.dto.request.RegisterRecruitRequest;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.Status;
-import jakarta.transaction.Transactional;
 
 import java.util.List;
 
