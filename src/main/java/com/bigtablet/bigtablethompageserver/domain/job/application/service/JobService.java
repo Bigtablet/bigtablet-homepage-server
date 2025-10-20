@@ -28,7 +28,6 @@ public interface JobService {
 
     void deleteJob(Long idx);
 
-    @Transactional
     void editJob(EditJobRequest request);
 
     void checkJobsIsEmpty(List<Job> jobs);
