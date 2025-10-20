@@ -6,7 +6,6 @@ import com.bigtablet.bigtablethompageserver.domain.job.domain.entity.JobEntity;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Department;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Education;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.RecruitType;
-import jakarta.transaction.Transactional;
 
 import java.util.List;
 
