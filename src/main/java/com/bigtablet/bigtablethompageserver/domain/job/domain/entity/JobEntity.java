@@ -1,5 +1,6 @@
 package com.bigtablet.bigtablethompageserver.domain.job.domain.entity;
 
+import com.bigtablet.bigtablethompageserver.domain.job.client.dto.request.EditJobRequest;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Department;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Education;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Location;
@@ -69,5 +70,20 @@ public class JobEntity extends BaseEntity {
     private LocalDate startDate;
 
     private LocalDate endDate;
+
+    public void editJob(EditJobRequest request) {
+        this.title = request.title();
+        this.department = request.department();
+        this.location = request.location();
+        this.recruitType = request.recruitType();
+        this.experiment = request.experiment();
+        this.education = request.education();
+        this.companyIntroduction = request.companyIntroduction();
+        this.mainResponsibility = request.mainResponsibility();
+        this.qualification = request.qualification();
+        this.preferredQualification = request.preferredQualification();
+        this.startDate = request.startDate();
+        this.endDate = request.endDate();
+    }
 
 }
