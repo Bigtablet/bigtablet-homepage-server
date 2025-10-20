@@ -1,6 +1,7 @@
 package com.bigtablet.bigtablethompageserver.domain.job.application.usecase;
 
 import com.bigtablet.bigtablethompageserver.domain.job.client.dto.Job;
+import com.bigtablet.bigtablethompageserver.domain.job.client.dto.request.EditJobRequest;
 import com.bigtablet.bigtablethompageserver.domain.job.client.dto.request.RegisterJobRequest;
 import com.bigtablet.bigtablethompageserver.domain.job.application.service.JobService;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.entity.JobEntity;
@@ -67,6 +68,10 @@ public class JobUseCase {
         List<Job> jobs = jobService.searchJobByRecruitType(recruitType);
         jobService.checkJobsIsEmpty(jobs);
         return jobs;
+    }
+
+    public void editJob(EditJobRequest request) {
+        jobService.editJob(request);
     }
 
     public void deleteJob(Long idx) {

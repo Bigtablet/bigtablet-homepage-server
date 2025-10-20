@@ -24,6 +24,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.time.Duration;
 import java.util.List;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -45,7 +47,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .exceptionHandling(e -> e
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 )
-//                .redirectToHttps(withDefaults())
+                .redirectToHttps(withDefaults())
                 .authorizeHttpRequests(
                         authorize -> authorize
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
