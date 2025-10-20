@@ -11,12 +11,10 @@ public interface BlogService {
 
     Blog getBlog(Long idx);
 
-    @Transactional
     void editBlog(EditBlogRequest request);
 
-    @Transactional
     void addViews(Long idx);
 
-    @Transactional
     void deleteBlog(Long idx);
+
 }

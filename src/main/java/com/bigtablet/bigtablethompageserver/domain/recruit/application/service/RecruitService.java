@@ -21,13 +21,10 @@ public interface RecruitService {
 
     List<Recruit> getAllRecruitByStatusAndJobId(Status status, Long jobId);
 
-    @Transactional
     void editStatus(Status status, Long idx);
 
-    @Transactional
     void acceptRecruit(Long idx);
 
-    @Transactional
     void rejectRecruit(Long idx);
 
 }
