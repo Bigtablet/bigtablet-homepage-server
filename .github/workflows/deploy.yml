@@ -88,7 +88,7 @@ jobs:
             docker run -d \
               --name bigtablet-homepage-server \
               --restart unless-stopped \
-              --network=host \
-              -p 127.0.0.1:8080:8080 \
+#              -p 127.0.0.1:8080:8080 \
+              -p 8080:8080 \
               $IMAGE:$VERSION
             docker image prune -af || true
