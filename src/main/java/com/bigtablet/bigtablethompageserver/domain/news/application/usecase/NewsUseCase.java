@@ -22,6 +22,10 @@ public class NewsUseCase {
         newsService.saveNews(request);
     }
 
+    public News getNews(Long idx) {
+        return newsService.getNews(idx);
+    }
+
     public List<News> getAllNewsList(PageRequest request) {
         return newsQueryService.getAllNewsList(request);
     }
