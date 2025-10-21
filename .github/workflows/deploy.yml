@@ -85,6 +85,6 @@ jobs:
             VERSION=${{ steps.version.outputs.tag }}
             docker pull $IMAGE:$VERSION
             docker rm -f bigtablet-homepage-server 2>/dev/null || true
-            docker run -d --name bigtablet-homepage-server --restart unless-stopped -p 8080:8080 $IMAGE:$VERSION
+            docker run -d --name bigtablet-homepage-server --restart unless-stopped --network host -p 8080:8080 $IMAGE:$VERSION
             docker image prune -af || true
 #           -p 127.0.0.1:8080:8080
