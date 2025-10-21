@@ -42,6 +42,15 @@ public class NewsApiHandler {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    public BaseResponseData<News> getNews(@RequestParam @NotNull final Long idx) {
+        return BaseResponseData.ok(
+                "조회 성공",
+                newsUseCase.getNews(idx)
+        );
+    }
+
+    @GetMapping("/list")
+    @ResponseStatus(HttpStatus.OK)
     public BaseResponseData<List<News>> getAllNewsList(@ModelAttribute @Valid final PageRequest request) {
         return BaseResponseData.ok(
                 "조회 성공",

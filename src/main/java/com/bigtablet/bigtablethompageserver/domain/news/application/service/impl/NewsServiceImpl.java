@@ -27,6 +27,14 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
+    public News getNews(Long idx) {
+        return newsJpaRepository
+                .findByIdx(idx)
+                .map(News::toNews)
+                .orElseThrow(()-> NewsNotFoundException.EXCEPTION);
+    }
+
+    @Override
     @Transactional
     public void editNews(EditNewsRequest request) {
         NewsEntity entity = getNewsEntity(request.idx());
@@ -38,13 +46,6 @@ public class NewsServiceImpl implements NewsService {
     public void deleteNews(Long idx) {
         News news = getNews(idx);
         newsJpaRepository.deleteById(news.idx());
-    }
-
-    public News getNews(Long idx) {
-        return newsJpaRepository
-                .findByIdx(idx)
-                .map(News::toNews)
-                .orElseThrow(()-> NewsNotFoundException.EXCEPTION);
     }
 
     public NewsEntity getNewsEntity(Long idx) {
