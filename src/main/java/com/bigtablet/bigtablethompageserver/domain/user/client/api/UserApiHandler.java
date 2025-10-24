@@ -2,17 +2,15 @@ package com.bigtablet.bigtablethompageserver.domain.user.client.api;
 
 import com.bigtablet.bigtablethompageserver.domain.user.application.response.UserResponse;
 import com.bigtablet.bigtablethompageserver.domain.user.application.service.UserService;
+import com.bigtablet.bigtablethompageserver.global.common.annotation.RestApiHandler;
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponseData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 @Validated
-@RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RestApiHandler("/user")
 public class UserApiHandler {
 
     public final UserService userService;
