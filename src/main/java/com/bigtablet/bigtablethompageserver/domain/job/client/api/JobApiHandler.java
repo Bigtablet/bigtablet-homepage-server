@@ -29,7 +29,7 @@ import java.util.List;
 
 @Validated
 @RequiredArgsConstructor
-@RestApiHandler("/blog")
+@RestApiHandler("/job")
 public class JobApiHandler {
 
     public final JobUseCase jobUseCase;
