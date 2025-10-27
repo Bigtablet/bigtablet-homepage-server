@@ -126,7 +126,7 @@ public class JobServiceImpl implements JobService {
         if (!jobsEnded.isEmpty()) {
             jobsEnded.forEach(j -> j.setActive(false));
             jobJpaRepository.saveAll(jobsEnded);
-            log.info("🔥 {} | Deleted ended jobs : {}", LocalDateTime.now(), jobsEnded.size());
+            log.info("🔥 {} | Deactivated ended jobs : {}", LocalDateTime.now(), jobsEnded.size());
         }
         log.info("✅ {} | End scheduled job", LocalDateTime.now());
     }
