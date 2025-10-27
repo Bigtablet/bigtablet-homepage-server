@@ -11,13 +11,16 @@ import com.bigtablet.bigtablethompageserver.domain.job.domain.repository.jpa.Job
 import com.bigtablet.bigtablethompageserver.domain.job.exception.JobNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class JobServiceImpl implements JobService {
@@ -40,7 +43,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public List<Job> getAllJob() {
         return jobJpaRepository
-                .findAllByOrderByCreatedAtDesc()
+                .findAllByIsActiveTrueOrderByCreatedAtDesc()
                 .stream()
                 .map(Job::toJob)
                 .toList();
@@ -49,7 +52,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public List<Job> searchJobByTitle(String title) {
         return jobJpaRepository
-                .findAllByTitle(title)
+                .findAllByTitleAndIsActiveTrue(title)
                 .stream()
                 .map(Job::toJob)
                 .toList();
@@ -58,7 +61,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public List<Job> searchJobByDepartment(Department department) {
         return jobJpaRepository
-                .findAllByDepartment(department)
+                .findAllByDepartmentAndIsActiveTrue(department)
                 .stream()
                 .map(Job::toJob)
                 .toList();
@@ -67,7 +70,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public List<Job> searchJobByEducation(Education education) {
         return jobJpaRepository
-                .findAllByEducation(education)
+                .findAllByEducationAndIsActiveTrue(education)
                 .stream()
                 .map(Job::toJob)
                 .toList();
@@ -76,7 +79,16 @@ public class JobServiceImpl implements JobService {
     @Override
     public List<Job> searchJobByRecruitType(RecruitType recruitType) {
         return jobJpaRepository
-                .findAllByRecruitType(recruitType)
+                .findAllByRecruitTypeAndIsActiveTrue(recruitType)
+                .stream()
+                .map(Job::toJob)
+                .toList();
+    }
+
+    @Override
+    public List<Job> getAllJobIsFalse() {
+        return jobJpaRepository
+                .findAllByIsActiveFalseOrderByCreatedAtDesc()
                 .stream()
                 .map(Job::toJob)
                 .toList();
@@ -105,15 +117,18 @@ public class JobServiceImpl implements JobService {
 
     @Transactional
     @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
-    public void deleteJob() {
+    public void deactivateEndedJobs() {
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
-        List<JobEntity> jobsToDelete = jobJpaRepository.findAll().stream()
+        List<JobEntity> jobsEnded = jobJpaRepository.findAll().stream()
                 .filter(j -> j.getEndDate() != null
                         && j.getEndDate().plusDays(1).isEqual(today))
                 .toList();
-        if (!jobsToDelete.isEmpty()) {
-            jobJpaRepository.deleteAllInBatch(jobsToDelete);
+        if (!jobsEnded.isEmpty()) {
+            jobsEnded.forEach(j -> j.setActive(false));
+            jobJpaRepository.saveAll(jobsEnded);
+            log.info("🔥 {} | Deactivated ended jobs : {}", LocalDateTime.now(), jobsEnded.size());
         }
+        log.info("✅ {} | End scheduled job", LocalDateTime.now());
     }
 
 }

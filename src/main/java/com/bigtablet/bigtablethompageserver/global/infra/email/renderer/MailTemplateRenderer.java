@@ -6,6 +6,9 @@ import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @Component
 @RequiredArgsConstructor
 public class MailTemplateRenderer {
@@ -35,6 +38,16 @@ public class MailTemplateRenderer {
         Context context = new Context();
         context.setVariable("name", name);
         return templateEngine.process("reject-email", context);
+    }
+
+    public String renderApplyConfirmEmail(String name, String position, LocalDateTime applicationDate) {
+        Context context = new Context();
+        context.setVariable("name", name);
+        context.setVariable("position", position);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm 'KST'");
+        String formattedDate = applicationDate.format(formatter);
+        context.setVariable("applicationDate", formattedDate);
+        return templateEngine.process("apply-confirm", context);
     }
 
 }

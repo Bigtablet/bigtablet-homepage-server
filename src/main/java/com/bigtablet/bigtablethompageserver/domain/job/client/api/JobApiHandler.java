@@ -46,7 +46,8 @@ public class JobApiHandler {
     public BaseResponseData<Job> getJob(@RequestParam @NotNull final Long idx) {
         return BaseResponseData.ok(
                 "조회 성공",
-                jobUseCase.getJob(idx));
+                jobUseCase.getJob(idx)
+        );
     }
 
     @GetMapping("/list")
@@ -54,7 +55,8 @@ public class JobApiHandler {
     public BaseResponseData<List<Job>> getAllJob() {
         return BaseResponseData.ok(
                 "조회 성공",
-                jobUseCase.getAllJob());
+                jobUseCase.getAllJob()
+        );
     }
 
     @GetMapping("/search/{title}")
@@ -62,7 +64,8 @@ public class JobApiHandler {
     public BaseResponseData<List<Job>> searchJobByTitle(@PathVariable("title") @NotBlank final String title) {
         return BaseResponseData.ok(
                 "검색 성공",
-                jobUseCase.searchJobByTitle(title));
+                jobUseCase.searchJobByTitle(title)
+        );
     }
 
     @GetMapping("/search/{department}")
@@ -70,7 +73,8 @@ public class JobApiHandler {
     public BaseResponseData<List<Job>> searchJobByDepartment(@PathVariable("department") @NotNull final Department department) {
         return BaseResponseData.ok(
                 "검색 성공",
-                jobUseCase.searchJobByDepartment(department));
+                jobUseCase.searchJobByDepartment(department)
+        );
     }
 
     @GetMapping("/search/{education}")
@@ -78,7 +82,8 @@ public class JobApiHandler {
     public BaseResponseData<List<Job>> searchJobByEducation(@PathVariable("education") @NotNull final Education education) {
         return BaseResponseData.ok(
                 "검색 성공",
-                jobUseCase.searchJobByEducation(education));
+                jobUseCase.searchJobByEducation(education)
+        );
     }
 
     @GetMapping("/search/{recruitType}")
@@ -86,7 +91,16 @@ public class JobApiHandler {
     public BaseResponseData<List<Job>> searchJobByRecruitType(@PathVariable("recruitType") @NotNull final RecruitType recruitType) {
         return BaseResponseData.ok(
                 "검색 성공",
-                jobUseCase.searchJobByRecruitType(recruitType));
+                jobUseCase.searchJobByRecruitType(recruitType)
+        );
+    }
+
+    @GetMapping("/false")
+    public BaseResponseData<List<Job>> getAllJobIsFalse() {
+        return BaseResponseData.ok(
+                "조회 성공",
+                jobUseCase.getAllJobIsFalse()
+        );
     }
 
     @PutMapping
