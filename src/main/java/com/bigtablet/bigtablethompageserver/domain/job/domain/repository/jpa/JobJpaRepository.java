@@ -10,14 +10,16 @@ import java.util.List;
 
 public interface JobJpaRepository extends JpaRepository<JobEntity, Long> {
 
-    List<JobEntity> findAllByOrderByCreatedAtDesc();
+    List<JobEntity> findAllByIsActiveTrueOrderByCreatedAtDesc();
 
-    List<JobEntity> findAllByTitle(String title);
+    List<JobEntity> findAllByTitleAndIsActiveTrue(String title);
 
-    List<JobEntity> findAllByDepartment(Department department);
+    List<JobEntity> findAllByDepartmentAndIsActiveTrue(Department department);
 
-    List<JobEntity> findAllByEducation(Education education);
+    List<JobEntity> findAllByEducationAndIsActiveTrue(Education education);
 
-    List<JobEntity> findAllByRecruitType(RecruitType recruitType);
+    List<JobEntity> findAllByRecruitTypeAndIsActiveTrue(RecruitType recruitType);
+
+    List<JobEntity> findAllByIsActiveFalseOrderByCreatedAtDesc();
 
 }

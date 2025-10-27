@@ -33,6 +33,7 @@ public class JobUseCase {
                 .preferredQualification(request.preferredQualification())
                 .startDate(request.startDate())
                 .endDate(request.endDate())
+                .isActive(true)
                 .build());
     }
 
@@ -66,6 +67,12 @@ public class JobUseCase {
 
     public List<Job> searchJobByRecruitType(RecruitType recruitType) {
         List<Job> jobs = jobService.searchJobByRecruitType(recruitType);
+        jobService.checkJobsIsEmpty(jobs);
+        return jobs;
+    }
+
+    public List<Job> getAllJobIsFalse() {
+        List<Job> jobs = jobService.getAllJobIsFalse();
         jobService.checkJobsIsEmpty(jobs);
         return jobs;
     }
