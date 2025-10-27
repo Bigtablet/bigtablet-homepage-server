@@ -83,6 +83,15 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
+    public List<Job> getAllJobIsFalse() {
+        return jobJpaRepository
+                .findAllByIsActiveFalseOrderByCreatedAtDesc()
+                .stream()
+                .map(Job::toJob)
+                .toList();
+    }
+
+    @Override
     public void deleteJob(Long idx) {
         jobJpaRepository.deleteById(idx);
     }

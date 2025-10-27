@@ -25,6 +25,8 @@ public interface JobService {
 
     List<Job> searchJobByRecruitType(RecruitType recruitType);
 
+    List<Job> getAllJobIsFalse();
+
     void deleteJob(Long idx);
 
     void editJob(EditJobRequest request);

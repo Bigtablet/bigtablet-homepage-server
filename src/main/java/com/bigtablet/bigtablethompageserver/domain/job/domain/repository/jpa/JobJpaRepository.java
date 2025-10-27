@@ -20,4 +20,6 @@ public interface JobJpaRepository extends JpaRepository<JobEntity, Long> {
 
     List<JobEntity> findAllByRecruitTypeAndIsActiveTrue(RecruitType recruitType);
 
+    List<JobEntity> findAllByIsActiveFalseOrderByCreatedAtDesc();
+
 }

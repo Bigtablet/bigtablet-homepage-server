@@ -71,6 +71,12 @@ public class JobUseCase {
         return jobs;
     }
 
+    public List<Job> getAllJobIsFalse() {
+        List<Job> jobs = jobService.getAllJobIsFalse();
+        jobService.checkJobsIsEmpty(jobs);
+        return jobs;
+    }
+
     public void editJob(EditJobRequest request) {
         jobService.editJob(request);
     }
