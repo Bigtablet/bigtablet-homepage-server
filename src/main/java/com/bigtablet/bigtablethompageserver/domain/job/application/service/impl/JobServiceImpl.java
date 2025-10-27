@@ -40,7 +40,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public List<Job> getAllJob() {
         return jobJpaRepository
-                .findAllByOrderByCreatedAtDesc()
+                .findAllByIsActiveTrueOrderByCreatedAtDesc()
                 .stream()
                 .map(Job::toJob)
                 .toList();
@@ -49,7 +49,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public List<Job> searchJobByTitle(String title) {
         return jobJpaRepository
-                .findAllByTitle(title)
+                .findAllByTitleAndIsActiveTrue(title)
                 .stream()
                 .map(Job::toJob)
                 .toList();
@@ -58,7 +58,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public List<Job> searchJobByDepartment(Department department) {
         return jobJpaRepository
-                .findAllByDepartment(department)
+                .findAllByDepartmentAndIsActiveTrue(department)
                 .stream()
                 .map(Job::toJob)
                 .toList();
@@ -67,7 +67,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public List<Job> searchJobByEducation(Education education) {
         return jobJpaRepository
-                .findAllByEducation(education)
+                .findAllByEducationAndIsActiveTrue(education)
                 .stream()
                 .map(Job::toJob)
                 .toList();
@@ -76,7 +76,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public List<Job> searchJobByRecruitType(RecruitType recruitType) {
         return jobJpaRepository
-                .findAllByRecruitType(recruitType)
+                .findAllByRecruitTypeAndIsActiveTrue(recruitType)
                 .stream()
                 .map(Job::toJob)
                 .toList();
@@ -105,14 +105,15 @@ public class JobServiceImpl implements JobService {
 
     @Transactional
     @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
-    public void deleteJob() {
+    public void deactivateEndedJobs() {
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
-        List<JobEntity> jobsToDelete = jobJpaRepository.findAll().stream()
+        List<JobEntity> jobsEnded = jobJpaRepository.findAll().stream()
                 .filter(j -> j.getEndDate() != null
                         && j.getEndDate().plusDays(1).isEqual(today))
                 .toList();
-        if (!jobsToDelete.isEmpty()) {
-            jobJpaRepository.deleteAllInBatch(jobsToDelete);
+        if (!jobsEnded.isEmpty()) {
+            jobsEnded.forEach(j -> j.setActive(false));
+            jobJpaRepository.saveAll(jobsEnded);
         }
     }
 

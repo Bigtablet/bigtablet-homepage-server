@@ -33,6 +33,7 @@ public class JobUseCase {
                 .preferredQualification(request.preferredQualification())
                 .startDate(request.startDate())
                 .endDate(request.endDate())
+                .isActive(true)
                 .build());
     }
 
