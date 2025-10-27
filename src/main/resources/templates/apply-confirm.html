@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <meta name="x-apple-disable-message-reformatting">
+    <title>Bigtablet Inc - 지원 접수 확인</title>
+    <style>
+        @media only screen and (max-width: 600px) {
+            .container { width: 100% !important; max-width: 100% !important; }
+            .pad-outer { padding: 24px 20px 8px 20px !important; }
+            .pad-card { padding: 16px !important; }
+            .pad-note { padding: 8px 20px 0 20px !important; }
+            .pad-footer { padding: 24px 20px !important; }
+            .h1 { font-size: 22px !important; line-height: 1.25 !important; }
+            .h2 { font-size: 18px !important; line-height: 1.25 !important; }
+            .p-base { font-size: 14px !important; line-height: 1.5 !important; }
+        }
+        .highlight { font-weight: bold; color: #2563eb; }
+        .muted { color: #6B7280; }
+        .hr { height: 1px; background: #E5E7EB; border: 0; margin: 16px 0; }
+    </style>
+</head>
+<body style="margin:0;padding:0;background-color:#f9fafb;">
+<div style="display:none;font-size:1px;color:#f9fafb;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">
+    Bigtablet, Inc. 지원서가 정상적으로 접수되었습니다. 다음 절차를 안내드립니다.
+</div>
+
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#f9fafb;padding:40px 20px;">
+    <tr>
+        <td align="center">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" class="container" style="max-width:600px;background-color:#ffffff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+                <tr>
+                    <td style="padding:20px 20px 0 0; text-align:left;">
+                        <img src="https://storage.googleapis.com/bigtablet-homepage/bigtablet_logo.png" alt="Bigtablet Logo" style="width:200px; height:auto; border:none; display:block;">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="pad-outer" style="padding:20px 40px 10px 40px;text-align:center;">
+                        <h1 class="h1" style="margin:10px 0 10px 0;font-family:Arial, sans-serif;color:#111827;font-size:28px;line-height:1.2;">Bigtablet, Inc.</h1>
+                        <h2 class="h2" style="margin:0 0 8px 0;font-family:Arial, sans-serif;color:#111827;font-size:22px;line-height:1.2;">지원 접수 확인</h2>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td align="center" style="padding:16px 40px 10px 40px;">
+                        <p class="p-base" style="font-family:Arial, sans-serif;color:#374151;font-size:16px;line-height:1.6;text-align:left;">
+                            안녕하세요, <strong th:text="${name}">홍길동</strong>님.<br><br>
+                            Bigtablet, Inc.에 <span class="highlight" th:text="${position}">[지원 포지션]</span> 포지션으로 지원해 주셔서 감사합니다.<br>
+                            지원서가 <span class="highlight">정상적으로 접수</span>되었음을 알려드립니다.
+                        </p>
+
+                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:8px;background:#F3F4F6;border-radius:8px;">
+                            <tr>
+                                <td class="pad-card" style="padding:20px;">
+                                    <p style="margin:0 0 4px 0;font-family:Arial, sans-serif;font-size:14px;color:#6B7280;">지원자</p>
+                                    <p style="margin:0 0 12px 0;font-family:Arial, sans-serif;font-size:16px;color:#111827;" th:text="${name}">홍길동</p>
+
+                                    <p style="margin:0 0 4px 0;font-family:Arial, sans-serif;font-size:14px;color:#6B7280;">지원 포지션</p>
+                                    <p style="margin:0;font-family:Arial, sans-serif;font-size:16px;color:#111827;" th:text="${position}">iOS 엔지니어</p>
+
+                                    <p style="margin:16px 0 4px 0;font-family:Arial, sans-serif;font-size:14px;color:#6B7280;">접수 일시</p>
+                                    <p style="margin:0;font-family:Arial, sans-serif;font-size:16px;color:#111827;" th:text="${applicationDate}">2025-10-27 14:03 KST</p>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <hr class="hr">
+
+                        <p class="p-base" style="font-family:Arial, sans-serif;color:#374151;font-size:16px;line-height:1.6;text-align:left;">
+                            다음 단계는 서류 검토이며, 결과는 <span class="highlight">영업일 기준 7일 내</span>에 이메일로 안내드립니다.
+                        </p>
+
+                        <p class="p-base muted" style="font-family:Arial, sans-serif;font-size:14px;color:#6B7280;line-height:1.6;text-align:left;margin-top:8px;">
+                            만약 오기입 사항을 정정하시거나 제출 파일을 수정해야 하는 경우, 본 메일에 회신해 주세요.
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="pad-note" style="padding:20px 40px;text-align:center;">
+                        <p class="p-base" style="margin:0;font-family:Arial, sans-serif;font-size:14px;color:#6B7280;line-height:1.5;">
+                            문의사항은 아래 이메일로 연락해 주세요.<br>
+                            <a href="mailto:recruit@bigtablet.com" style="color:#111827;text-decoration:underline;">recruit@bigtablet.com</a>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="pad-footer" style="padding:40px;text-align:center;">
+                        <p style="margin:0;font-family:Arial, sans-serif;font-size:12px;color:#9CA3AF;">© 2025 Bigtablet, Inc.</p>
+                        <p style="margin:8px 0 0 0;font-family:Arial, sans-serif;font-size:12px;color:#9CA3AF;">
+                            본 메일은 발신 전용입니다. 수신을 원치 않으시면 <a th:href="${unsubscribeUrl}" href="#" style="color:#9CA3AF;text-decoration:underline;">구독 해지</a>를 선택하세요.
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

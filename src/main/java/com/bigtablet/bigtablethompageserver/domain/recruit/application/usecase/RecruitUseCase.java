@@ -11,6 +11,7 @@ import com.bigtablet.bigtablethompageserver.global.infra.email.service.EmailServ
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -25,6 +26,12 @@ public class RecruitUseCase {
     public void registerRecruit(RegisterRecruitRequest request){
         Job job = getJobById(request.jobId());
         recruitService.saveRecruit(request, job.idx());
+        String content = mailTemplateRenderer.renderApplyConfirmEmail(request.name(), job.title(), LocalDateTime.now());
+        emailService.sendRecruit(
+                request.email(),
+                "[Bigtablet, Inc. 채용] " + request.name() + "님, 지원 접수 완료 안내드립니다",
+                content
+        );
     }
 
     public Recruit getRecruit(Long idx){
@@ -53,21 +60,33 @@ public class RecruitUseCase {
         Recruit recruit = getRecruit(idx);
         String content = mailTemplateRenderer.renderRecruitEmail(recruit.name(),  status);
         recruitService.editStatus(status ,idx);
-        emailService.sendRecruit(recruit.email(), "[Bigtablet, Inc. 채용] " + recruit.name() + "님, 면접 전형 안내드립니다", content);
+        emailService.sendRecruit(
+                recruit.email(),
+                "[Bigtablet, Inc. 채용] " + recruit.name() + "님, 면접 전형 안내드립니다",
+                content
+        );
     }
 
     public void acceptRecruit(Long idx){
         Recruit recruit = getRecruit(idx);
         String content = mailTemplateRenderer.renderAcceptEmail(recruit.name());
         recruitService.acceptRecruit(idx);
-        emailService.sendRecruit(recruit.email(),  "[Bigtablet, Inc. 채용] " + recruit.name() + "님, 채용 전형 최종 결과 안내드립니다", content);
+        emailService.sendRecruit(
+                recruit.email(),
+                "[Bigtablet, Inc. 채용] " + recruit.name() + "님, 채용 전형 최종 결과 안내드립니다",
+                content
+        );
     }
 
     public void rejectRecruit(Long idx){
         Recruit recruit = getRecruit(idx);
         String content = mailTemplateRenderer.renderRejectEmail(recruit.name());
         recruitService.rejectRecruit(idx);
-        emailService.sendRecruit(recruit.email(),"[Bigtablet, Inc. 채용] " + recruit.name() + "님, 채용 전형 최종 결과 안내드립니다", content);
+        emailService.sendRecruit(
+                recruit.email(),
+                "[Bigtablet, Inc. 채용] " + recruit.name() + "님, 채용 전형 최종 결과 안내드립니다",
+                content
+        );
     }
 
     public Job getJobById(Long jobId){
