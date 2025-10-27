@@ -11,13 +11,16 @@ import com.bigtablet.bigtablethompageserver.domain.job.domain.repository.jpa.Job
 import com.bigtablet.bigtablethompageserver.domain.job.exception.JobNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class JobServiceImpl implements JobService {
@@ -123,7 +126,9 @@ public class JobServiceImpl implements JobService {
         if (!jobsEnded.isEmpty()) {
             jobsEnded.forEach(j -> j.setActive(false));
             jobJpaRepository.saveAll(jobsEnded);
+            log.info("🔥 {} | Deleted ended jobs : {}", LocalDateTime.now(), jobsEnded.size());
         }
+        log.info("✅ {} | End scheduled job", LocalDateTime.now());
     }
 
 }
