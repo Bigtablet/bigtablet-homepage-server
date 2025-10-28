@@ -1,6 +1,6 @@
 # Bigtablet Homepage Server
 ### This project was developed using the following technologies.
-- **Spring Boot** (3.5.6)
+- **Spring Boot** (3.5.7)
 - **Java** (21)
 - **MySQL** (8.0)
 ---
