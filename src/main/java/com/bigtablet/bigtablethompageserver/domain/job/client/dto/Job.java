@@ -22,6 +22,7 @@ public record Job(
         String preferredQualification,
         LocalDate startDate,
         LocalDate endDate,
+        boolean isActive,
         LocalDateTime createdAt,
         LocalDateTime modifiedAt
 ) {
@@ -40,6 +41,7 @@ public record Job(
                 entity.getPreferredQualification(),
                 entity.getStartDate(),
                 entity.getEndDate(),
+                entity.isActive(),
                 entity.getCreatedAt(),
                 entity.getModifiedAt()
         );
