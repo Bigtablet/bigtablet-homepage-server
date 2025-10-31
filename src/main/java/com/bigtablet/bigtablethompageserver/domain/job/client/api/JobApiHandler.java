@@ -59,36 +59,44 @@ public class JobApiHandler {
         );
     }
 
-    @GetMapping("/search/{title}")
+    @GetMapping("/search/title/{title}")
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponseData<List<Job>> searchJobByTitle(@PathVariable("title") @NotBlank final String title) {
+    public BaseResponseData<List<Job>> searchJobByTitle(
+            @PathVariable("title") @NotBlank final String title
+    ) {
         return BaseResponseData.ok(
                 "검색 성공",
                 jobUseCase.searchJobByTitle(title)
         );
     }
 
-    @GetMapping("/search/{department}")
+    @GetMapping("/search/department/{department}")
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponseData<List<Job>> searchJobByDepartment(@PathVariable("department") @NotNull final Department department) {
+    public BaseResponseData<List<Job>> searchJobByDepartment(
+            @PathVariable("department") @NotNull final Department department
+    ) {
         return BaseResponseData.ok(
                 "검색 성공",
                 jobUseCase.searchJobByDepartment(department)
         );
     }
 
-    @GetMapping("/search/{education}")
+    @GetMapping("/search/education/{education}")
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponseData<List<Job>> searchJobByEducation(@PathVariable("education") @NotNull final Education education) {
+    public BaseResponseData<List<Job>> searchJobByEducation(
+            @PathVariable("education") @NotNull final Education education
+    ) {
         return BaseResponseData.ok(
                 "검색 성공",
                 jobUseCase.searchJobByEducation(education)
         );
     }
 
-    @GetMapping("/search/{recruitType}")
+    @GetMapping("/search/recruit-type/{recruitType}")
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponseData<List<Job>> searchJobByRecruitType(@PathVariable("recruitType") @NotNull final RecruitType recruitType) {
+    public BaseResponseData<List<Job>> searchJobByRecruitType(
+            @PathVariable("recruitType") @NotNull final RecruitType recruitType
+    ) {
         return BaseResponseData.ok(
                 "검색 성공",
                 jobUseCase.searchJobByRecruitType(recruitType)
