@@ -52,7 +52,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public List<Job> searchJobByTitle(String title) {
         return jobJpaRepository
-                .findAllByTitleAndIsActiveTrue(title)
+                .findAllByIsActiveTrueAndTitleContainingIgnoreCase(title)
                 .stream()
                 .map(Job::toJob)
                 .toList();

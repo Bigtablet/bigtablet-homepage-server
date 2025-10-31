@@ -12,7 +12,7 @@ public interface JobJpaRepository extends JpaRepository<JobEntity, Long> {
 
     List<JobEntity> findAllByIsActiveTrueOrderByCreatedAtDesc();
 
-    List<JobEntity> findAllByTitleAndIsActiveTrue(String title);
+    List<JobEntity> findAllByIsActiveTrueAndTitleContainingIgnoreCase(String title);
 
     List<JobEntity> findAllByDepartmentAndIsActiveTrue(Department department);
 
