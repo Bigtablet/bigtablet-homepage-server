@@ -7,8 +7,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.MDC;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.UriUtils;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,7 +26,8 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
         MDC.put("traceId", traceId);
         String clientIp = extractClientIp(request);
         String method = request.getMethod();
-        String uri = request.getRequestURI();
+        String rawUri = request.getRequestURI();
+        String decodedUri = UriUtils.decode(rawUri, StandardCharsets.UTF_8);
         String query = request.getQueryString();
         String ua = Optional.ofNullable(request.getHeader("User-Agent")).orElse("-");
         try {
@@ -34,7 +37,7 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
 
             org.slf4j.LoggerFactory.getLogger(RequestLoggingFilter.class).info(
                     "traceId={} ip={} method={} uri={}{} status={} ua={}",
-                    traceId, clientIp, method, uri, (query != null ? "?" + query : ""), status, ua
+                    traceId, clientIp, method, decodedUri, (query != null ? "?" + query : ""), status, ua
             );
             MDC.remove("traceId");
         }
