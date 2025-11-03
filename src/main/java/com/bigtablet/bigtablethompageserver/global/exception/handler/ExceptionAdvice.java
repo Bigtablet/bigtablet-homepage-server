@@ -1,9 +1,9 @@
 package com.bigtablet.bigtablethompageserver.global.exception.handler;
 
+import com.bigtablet.bigtablethompageserver.global.common.dto.response.ErrorResponse;
 import com.bigtablet.bigtablethompageserver.global.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
