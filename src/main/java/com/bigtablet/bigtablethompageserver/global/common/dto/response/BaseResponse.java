@@ -23,7 +23,6 @@ public class BaseResponse {
                 .build();
     }
 
-
     public static BaseResponse ok(String message) {
         return new BaseResponse(HttpStatus.OK.value(), message);
     }

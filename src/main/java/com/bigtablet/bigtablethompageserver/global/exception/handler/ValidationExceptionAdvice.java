@@ -1,5 +1,6 @@
 package com.bigtablet.bigtablethompageserver.global.exception.handler;
 
+import com.bigtablet.bigtablethompageserver.global.common.dto.response.ErrorResponse;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -33,12 +34,6 @@ public class ValidationExceptionAdvice {
             return ErrorResponse.of("ENUM 값이 올바르지 않습니다.");
         }
         return ErrorResponse.of("요청 본문이 올바르지 않습니다.");
-    }
-
-    private record ErrorResponse(int status, String message) {
-        public static ErrorResponse of(String message) {
-            return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), message);
-        }
     }
 
 }
