@@ -25,6 +25,7 @@ public class RecruitUseCase {
 
     public void registerRecruit(RegisterRecruitRequest request){
         Job job = getJobById(request.jobId());
+        jobService.checkJobIsExpired(job);
         recruitService.saveRecruit(request, job.idx());
         String content = mailTemplateRenderer.renderApplyConfirmEmail(request.name(), job.title(), LocalDateTime.now());
         emailService.sendRecruit(

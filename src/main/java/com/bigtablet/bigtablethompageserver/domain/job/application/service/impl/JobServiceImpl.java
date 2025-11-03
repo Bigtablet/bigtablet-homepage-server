@@ -8,6 +8,7 @@ import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Department;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Education;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.RecruitType;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.repository.jpa.JobJpaRepository;
+import com.bigtablet.bigtablethompageserver.domain.job.exception.JobIsExpiredException;
 import com.bigtablet.bigtablethompageserver.domain.job.exception.JobNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -112,6 +113,13 @@ public class JobServiceImpl implements JobService {
     public void checkJobsIsEmpty(List<Job> jobs) {
         if (jobs.isEmpty()) {
             throw JobNotFoundException.EXCEPTION;
+        }
+    }
+
+    @Override
+    public void checkJobIsExpired(Job job) {
+        if (!job.isActive()) {
+            throw JobIsExpiredException.EXCEPTION;
         }
     }
 

@@ -33,4 +33,6 @@ public interface JobService {
 
     void checkJobsIsEmpty(List<Job> jobs);
 
+    void checkJobIsExpired(Job job);
+
 }
