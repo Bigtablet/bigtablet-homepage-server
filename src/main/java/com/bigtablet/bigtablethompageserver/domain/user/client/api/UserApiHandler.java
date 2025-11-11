@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RestApiHandler("/user")
 public class UserApiHandler {
 
-    public final UserService userService;
+    private final UserService userService;
 
     /**
      * 내 정보 조회(토큰기반) API
@@ -24,10 +24,9 @@ public class UserApiHandler {
      * */
     @GetMapping
     public BaseResponseData<UserResponse> getUserByToken() {
-        User user = userService.getUser();
         return BaseResponseData.ok(
                 "조회 성공",
-                UserResponse.of(user));
+                UserResponse.of(userService.getUser()));
     }
 
 }

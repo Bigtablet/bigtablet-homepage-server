@@ -135,7 +135,7 @@ public class JobService {
         JobEntity entity = jobJpaRepository
                 .findById(idx)
                 .orElseThrow(() -> JobNotFoundException.EXCEPTION);
-        entity.editJob(
+        entity.update(
                 title,
                 department,
                 location,

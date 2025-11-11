@@ -32,7 +32,11 @@ public class NewsEntity extends BaseEntity {
     @Column(nullable = false)
     private String newsUrl;
 
-    public void editNews(String titleKr, String titleEn, String newsUrl) {
+    public void update(
+            String titleKr,
+            String titleEn,
+            String newsUrl
+    ) {
         this.titleKr = titleKr;
         this.titleEn = titleEn;
         this.newsUrl = newsUrl;

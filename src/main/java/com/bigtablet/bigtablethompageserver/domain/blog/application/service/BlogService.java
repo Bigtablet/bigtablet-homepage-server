@@ -45,7 +45,7 @@ public class BlogService {
     @Transactional
     public void editBlog(Long idx, String titleKr, String titleEn, String contentKr, String contentEn, String imageUrl) {
         BlogEntity entity = getBlogEntity(idx);
-        entity.updateBlog(titleKr, titleEn, contentKr, contentEn, imageUrl);
+        entity.update(titleKr, titleEn, contentKr, contentEn, imageUrl);
     }
 
     @Transactional

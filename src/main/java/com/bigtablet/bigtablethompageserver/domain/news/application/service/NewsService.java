@@ -42,7 +42,7 @@ public class NewsService {
         NewsEntity entity = newsJpaRepository
                 .findByIdx(idx)
                 .orElseThrow(() -> NewsNotFoundException.EXCEPTION);
-        entity.editNews(titleKr, titleEn, newsUrl);
+        entity.update(titleKr, titleEn, newsUrl);
     }
 
     @Transactional

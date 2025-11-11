@@ -75,7 +75,7 @@ public class JobEntity extends BaseEntity {
     @Column(nullable = false)
     private boolean isActive;
 
-    public void editJob(
+    public void update(
             String title,
             Department department,
             Location location,
