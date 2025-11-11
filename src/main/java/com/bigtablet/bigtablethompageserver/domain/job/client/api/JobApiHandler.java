@@ -1,7 +1,7 @@
 package com.bigtablet.bigtablethompageserver.domain.job.client.api;
 
+import com.bigtablet.bigtablethompageserver.domain.job.application.response.JobResponse;
 import com.bigtablet.bigtablethompageserver.domain.job.application.usecase.JobUseCase;
-import com.bigtablet.bigtablethompageserver.domain.job.client.dto.Job;
 import com.bigtablet.bigtablethompageserver.domain.job.client.dto.request.EditJobRequest;
 import com.bigtablet.bigtablethompageserver.domain.job.client.dto.request.RegisterJobRequest;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Department;
@@ -32,7 +32,7 @@ import java.util.List;
 @RestApiHandler("/job")
 public class JobApiHandler {
 
-    public final JobUseCase jobUseCase;
+    private final JobUseCase jobUseCase;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -43,7 +43,7 @@ public class JobApiHandler {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponseData<Job> getJob(@RequestParam @NotNull final Long idx) {
+    public BaseResponseData<JobResponse> getJob(@RequestParam @NotNull final Long idx) {
         return BaseResponseData.ok(
                 "조회 성공",
                 jobUseCase.getJob(idx)
@@ -52,7 +52,7 @@ public class JobApiHandler {
 
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponseData<List<Job>> getAllJob() {
+    public BaseResponseData<List<JobResponse>> getAllJob() {
         return BaseResponseData.ok(
                 "조회 성공",
                 jobUseCase.getAllJob()
@@ -61,7 +61,7 @@ public class JobApiHandler {
 
     @GetMapping("/search/{title}")
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponseData<List<Job>> searchJobByTitle(@PathVariable("title") @NotBlank final String title) {
+    public BaseResponseData<List<JobResponse>> searchJobByTitle(@PathVariable("title") @NotBlank final String title) {
         return BaseResponseData.ok(
                 "검색 성공",
                 jobUseCase.searchJobByTitle(title)
@@ -70,7 +70,7 @@ public class JobApiHandler {
 
     @GetMapping("/search/{department}")
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponseData<List<Job>> searchJobByDepartment(@PathVariable("department") @NotNull final Department department) {
+    public BaseResponseData<List<JobResponse>> searchJobByDepartment(@PathVariable("department") @NotNull final Department department) {
         return BaseResponseData.ok(
                 "검색 성공",
                 jobUseCase.searchJobByDepartment(department)
@@ -79,7 +79,7 @@ public class JobApiHandler {
 
     @GetMapping("/search/{education}")
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponseData<List<Job>> searchJobByEducation(@PathVariable("education") @NotNull final Education education) {
+    public BaseResponseData<List<JobResponse>> searchJobByEducation(@PathVariable("education") @NotNull final Education education) {
         return BaseResponseData.ok(
                 "검색 성공",
                 jobUseCase.searchJobByEducation(education)
@@ -88,7 +88,7 @@ public class JobApiHandler {
 
     @GetMapping("/search/{recruitType}")
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponseData<List<Job>> searchJobByRecruitType(@PathVariable("recruitType") @NotNull final RecruitType recruitType) {
+    public BaseResponseData<List<JobResponse>> searchJobByRecruitType(@PathVariable("recruitType") @NotNull final RecruitType recruitType) {
         return BaseResponseData.ok(
                 "검색 성공",
                 jobUseCase.searchJobByRecruitType(recruitType)
@@ -96,7 +96,7 @@ public class JobApiHandler {
     }
 
     @GetMapping("/false")
-    public BaseResponseData<List<Job>> getAllJobIsFalse() {
+    public BaseResponseData<List<JobResponse>> getAllJobIsFalse() {
         return BaseResponseData.ok(
                 "조회 성공",
                 jobUseCase.getAllJobIsFalse()

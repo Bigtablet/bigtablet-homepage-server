@@ -1,6 +1,6 @@
 package com.bigtablet.bigtablethompageserver.domain.blog.domain.repository.query.impl;
 
-import com.bigtablet.bigtablethompageserver.domain.blog.client.dto.Blog;
+import com.bigtablet.bigtablethompageserver.domain.blog.domain.model.Blog;
 import com.bigtablet.bigtablethompageserver.domain.blog.domain.repository.query.BlogQueryRepository;
 import com.bigtablet.bigtablethompageserver.global.common.dto.request.PageRequest;
 import com.querydsl.core.types.ConstructorExpression;

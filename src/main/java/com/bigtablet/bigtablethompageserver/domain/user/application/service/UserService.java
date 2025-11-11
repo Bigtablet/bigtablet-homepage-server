@@ -1,17 +1,45 @@
 package com.bigtablet.bigtablethompageserver.domain.user.application.service;
 
-import com.bigtablet.bigtablethompageserver.domain.user.application.response.UserResponse;
-import com.bigtablet.bigtablethompageserver.domain.user.client.dto.User;
+import com.bigtablet.bigtablethompageserver.domain.user.domain.model.User;
+import com.bigtablet.bigtablethompageserver.domain.user.exception.UserAlreadyExistException;
+import com.bigtablet.bigtablethompageserver.domain.user.exception.UserNotFoundException;
 import com.bigtablet.bigtablethompageserver.domain.user.domain.entity.UserEntity;
+import com.bigtablet.bigtablethompageserver.domain.user.domain.repository.jpa.UserJpaRepository;
+import com.bigtablet.bigtablethompageserver.global.common.repository.user.UserSecurity;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
-public interface UserService {
+@Service
+@RequiredArgsConstructor
+public class UserService {
 
-    void save(UserEntity entity);
+    private final UserJpaRepository userJpaRepository;
+    private final UserSecurity userSecurity;
 
-    UserResponse getUser();
+    public void save(String email, String password, String name) {
+        userJpaRepository.save(UserEntity.builder()
+                .email(email)
+                .password(password)
+                .name(name)
+                .build());
+    }
 
-    User getUser(String email);
+    public User getUser() {
+        User user = userSecurity.getUser();
+        return user;
+    }
 
-    void checkUserEmail(String email);
+    public User getUser(String email) {
+        return userJpaRepository
+                .findByEmail(email)
+                .map(User::of)
+                .orElseThrow(() -> UserNotFoundException.EXCEPTION);
+    }
+
+    public void checkUserEmail(String email) {
+        if (userJpaRepository.findByEmail(email).isPresent()) {
+            throw UserAlreadyExistException.EXCEPTION;
+        }
+    }
 
 }

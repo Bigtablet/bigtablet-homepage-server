@@ -1,6 +1,6 @@
 package com.bigtablet.bigtablethompageserver.global.security.jwt;
 
-import com.bigtablet.bigtablethompageserver.domain.user.client.dto.User;
+import com.bigtablet.bigtablethompageserver.domain.user.domain.model.User;
 import com.bigtablet.bigtablethompageserver.domain.user.domain.repository.jpa.UserJpaRepository;
 import com.bigtablet.bigtablethompageserver.domain.user.exception.UserNotFoundException;
 import com.bigtablet.bigtablethompageserver.global.security.auth.CustomUserDetails;
@@ -31,7 +31,7 @@ public class JwtExtract {
         }
         User user = userRepository
                 .findByEmail(claims.getSubject())
-                .map(User::toUser)
+                .map(User::of)
                 .orElseThrow(() -> UserNotFoundException.EXCEPTION);
         final CustomUserDetails details = new CustomUserDetails(user);
         return new UsernamePasswordAuthenticationToken(details, null, details.getAuthorities());

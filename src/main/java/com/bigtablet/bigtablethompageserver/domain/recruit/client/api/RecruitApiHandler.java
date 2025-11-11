@@ -1,7 +1,7 @@
 package com.bigtablet.bigtablethompageserver.domain.recruit.client.api;
 
+import com.bigtablet.bigtablethompageserver.domain.recruit.application.response.RecruitResponse;
 import com.bigtablet.bigtablethompageserver.domain.recruit.application.usecase.RecruitUseCase;
-import com.bigtablet.bigtablethompageserver.domain.recruit.client.dto.Recruit;
 import com.bigtablet.bigtablethompageserver.domain.recruit.client.dto.request.RegisterRecruitRequest;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.Status;
 import com.bigtablet.bigtablethompageserver.global.common.annotation.RestApiHandler;
@@ -37,7 +37,7 @@ public class RecruitApiHandler {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponseData<Recruit> getRecruit(@RequestParam @NotNull final Long idx) {
+    public BaseResponseData<RecruitResponse> getRecruit(@RequestParam @NotNull final Long idx) {
         return BaseResponseData.ok(
                 "조회 성공",
                 recruitUseCase.getRecruit(idx));
@@ -45,7 +45,7 @@ public class RecruitApiHandler {
 
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponseData<List<Recruit>> getAllRecruit() {
+    public BaseResponseData<List<RecruitResponse>> getAllRecruit() {
         return BaseResponseData.ok(
                 "조회 성공",
                 recruitUseCase.getAllRecruit());
@@ -53,7 +53,7 @@ public class RecruitApiHandler {
 
     @GetMapping("/list/job")
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponseData<List<Recruit>> getAllRecruitByJobId(@RequestParam @NotNull final Long jobId) {
+    public BaseResponseData<List<RecruitResponse>> getAllRecruitByJobId(@RequestParam @NotNull final Long jobId) {
         return BaseResponseData.ok(
                 "조회 성공",
                 recruitUseCase.getAllRecruitByJobId(jobId));
@@ -61,7 +61,7 @@ public class RecruitApiHandler {
 
     @GetMapping("/list/status")
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponseData<List<Recruit>> getAllRecruitByStatus(@RequestParam @NotNull final Status status) {
+    public BaseResponseData<List<RecruitResponse>> getAllRecruitByStatus(@RequestParam @NotNull final Status status) {
         return BaseResponseData.ok(
                 "조회 성공",
                 recruitUseCase.getAllRecruitByStatus(status));
@@ -69,7 +69,7 @@ public class RecruitApiHandler {
 
     @GetMapping("/list/status/job")
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponseData<List<Recruit>> getAllRecruitByStatusAndJobId(
+    public BaseResponseData<List<RecruitResponse>> getAllRecruitByStatusAndJobId(
             @RequestParam @NotNull
             final Status status,
             @RequestParam @NotNull

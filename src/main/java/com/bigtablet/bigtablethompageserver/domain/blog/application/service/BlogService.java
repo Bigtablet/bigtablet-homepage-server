@@ -1,19 +1,71 @@
 package com.bigtablet.bigtablethompageserver.domain.blog.application.service;
 
-import com.bigtablet.bigtablethompageserver.domain.blog.client.dto.Blog;
-import com.bigtablet.bigtablethompageserver.domain.blog.client.dto.request.EditBlogRequest;
-import com.bigtablet.bigtablethompageserver.domain.blog.client.dto.request.RegisterBlogRequest;
+import com.bigtablet.bigtablethompageserver.domain.blog.domain.entity.BlogEntity;
+import com.bigtablet.bigtablethompageserver.domain.blog.domain.model.Blog;
+import com.bigtablet.bigtablethompageserver.domain.blog.domain.repository.jpa.BlogJpaRepository;
+import com.bigtablet.bigtablethompageserver.domain.blog.exception.BlogNotFoundException;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
-public interface BlogService {
+import java.util.List;
 
-    void saveBlog(RegisterBlogRequest request);
+@Service
+@RequiredArgsConstructor
+public class BlogService {
 
-    Blog getBlog(Long idx);
+    private final BlogJpaRepository blogJpaRepository;
 
-    void editBlog(EditBlogRequest request);
+    public void saveBlog(String titleKr, String titleEn, String contentKr, String contentEn, String imageUrl) {
+        blogJpaRepository.save(BlogEntity.builder()
+                .titleKr(titleKr)
+                .titleEn(titleEn)
+                .contentKr(contentKr)
+                .contentEn(contentEn)
+                .imageUrl(imageUrl)
+                .views(0)
+                .build());
+    }
 
-    void addViews(Long idx);
+    public Blog findById(Long idx) {
+        BlogEntity entity = blogJpaRepository
+                .findById(idx)
+                .orElseThrow(() -> BlogNotFoundException.EXCEPTION);
+        return Blog.of(entity);
+    }
 
-    void deleteBlog(Long idx);
+    public List<Blog> findAll() {
+        return blogJpaRepository
+                .findAll()
+                .stream()
+                .map(Blog::of)
+                .toList();
+    }
+
+    @Transactional
+    public void editBlog(Long idx, String titleKr, String titleEn, String contentKr, String contentEn, String imageUrl) {
+        BlogEntity entity = getBlogEntity(idx);
+        entity.updateBlog(titleKr, titleEn, contentKr, contentEn, imageUrl);
+    }
+
+    @Transactional
+    public void addViews(Long idx) {
+        BlogEntity entity = getBlogEntity(idx);
+        entity.setViews(entity.getViews() + 1);
+    }
+
+    @Transactional
+    public void deleteBlog(Long idx) {
+        BlogEntity entity = blogJpaRepository
+                .findById(idx)
+                .orElseThrow(() -> BlogNotFoundException.EXCEPTION);
+        blogJpaRepository.deleteById(entity.getIdx());
+    }
+
+    private BlogEntity getBlogEntity(Long idx) {
+        return blogJpaRepository
+                .findByIdxForUpdate(idx)
+                .orElseThrow(() -> BlogNotFoundException.EXCEPTION);
+    }
 
 }

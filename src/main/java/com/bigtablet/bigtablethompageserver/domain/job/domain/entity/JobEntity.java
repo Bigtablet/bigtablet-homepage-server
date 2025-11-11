@@ -1,6 +1,5 @@
 package com.bigtablet.bigtablethompageserver.domain.job.domain.entity;
 
-import com.bigtablet.bigtablethompageserver.domain.job.client.dto.request.EditJobRequest;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Department;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Education;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Location;
@@ -76,19 +75,32 @@ public class JobEntity extends BaseEntity {
     @Column(nullable = false)
     private boolean isActive;
 
-    public void editJob(EditJobRequest request) {
-        this.title = request.title();
-        this.department = request.department();
-        this.location = request.location();
-        this.recruitType = request.recruitType();
-        this.experiment = request.experiment();
-        this.education = request.education();
-        this.companyIntroduction = request.companyIntroduction();
-        this.mainResponsibility = request.mainResponsibility();
-        this.qualification = request.qualification();
-        this.preferredQualification = request.preferredQualification();
-        this.startDate = request.startDate();
-        this.endDate = request.endDate();
+    public void editJob(
+            String title,
+            Department department,
+            Location location,
+            RecruitType recruitType,
+            String experiment,
+            Education education,
+            String companyIntroduction,
+            String mainResponsibility,
+            String qualification,
+            String preferredQualification,
+            LocalDate startDate,
+            LocalDate endDate
+    ) {
+        this.title = title;
+        this.department = department;
+        this.location = location;
+        this.recruitType = recruitType;
+        this.experiment = experiment;
+        this.education = education;
+        this.companyIntroduction = companyIntroduction;
+        this.mainResponsibility = mainResponsibility;
+        this.qualification = qualification;
+        this.preferredQualification = preferredQualification;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
 }

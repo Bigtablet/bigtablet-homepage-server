@@ -2,6 +2,7 @@ package com.bigtablet.bigtablethompageserver.domain.user.client.api;
 
 import com.bigtablet.bigtablethompageserver.domain.user.application.response.UserResponse;
 import com.bigtablet.bigtablethompageserver.domain.user.application.service.UserService;
+import com.bigtablet.bigtablethompageserver.domain.user.domain.model.User;
 import com.bigtablet.bigtablethompageserver.global.common.annotation.RestApiHandler;
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponseData;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +24,10 @@ public class UserApiHandler {
      * */
     @GetMapping
     public BaseResponseData<UserResponse> getUserByToken() {
+        User user = userService.getUser();
         return BaseResponseData.ok(
                 "조회 성공",
-                userService.getUser());
+                UserResponse.of(user));
     }
 
 }

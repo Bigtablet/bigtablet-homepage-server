@@ -1,7 +1,7 @@
 package com.bigtablet.bigtablethompageserver.domain.news.client.api;
 
+import com.bigtablet.bigtablethompageserver.domain.news.application.response.NewsResponse;
 import com.bigtablet.bigtablethompageserver.domain.news.application.usecase.NewsUseCase;
-import com.bigtablet.bigtablethompageserver.domain.news.client.dto.News;
 import com.bigtablet.bigtablethompageserver.domain.news.client.dto.request.EditNewsRequest;
 import com.bigtablet.bigtablethompageserver.domain.news.client.dto.request.RegisterNewsRequest;
 import com.bigtablet.bigtablethompageserver.global.common.annotation.RestApiHandler;
@@ -40,7 +40,7 @@ public class NewsApiHandler {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponseData<News> getNews(@RequestParam @NotNull final Long idx) {
+    public BaseResponseData<NewsResponse> getNews(@RequestParam @NotNull final Long idx) {
         return BaseResponseData.ok(
                 "조회 성공",
                 newsUseCase.getNews(idx)
@@ -49,7 +49,7 @@ public class NewsApiHandler {
 
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponseData<List<News>> getAllNewsList(@ModelAttribute @Valid final PageRequest request) {
+    public BaseResponseData<List<NewsResponse>> getAllNewsList(@ModelAttribute @Valid final PageRequest request) {
         return BaseResponseData.ok(
                 "조회 성공",
                 newsUseCase.getAllNewsList(request)

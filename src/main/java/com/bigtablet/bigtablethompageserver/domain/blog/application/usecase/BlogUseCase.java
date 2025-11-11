@@ -1,17 +1,18 @@
 package com.bigtablet.bigtablethompageserver.domain.blog.application.usecase;
 
 import com.bigtablet.bigtablethompageserver.domain.blog.application.query.BlogQueryService;
+import com.bigtablet.bigtablethompageserver.domain.blog.application.response.BlogResponse;
 import com.bigtablet.bigtablethompageserver.domain.blog.application.service.BlogService;
-import com.bigtablet.bigtablethompageserver.domain.blog.client.dto.Blog;
 import com.bigtablet.bigtablethompageserver.domain.blog.client.dto.request.EditBlogRequest;
 import com.bigtablet.bigtablethompageserver.domain.blog.client.dto.request.RegisterBlogRequest;
+import com.bigtablet.bigtablethompageserver.domain.blog.domain.model.Blog;
 import com.bigtablet.bigtablethompageserver.global.common.dto.request.PageRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class BlogUseCase {
 
@@ -19,23 +20,43 @@ public class BlogUseCase {
     private final BlogQueryService blogQueryService;
 
     public void registerBlog(RegisterBlogRequest request) {
-        blogService.saveBlog(request);
+        blogService.saveBlog(
+                request.titleKr(),
+                request.titleEn(),
+                request.contentKr(),
+                request.contentEn(),
+                request.imageUrl()
+        );
     }
 
-    public Blog getBlog(Long idx) {
-        return blogService.getBlog(idx);
+    public BlogResponse getBlog(Long idx) {
+        Blog blog = blogService.findById(idx);
+        return BlogResponse.of(blog);
     }
 
-    public List<Blog> getAllBlogList(PageRequest pageRequest) {
-        return blogQueryService.getAllBlogList(pageRequest);
+    public List<BlogResponse> getAllBlogList(PageRequest request) {
+        List<Blog> blogs = blogQueryService.getAllBlogList(request);
+        return blogs.stream()
+                .map(BlogResponse::of)
+                .toList();
     }
 
-    public List<Blog> searchBlogByTitle(PageRequest request, String title) {
-        return blogQueryService.searchBlogByTitle(request, title);
+    public List<BlogResponse> searchBlogByTitle(PageRequest request, String title) {
+        List<Blog> blogs = blogQueryService.searchBlogByTitle(request, title);
+        return blogs.stream()
+                .map(BlogResponse::of)
+                .toList();
     }
 
     public void editBlog(EditBlogRequest request) {
-        blogService.editBlog(request);
+        blogService.editBlog(
+                request.idx(),
+                request.titleKr(),
+                request.titleEn(),
+                request.contentKr(),
+                request.contentEn(),
+                request.imageUrl()
+        );
     }
 
     public void deleteBlog(Long idx) {

@@ -6,13 +6,11 @@ import com.bigtablet.bigtablethompageserver.domain.auth.application.service.Auth
 import com.bigtablet.bigtablethompageserver.domain.auth.client.request.RefreshTokenRequest;
 import com.bigtablet.bigtablethompageserver.domain.auth.client.request.SignInRequest;
 import com.bigtablet.bigtablethompageserver.domain.auth.client.request.SignUpRequest;
-import com.bigtablet.bigtablethompageserver.domain.user.client.dto.User;
-import com.bigtablet.bigtablethompageserver.domain.user.domain.entity.UserEntity;
+import com.bigtablet.bigtablethompageserver.domain.user.domain.model.User;
 import com.bigtablet.bigtablethompageserver.domain.user.application.service.UserService;
 import com.bigtablet.bigtablethompageserver.global.infra.email.renderer.MailTemplateRenderer;
 import com.bigtablet.bigtablethompageserver.global.infra.email.service.EmailService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,11 +26,10 @@ public class AuthUseCase {
 
     public void signUp(SignUpRequest request) {
         userService.checkUserEmail(request.email());
-        userService.save(UserEntity.builder()
-                .email(request.email())
-                .password(passwordEncoder.encode(request.password()))
-                .name(request.name())
-                .build()
+        userService.save(
+                request.email(),
+                passwordEncoder.encode(request.password()),
+                request.name()
         );
     }
 
