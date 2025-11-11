@@ -1,7 +1,7 @@
 package com.bigtablet.bigtablethompageserver.domain.blog.client.api;
 
+import com.bigtablet.bigtablethompageserver.domain.blog.application.response.BlogResponse;
 import com.bigtablet.bigtablethompageserver.domain.blog.application.usecase.BlogUseCase;
-import com.bigtablet.bigtablethompageserver.domain.blog.client.dto.Blog;
 import com.bigtablet.bigtablethompageserver.domain.blog.client.dto.request.EditBlogRequest;
 import com.bigtablet.bigtablethompageserver.domain.blog.client.dto.request.RegisterBlogRequest;
 import com.bigtablet.bigtablethompageserver.global.common.annotation.RestApiHandler;
@@ -42,7 +42,7 @@ public class BlogApiHandler {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponseData<Blog> getBlog(@RequestParam @NotNull final Long idx) {
+    public BaseResponseData<BlogResponse> getBlog(@RequestParam @NotNull final Long idx) {
         return BaseResponseData.ok(
                 "조회 성공",
                 blogUseCase.getBlog(idx)
@@ -51,7 +51,7 @@ public class BlogApiHandler {
 
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponseData<List<Blog>> getAllBlogList(@ModelAttribute @Valid final PageRequest request) {
+    public BaseResponseData<List<BlogResponse>> getAllBlogList(@ModelAttribute @Valid final PageRequest request) {
         return BaseResponseData.ok(
                 "조회 성공",
                 blogUseCase.getAllBlogList(request)
@@ -60,7 +60,7 @@ public class BlogApiHandler {
 
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponseData<List<Blog>> searchBlogByTitle(
+    public BaseResponseData<List<BlogResponse>> searchBlogByTitle(
             @ModelAttribute
             final PageRequest request,
             @RequestParam @NotBlank

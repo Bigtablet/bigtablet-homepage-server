@@ -1,7 +1,7 @@
 package com.bigtablet.bigtablethompageserver.domain.blog.application.query.impl;
 
 import com.bigtablet.bigtablethompageserver.domain.blog.application.query.BlogQueryService;
-import com.bigtablet.bigtablethompageserver.domain.blog.client.dto.Blog;
+import com.bigtablet.bigtablethompageserver.domain.blog.domain.model.Blog;
 import com.bigtablet.bigtablethompageserver.domain.blog.domain.repository.query.BlogQueryRepository;
 import com.bigtablet.bigtablethompageserver.domain.blog.exception.BlogNotFoundException;
 import com.bigtablet.bigtablethompageserver.global.common.dto.request.PageRequest;

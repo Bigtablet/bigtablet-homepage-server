@@ -1,6 +1,6 @@
 package com.bigtablet.bigtablethompageserver.global.security.auth;
 
-import com.bigtablet.bigtablethompageserver.domain.user.client.dto.User;
+import com.bigtablet.bigtablethompageserver.domain.user.domain.model.User;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

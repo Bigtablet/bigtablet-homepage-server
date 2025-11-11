@@ -1,7 +1,7 @@
 package com.bigtablet.bigtablethompageserver.domain.news.application.query.impl;
 
 import com.bigtablet.bigtablethompageserver.domain.news.application.query.NewsQueryService;
-import com.bigtablet.bigtablethompageserver.domain.news.client.dto.News;
+import com.bigtablet.bigtablethompageserver.domain.news.domain.model.News;
 import com.bigtablet.bigtablethompageserver.domain.news.domain.repository.query.NewsQueryRepository;
 import com.bigtablet.bigtablethompageserver.domain.news.exception.NewsNotFoundException;
 import com.bigtablet.bigtablethompageserver.global.common.dto.request.PageRequest;
