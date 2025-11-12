@@ -25,8 +25,7 @@ public class UserService {
     }
 
     public User getUser() {
-        User user = userSecurity.getUser();
-        return user;
+        return userSecurity.getUser();
     }
 
     public User getUser(String email) {
