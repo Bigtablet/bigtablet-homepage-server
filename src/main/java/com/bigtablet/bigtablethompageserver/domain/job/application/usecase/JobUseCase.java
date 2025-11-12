@@ -1,89 +1,122 @@
 package com.bigtablet.bigtablethompageserver.domain.job.application.usecase;
 
-import com.bigtablet.bigtablethompageserver.domain.job.client.dto.Job;
+import com.bigtablet.bigtablethompageserver.domain.job.application.response.JobResponse;
+import com.bigtablet.bigtablethompageserver.domain.job.application.service.JobService;
 import com.bigtablet.bigtablethompageserver.domain.job.client.dto.request.EditJobRequest;
 import com.bigtablet.bigtablethompageserver.domain.job.client.dto.request.RegisterJobRequest;
-import com.bigtablet.bigtablethompageserver.domain.job.application.service.JobService;
-import com.bigtablet.bigtablethompageserver.domain.job.domain.entity.JobEntity;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Department;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Education;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.RecruitType;
+import com.bigtablet.bigtablethompageserver.domain.job.domain.model.Job;
+import com.bigtablet.bigtablethompageserver.domain.job.exception.JobNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class JobUseCase {
 
-    public final JobService jobService;
+    private final JobService jobService;
 
     public void registerJob(RegisterJobRequest request) {
-        jobService.saveJob(JobEntity.builder()
-                .title(request.title())
-                .department(request.department())
-                .location(request.location())
-                .recruitType(request.recruitType())
-                .experiment(request.experiment())
-                .education(request.education())
-                .companyIntroduction(request.companyIntroduction())
-                .mainResponsibility(request.mainResponsibility())
-                .qualification(request.qualification())
-                .preferredQualification(request.preferredQualification())
-                .startDate(request.startDate())
-                .endDate(request.endDate())
-                .isActive(true)
-                .build());
+        jobService.saveJob(
+                request.title(),
+                request.department(),
+                request.location(),
+                request.recruitType(),
+                request.experiment(),
+                request.education(),
+                request.companyIntroduction(),
+                request.mainResponsibility(),
+                request.qualification(),
+                request.preferredQualification(),
+                request.startDate(),
+                request.endDate()
+        );
     }
 
-    public Job getJob(Long idx) {
-        return jobService.getJob(idx);
+    public JobResponse getJob(Long idx) {
+        Job job = jobService.findById(idx);
+        return JobResponse.of(job);
     }
 
-    public List<Job> getAllJob() {
-        List<Job> jobs = jobService.getAllJob();
-        jobService.checkJobsIsEmpty(jobs);
-        return jobs;
+    public List<JobResponse> getAllJob() {
+        List<Job> jobs = jobService.findAllActive();
+        checkJobsIsEmpty(jobs);
+        return jobs.stream()
+                .map(JobResponse::of)
+                .toList();
     }
 
-    public List<Job> searchJobByTitle(String title) {
-        List<Job> jobs = jobService.searchJobByTitle(title);
-        jobService.checkJobsIsEmpty(jobs);
-        return jobs;
+    public List<JobResponse> searchJobByTitle(String title) {
+        List<Job> jobs = jobService.findByTitle(title);
+        checkJobsIsEmpty(jobs);
+        return jobs.stream()
+                .map(JobResponse::of)
+                .toList();
     }
 
-    public List<Job> searchJobByDepartment(Department department) {
-        List<Job> jobs = jobService.searchJobByDepartment(department);
-        jobService.checkJobsIsEmpty(jobs);
-        return jobs;
+    public List<JobResponse> searchJobByDepartment(Department department) {
+        List<Job> jobs = jobService.findByDepartment(department);
+        checkJobsIsEmpty(jobs);
+        return jobs.stream()
+                .map(JobResponse::of)
+                .toList();
     }
 
-    public List<Job> searchJobByEducation(Education education) {
-        List<Job> jobs = jobService.searchJobByEducation(education);
-        jobService.checkJobsIsEmpty(jobs);
-        return jobs;
+    public List<JobResponse> searchJobByEducation(Education education) {
+        List<Job> jobs = jobService.findByEducation(education);
+        checkJobsIsEmpty(jobs);
+        return jobs.stream()
+                .map(JobResponse::of)
+                .toList();
     }
 
-    public List<Job> searchJobByRecruitType(RecruitType recruitType) {
-        List<Job> jobs = jobService.searchJobByRecruitType(recruitType);
-        jobService.checkJobsIsEmpty(jobs);
-        return jobs;
+    public List<JobResponse> searchJobByRecruitType(RecruitType recruitType) {
+        List<Job> jobs = jobService.findByRecruitType(recruitType);
+        checkJobsIsEmpty(jobs);
+        return jobs.stream()
+                .map(JobResponse::of)
+                .toList();
     }
 
-    public List<Job> getAllJobIsFalse() {
-        List<Job> jobs = jobService.getAllJobIsFalse();
-        jobService.checkJobsIsEmpty(jobs);
-        return jobs;
+    public List<JobResponse> getAllJobIsFalse() {
+        List<Job> jobs = jobService.findAllInactive();
+        checkJobsIsEmpty(jobs);
+        return jobs.stream()
+                .map(JobResponse::of)
+                .toList();
     }
 
     public void editJob(EditJobRequest request) {
-        jobService.editJob(request);
+        jobService.updateJob(
+                request.idx(),
+                request.title(),
+                request.department(),
+                request.location(),
+                request.recruitType(),
+                request.experiment(),
+                request.education(),
+                request.companyIntroduction(),
+                request.mainResponsibility(),
+                request.qualification(),
+                request.preferredQualification(),
+                request.startDate(),
+                request.endDate()
+        );
     }
 
     public void deleteJob(Long idx) {
-        Job job = getJob(idx);
-        jobService.deleteJob(job.idx());
+        Job job = jobService.findById(idx);
+        jobService.deleteById(job.idx());
+    }
+
+    private void checkJobsIsEmpty(List<Job> jobs) {
+        if (jobs.isEmpty()) {
+            throw JobNotFoundException.EXCEPTION;
+        }
     }
 
 }

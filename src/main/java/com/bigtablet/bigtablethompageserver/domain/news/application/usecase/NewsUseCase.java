@@ -1,10 +1,11 @@
 package com.bigtablet.bigtablethompageserver.domain.news.application.usecase;
 
 import com.bigtablet.bigtablethompageserver.domain.news.application.query.NewsQueryService;
+import com.bigtablet.bigtablethompageserver.domain.news.application.response.NewsResponse;
 import com.bigtablet.bigtablethompageserver.domain.news.application.service.NewsService;
-import com.bigtablet.bigtablethompageserver.domain.news.client.dto.News;
 import com.bigtablet.bigtablethompageserver.domain.news.client.dto.request.EditNewsRequest;
 import com.bigtablet.bigtablethompageserver.domain.news.client.dto.request.RegisterNewsRequest;
+import com.bigtablet.bigtablethompageserver.domain.news.domain.model.News;
 import com.bigtablet.bigtablethompageserver.global.common.dto.request.PageRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,23 +20,36 @@ public class NewsUseCase {
     private final NewsQueryService newsQueryService;
 
     public void registerNews(RegisterNewsRequest request) {
-        newsService.saveNews(request);
+        newsService.save(
+                request.titleKr(),
+                request.titleEn(),
+                request.newsUrl()
+        );
     }
 
-    public News getNews(Long idx) {
-        return newsService.getNews(idx);
+    public NewsResponse getNews(Long idx) {
+        News news = newsService.findById(idx);
+        return NewsResponse.of(news);
     }
 
-    public List<News> getAllNewsList(PageRequest request) {
-        return newsQueryService.getAllNewsList(request);
+    public List<NewsResponse> getAllNewsList(PageRequest request) {
+        List<News> newsList = newsQueryService.getAllNewsList(request);
+        return newsList.stream()
+                .map(NewsResponse::of)
+                .toList();
     }
 
     public void editNews(EditNewsRequest request) {
-        newsService.editNews(request);
+        newsService.update(
+                request.idx(),
+                request.titleKr(),
+                request.titleEn(),
+                request.newsUrl()
+        );
     }
 
     public void deleteNews(Long idx) {
-        newsService.deleteNews(idx);
+        newsService.delete(idx);
     }
 
 }
