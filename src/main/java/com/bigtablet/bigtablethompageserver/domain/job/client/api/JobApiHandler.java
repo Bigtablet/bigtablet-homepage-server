@@ -59,7 +59,7 @@ public class JobApiHandler {
         );
     }
 
-    @GetMapping("/search/{title}")
+    @GetMapping("/search/title/{title}")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponseData<List<JobResponse>> searchJobByTitle(@PathVariable("title") @NotBlank final String title) {
         return BaseResponseData.ok(
@@ -68,7 +68,7 @@ public class JobApiHandler {
         );
     }
 
-    @GetMapping("/search/{department}")
+    @GetMapping("/search/department/{department}")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponseData<List<JobResponse>> searchJobByDepartment(@PathVariable("department") @NotNull final Department department) {
         return BaseResponseData.ok(
@@ -77,7 +77,7 @@ public class JobApiHandler {
         );
     }
 
-    @GetMapping("/search/{education}")
+    @GetMapping("/search/education/{education}")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponseData<List<JobResponse>> searchJobByEducation(@PathVariable("education") @NotNull final Education education) {
         return BaseResponseData.ok(
@@ -86,7 +86,7 @@ public class JobApiHandler {
         );
     }
 
-    @GetMapping("/search/{recruitType}")
+    @GetMapping("/search/recruit-type/{recruitType}")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponseData<List<JobResponse>> searchJobByRecruitType(@PathVariable("recruitType") @NotNull final RecruitType recruitType) {
         return BaseResponseData.ok(
