@@ -25,9 +25,7 @@ public class NewsService {
     }
 
     public News findById(Long idx) {
-        NewsEntity entity = newsJpaRepository
-                .findByIdx(idx)
-                .orElseThrow(() -> NewsNotFoundException.EXCEPTION);
+        NewsEntity entity = getNewsEntity(idx);
         return News.of(entity);
     }
 
@@ -39,18 +37,14 @@ public class NewsService {
 
     @Transactional
     public void update(Long idx, String titleKr, String titleEn, String newsUrl) {
-        NewsEntity entity = newsJpaRepository
-                .findByIdx(idx)
-                .orElseThrow(() -> NewsNotFoundException.EXCEPTION);
+        NewsEntity entity = getNewsEntity(idx);
         entity.update(titleKr, titleEn, newsUrl);
     }
 
     @Transactional
     public void delete(Long idx) {
-        NewsEntity entity = newsJpaRepository
-                .findByIdx(idx)
-                .orElseThrow(() -> NewsNotFoundException.EXCEPTION);
-        newsJpaRepository.deleteById(idx);
+        NewsEntity entity = getNewsEntity(idx);
+        newsJpaRepository.deleteById(entity.getIdx());
     }
 
     private NewsEntity getNewsEntity(Long idx) {
