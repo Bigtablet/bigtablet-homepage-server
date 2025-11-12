@@ -29,12 +29,6 @@ public class NewsService {
         return News.of(entity);
     }
 
-    public List<News> findAll(List<NewsEntity> entities) {
-        return entities.stream()
-                .map(News::of)
-                .toList();
-    }
-
     @Transactional
     public void update(Long idx, String titleKr, String titleEn, String newsUrl) {
         NewsEntity entity = getNewsEntity(idx);

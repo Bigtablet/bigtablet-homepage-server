@@ -34,14 +34,6 @@ public class BlogService {
         return Blog.of(entity);
     }
 
-    public List<Blog> findAll() {
-        return blogJpaRepository
-                .findAll()
-                .stream()
-                .map(Blog::of)
-                .toList();
-    }
-
     @Transactional
     public void editBlog(Long idx, String titleKr, String titleEn, String contentKr, String contentEn, String imageUrl) {
         BlogEntity entity = getBlogEntity(idx);
