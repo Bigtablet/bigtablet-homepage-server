@@ -35,6 +35,7 @@ public class JobService {
             String experiment,
             Education education,
             String companyIntroduction,
+            String positionIntroduction,
             String mainResponsibility,
             String qualification,
             String preferredQualification,
@@ -49,6 +50,7 @@ public class JobService {
                 .experiment(experiment)
                 .education(education)
                 .companyIntroduction(companyIntroduction)
+                .positionIntroduction(positionIntroduction)
                 .mainResponsibility(mainResponsibility)
                 .qualification(qualification)
                 .preferredQualification(preferredQualification)
@@ -127,6 +129,7 @@ public class JobService {
             String experiment,
             Education education,
             String companyIntroduction,
+            String positionIntroduction,
             String mainResponsibility,
             String qualification,
             String preferredQualification,
@@ -144,6 +147,7 @@ public class JobService {
                 experiment,
                 education,
                 companyIntroduction,
+                positionIntroduction,
                 mainResponsibility,
                 qualification,
                 preferredQualification,
