@@ -35,14 +35,14 @@ public class BlogUseCase {
     }
 
     public List<BlogResponse> getAllBlogList(PageRequest request) {
-        List<Blog> blogs = blogQueryService.getAllBlogList(request);
+        List<Blog> blogs = blogQueryService.getAllBlogList(request.getPage(), request.getSize());
         return blogs.stream()
                 .map(BlogResponse::of)
                 .toList();
     }
 
     public List<BlogResponse> searchBlogByTitle(PageRequest request, String title) {
-        List<Blog> blogs = blogQueryService.searchBlogByTitle(request, title);
+        List<Blog> blogs = blogQueryService.searchBlogByTitle(request.getPage(), request.getSize(), title);
         return blogs.stream()
                 .map(BlogResponse::of)
                 .toList();

@@ -4,7 +4,6 @@ import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Department;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Education;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.RecruitType;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.model.Job;
-import com.bigtablet.bigtablethompageserver.global.common.dto.request.PageRequest;
 
 import java.util.List;
 
