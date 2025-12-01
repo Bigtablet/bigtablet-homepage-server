@@ -33,7 +33,7 @@ public class NewsUseCase {
     }
 
     public List<NewsResponse> getAllNewsList(PageRequest request) {
-        List<News> newsList = newsQueryService.getAllNewsList(request);
+        List<News> newsList = newsQueryService.getAllNewsList(request.getPage(), request.getSize());
         return newsList.stream()
                 .map(NewsResponse::of)
                 .toList();
