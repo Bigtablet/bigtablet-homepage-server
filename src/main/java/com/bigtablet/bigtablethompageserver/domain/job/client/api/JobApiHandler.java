@@ -50,7 +50,6 @@ public class JobApiHandler {
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponseData<List<JobResponse>> getJobList(@ModelAttribute final GetJobListRequest request) {
-        System.out.println("getJobList--" + request.toString());
         return BaseResponseData.ok(
                 "조회 성공",
                 jobUseCase.getJobList(request)
