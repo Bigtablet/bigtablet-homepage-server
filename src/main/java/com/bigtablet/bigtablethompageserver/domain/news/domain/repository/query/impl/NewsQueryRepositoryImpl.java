@@ -22,8 +22,8 @@ public class NewsQueryRepositoryImpl implements NewsQueryRepository {
     public List<News> findAll(PageRequest request) {
         return jpaQueryFactory
                 .selectFrom(newsEntity)
-                .offset((long) (request.page() - 1) * request.size())
-                .limit(request.size())
+                .offset((long) (request.getPage() - 1) * request.getPage())
+                .limit(request.getPage())
                 .orderBy(newsEntity.createdAt.desc())
                 .fetch()
                 .stream()

@@ -18,14 +18,16 @@ public class JobQueryService {
     private final JobQueryRepository jobQueryRepository;
 
     public List<Job> getJobList(
-            PageRequest request,
+            int page,
+            int size,
             String title,
             Department department,
             Education education,
             RecruitType recruitType
     ) {
         return jobQueryRepository.findJobList(
-                request,
+                page,
+                size,
                 title,
                 department,
                 education,
@@ -34,14 +36,16 @@ public class JobQueryService {
     }
 
     public List<Job> getDeactivateJobList(
-            PageRequest request,
+            int page,
+            int size,
             String title,
             Department department,
             Education education,
             RecruitType recruitType
     ) {
         return jobQueryRepository.findDeactivateJobList(
-                request,
+                page,
+                size,
                 title,
                 department,
                 education,

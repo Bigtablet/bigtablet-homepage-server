@@ -11,7 +11,8 @@ import java.util.List;
 public interface JobQueryRepository {
 
     List<Job> findJobList(
-            PageRequest request,
+            int page,
+            int size,
             String title,
             Department department,
             Education education,
@@ -19,7 +20,8 @@ public interface JobQueryRepository {
     );
 
     List<Job> findDeactivateJobList(
-            PageRequest request,
+            int page,
+            int size,
             String title,
             Department department,
             Education education,

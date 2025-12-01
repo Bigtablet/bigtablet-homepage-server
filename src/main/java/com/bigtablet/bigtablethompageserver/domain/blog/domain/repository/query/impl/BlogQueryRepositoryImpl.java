@@ -24,8 +24,8 @@ public class BlogQueryRepositoryImpl  implements BlogQueryRepository {
         return jpaQueryFactory
                 .select(blogConstructorExpression())
                 .from(blogEntity)
-                .offset((long) (request.page() - 1) * request.size())
-                .limit(request.size())
+                .offset((long) (request.getPage() - 1) * request.getPage())
+                .limit(request.getPage())
                 .orderBy(blogEntity.createdAt.desc())
                 .fetch();
     }
@@ -36,8 +36,8 @@ public class BlogQueryRepositoryImpl  implements BlogQueryRepository {
                 .select(blogConstructorExpression())
                 .from(blogEntity)
                 .where(blogEntity.titleKr.contains(title).or(blogEntity.titleEn.contains(title)))
-                .offset((long) (request.page() - 1) * request.size())
-                .limit(request.size())
+                .offset((long) (request.getPage() - 1) * request.getPage())
+                .limit(request.getPage())
                 .orderBy(blogEntity.createdAt.desc())
                 .fetch();
     }

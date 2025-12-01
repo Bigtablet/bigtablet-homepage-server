@@ -5,7 +5,6 @@ import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Education;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.RecruitType;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.model.Job;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.repository.query.JobQueryRepository;
-import com.bigtablet.bigtablethompageserver.global.common.dto.request.PageRequest;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,8 @@ public class JobQueryRepositoryImpl implements JobQueryRepository {
 
     @Override
     public List<Job> findJobList(
-            PageRequest request,
+            int page,
+            int size,
             String title,
             Department department,
             Education education,
@@ -39,8 +39,8 @@ public class JobQueryRepositoryImpl implements JobQueryRepository {
         return jpaQueryFactory
                 .selectFrom(jobEntity)
                 .where(condition)
-                .offset((long) (request.page() - 1) * request.size())
-                .limit(request.size())
+                .offset((long) (page - 1) * size)
+                .limit(size)
                 .orderBy(jobEntity.createdAt.desc())
                 .fetch()
                 .stream()
@@ -50,7 +50,8 @@ public class JobQueryRepositoryImpl implements JobQueryRepository {
 
     @Override
     public List<Job> findDeactivateJobList(
-            PageRequest request,
+            int page,
+            int size,
             String title,
             Department department,
             Education education,
@@ -66,8 +67,8 @@ public class JobQueryRepositoryImpl implements JobQueryRepository {
         return jpaQueryFactory
                 .selectFrom(jobEntity)
                 .where(condition)
-                .offset((long) (request.page() - 1) * request.size())
-                .limit(request.size())
+                .offset((long) (page - 1) * size)
+                .limit(size)
                 .orderBy(jobEntity.createdAt.desc())
                 .fetch()
                 .stream()

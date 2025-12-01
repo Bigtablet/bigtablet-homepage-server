@@ -45,11 +45,12 @@ public class JobUseCase {
 
     public List<JobResponse> getJobList(GetJobListRequest request) {
         return jobQueryService.getJobList(
-                request.PageRequest(),
-                request.title(),
-                request.department(),
-                request.education(),
-                request.recruitType()
+                request.getPage(),
+                request.getSize(),
+                request.getTitle(),
+                request.getDepartment(),
+                request.getEducation(),
+                request.getRecruitType()
         )
         .stream()
         .map(JobResponse::of)
@@ -58,11 +59,12 @@ public class JobUseCase {
 
     public List<JobResponse> getDeactivateJobList(GetJobListRequest request) {
         return jobQueryService.getDeactivateJobList(
-                request.PageRequest(),
-                request.title(),
-                request.department(),
-                request.education(),
-                request.recruitType()
+                request.getPage(),
+                request.getSize(),
+                request.getTitle(),
+                request.getDepartment(),
+                request.getEducation(),
+                request.getRecruitType()
         )
         .stream()
         .map(JobResponse::of)
