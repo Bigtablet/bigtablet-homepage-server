@@ -44,31 +44,31 @@ public class JobUseCase {
     }
 
     public List<JobResponse> getJobList(GetJobListRequest request) {
-        return jobQueryService.getJobList(
-                request.getPage(),
-                request.getSize(),
-                request.getTitle(),
-                request.getDepartment(),
-                request.getEducation(),
-                request.getRecruitType()
-        )
-        .stream()
-        .map(JobResponse::of)
-        .toList();
+        List<Job> jobs =
+                jobQueryService.getJobList(
+                        request.getPage(),
+                        request.getSize(),
+                        request.getTitle(),
+                        request.getDepartment(),
+                        request.getEducation(),
+                        request.getRecruitType()
+                );
+        checkJobsIsEmpty(jobs);
+        return jobs.stream().map(JobResponse::of).toList();
     }
 
     public List<JobResponse> getDeactivateJobList(GetJobListRequest request) {
-        return jobQueryService.getDeactivateJobList(
-                request.getPage(),
-                request.getSize(),
-                request.getTitle(),
-                request.getDepartment(),
-                request.getEducation(),
-                request.getRecruitType()
-        )
-        .stream()
-        .map(JobResponse::of)
-        .toList();
+        List<Job> jobs =
+                jobQueryService.getDeactivateJobList(
+                        request.getPage(),
+                        request.getSize(),
+                        request.getTitle(),
+                        request.getDepartment(),
+                        request.getEducation(),
+                        request.getRecruitType()
+                );
+        checkJobsIsEmpty(jobs);
+        return jobs.stream().map(JobResponse::of).toList();
     }
 
     public void editJob(EditJobRequest request) {
