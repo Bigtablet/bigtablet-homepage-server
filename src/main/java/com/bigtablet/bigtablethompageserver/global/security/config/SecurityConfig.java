@@ -45,7 +45,6 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .exceptionHandling(e -> e
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 )
-//                .redirectToHttps(withDefaults())
                 .authorizeHttpRequests(
                         authorize -> authorize
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
