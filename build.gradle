@@ -25,7 +25,7 @@ repositories {
 }
 
 ext {
-    querydslVersion = "6.10.1"
+    querydslVersion = "7.1"
 }
 
 dependencies {
