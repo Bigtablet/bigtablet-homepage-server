@@ -68,10 +68,10 @@ dependencies {
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
     // GCP
-    implementation('org.springframework.cloud:spring-cloud-gcp-starter:1.2.8.RELEASE') {
+    implementation('org.springframework.cloud:spring-cloud-gcp-starter:7.3.0') {
         exclude group: 'com.google.oauth-client', module: 'google-oauth-client'
     }
-    implementation('org.springframework.cloud:spring-cloud-gcp-storage:1.2.8.RELEASE') {
+    implementation('org.springframework.cloud:spring-cloud-gcp-storage:7.3.0') {
         exclude group: 'com.google.oauth-client', module: 'google-oauth-client'
     }
 
