@@ -38,4 +38,11 @@ public class TalentService {
                 .orElseThrow(()->TalentNotFoundException.EXCEPTION);
     }
 
+    public Talent findByEmail(String email) {
+        return talentJpaRepository
+                .findByEmail(email)
+                .map(Talent::of)
+                .orElseThrow(()->TalentNotFoundException.EXCEPTION);
+    }
+
 }
