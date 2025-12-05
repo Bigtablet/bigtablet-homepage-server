@@ -9,7 +9,8 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum BlogError implements ErrorProperty {
 
-    BLOG_NOT_FOUND(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다.");
+    BLOG_NOT_FOUND(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다."),
+    BLOG_IS_EMPTY(HttpStatus.NO_CONTENT, "게시글이 없습니다.");
 
     private final HttpStatus status;
     private final String message;
