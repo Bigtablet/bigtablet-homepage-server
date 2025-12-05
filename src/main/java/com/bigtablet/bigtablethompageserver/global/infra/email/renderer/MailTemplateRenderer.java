@@ -59,5 +59,12 @@ public class MailTemplateRenderer {
         return templateEngine.process("talent-email", context);
     }
 
+    public String renderOfferEmail(String name, String text) {
+        Context context = new Context();
+        context.setVariable("name", name);
+        context.setVariable("content", text);
+        return templateEngine.process("offer-email", context);
+    }
+
 
 }
