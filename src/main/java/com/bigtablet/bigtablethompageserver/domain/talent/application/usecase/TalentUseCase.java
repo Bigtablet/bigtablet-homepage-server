@@ -3,6 +3,7 @@ package com.bigtablet.bigtablethompageserver.domain.talent.application.usecase;
 import com.bigtablet.bigtablethompageserver.domain.talent.application.response.TalentResponse;
 import com.bigtablet.bigtablethompageserver.domain.talent.application.service.TalentService;
 import com.bigtablet.bigtablethompageserver.domain.talent.client.dto.request.RegisterTalentRequest;
+import com.bigtablet.bigtablethompageserver.domain.talent.client.dto.request.SendEmailToTalentRequest;
 import com.bigtablet.bigtablethompageserver.domain.talent.domain.model.Talent;
 import com.bigtablet.bigtablethompageserver.domain.talent.exception.TalentAlreadyExistException;
 import com.bigtablet.bigtablethompageserver.global.infra.email.renderer.MailTemplateRenderer;
@@ -34,6 +35,12 @@ public class TalentUseCase {
         );
         String content = mailTemplateRenderer.renderTalentEmail(request.name(), LocalDateTime.now());
         emailService.sendRecruit(request.email(), "[Bigtablet, Inc. 채용]", content);
+    }
+
+    public void sendMailToTalent(SendEmailToTalentRequest request) {
+        Talent talent = talentService.findByIdx(request.idx());
+        String content = mailTemplateRenderer.renderOfferEmail(talent.name(), request.text());
+        emailService.sendRecruit(talent.email(), "[Bigtablet, Inc. 채용]", content);
     }
 
     public TalentResponse getTalent(Long idx) {
