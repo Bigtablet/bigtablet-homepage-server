@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface NewsQueryRepository {
 
-    List<News> findAll(PageRequest request);
+    List<News> findAll(int page, int size);
 
 }

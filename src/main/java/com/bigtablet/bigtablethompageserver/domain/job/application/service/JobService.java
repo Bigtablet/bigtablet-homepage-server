@@ -35,6 +35,7 @@ public class JobService {
             String experiment,
             Education education,
             String companyIntroduction,
+            String positionIntroduction,
             String mainResponsibility,
             String qualification,
             String preferredQualification,
@@ -49,6 +50,7 @@ public class JobService {
                 .experiment(experiment)
                 .education(education)
                 .companyIntroduction(companyIntroduction)
+                .positionIntroduction(positionIntroduction)
                 .mainResponsibility(mainResponsibility)
                 .qualification(qualification)
                 .preferredQualification(preferredQualification)
@@ -65,54 +67,6 @@ public class JobService {
         return Job.of(entity);
     }
 
-    public List<Job> findAllActive() {
-        return jobJpaRepository
-                .findAllByIsActiveTrueOrderByCreatedAtDesc()
-                .stream()
-                .map(Job::of)
-                .toList();
-    }
-
-    public List<Job> findByTitle(String title) {
-        return jobJpaRepository
-                .findAllByIsActiveTrueAndTitleContainingIgnoreCase(title)
-                .stream()
-                .map(Job::of)
-                .toList();
-    }
-
-    public List<Job> findByDepartment(Department department) {
-        return jobJpaRepository
-                .findAllByDepartmentAndIsActiveTrue(department)
-                .stream()
-                .map(Job::of)
-                .toList();
-    }
-
-    public List<Job> findByEducation(Education education) {
-        return jobJpaRepository
-                .findAllByEducationAndIsActiveTrue(education)
-                .stream()
-                .map(Job::of)
-                .toList();
-    }
-
-    public List<Job> findByRecruitType(RecruitType recruitType) {
-        return jobJpaRepository
-                .findAllByRecruitTypeAndIsActiveTrue(recruitType)
-                .stream()
-                .map(Job::of)
-                .toList();
-    }
-
-    public List<Job> findAllInactive() {
-        return jobJpaRepository
-                .findAllByIsActiveFalseOrderByCreatedAtDesc()
-                .stream()
-                .map(Job::of)
-                .toList();
-    }
-
     public void deleteById(Long idx) {
         jobJpaRepository.deleteById(idx);
     }
@@ -127,6 +81,7 @@ public class JobService {
             String experiment,
             Education education,
             String companyIntroduction,
+            String positionIntroduction,
             String mainResponsibility,
             String qualification,
             String preferredQualification,
@@ -144,6 +99,7 @@ public class JobService {
                 experiment,
                 education,
                 companyIntroduction,
+                positionIntroduction,
                 mainResponsibility,
                 qualification,
                 preferredQualification,

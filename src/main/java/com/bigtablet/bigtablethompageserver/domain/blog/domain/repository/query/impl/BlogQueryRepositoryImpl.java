@@ -20,24 +20,24 @@ public class BlogQueryRepositoryImpl  implements BlogQueryRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<Blog> findAll(PageRequest request) {
+    public List<Blog> findAll(int page, int size) {
         return jpaQueryFactory
                 .select(blogConstructorExpression())
                 .from(blogEntity)
-                .offset((long) (request.page() - 1) * request.size())
-                .limit(request.size())
+                .offset((long) (page - 1) * size)
+                .limit(size)
                 .orderBy(blogEntity.createdAt.desc())
                 .fetch();
     }
 
     @Override
-    public List<Blog> findAllByTitle(PageRequest request, String title) {
+    public List<Blog> findAllByTitle(int page, int size, String title) {
         return jpaQueryFactory
                 .select(blogConstructorExpression())
                 .from(blogEntity)
                 .where(blogEntity.titleKr.contains(title).or(blogEntity.titleEn.contains(title)))
-                .offset((long) (request.page() - 1) * request.size())
-                .limit(request.size())
+                .offset((long) (page - 1) * size)
+                .limit(size)
                 .orderBy(blogEntity.createdAt.desc())
                 .fetch();
     }

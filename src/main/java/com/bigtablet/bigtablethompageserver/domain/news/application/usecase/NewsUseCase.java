@@ -6,6 +6,7 @@ import com.bigtablet.bigtablethompageserver.domain.news.application.service.News
 import com.bigtablet.bigtablethompageserver.domain.news.client.dto.request.EditNewsRequest;
 import com.bigtablet.bigtablethompageserver.domain.news.client.dto.request.RegisterNewsRequest;
 import com.bigtablet.bigtablethompageserver.domain.news.domain.model.News;
+import com.bigtablet.bigtablethompageserver.domain.news.exception.NewsIsEmptyException;
 import com.bigtablet.bigtablethompageserver.global.common.dto.request.PageRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,8 @@ public class NewsUseCase {
     }
 
     public List<NewsResponse> getAllNewsList(PageRequest request) {
-        List<News> newsList = newsQueryService.getAllNewsList(request);
+        List<News> newsList = newsQueryService.getAllNewsList(request.getPage(), request.getSize());
+        checkNewsListIsEmpty(newsList);
         return newsList.stream()
                 .map(NewsResponse::of)
                 .toList();
@@ -50,6 +52,12 @@ public class NewsUseCase {
 
     public void deleteNews(Long idx) {
         newsService.delete(idx);
+    }
+
+    public void checkNewsListIsEmpty(List<News> newsList) {
+        if (newsList.isEmpty()) {
+            throw NewsIsEmptyException.EXCEPTION;
+        }
     }
 
 }

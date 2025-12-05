@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface BlogQueryRepository {
 
-    List<Blog> findAll(PageRequest request);
+    List<Blog> findAll(int page, int size);
 
-    List<Blog> findAllByTitle(PageRequest request, String title);
+    List<Blog> findAllByTitle(int page, int size, String title);
 
 }

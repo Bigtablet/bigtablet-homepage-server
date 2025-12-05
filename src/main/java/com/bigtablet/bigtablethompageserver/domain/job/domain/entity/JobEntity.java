@@ -54,16 +54,19 @@ public class JobEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Education education;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String companyIntroduction;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String positionIntroduction;
+
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String mainResponsibility;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String qualification;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String preferredQualification;
 
     @Column(nullable = false)
@@ -83,6 +86,7 @@ public class JobEntity extends BaseEntity {
             String experiment,
             Education education,
             String companyIntroduction,
+            String positionIntroduction,
             String mainResponsibility,
             String qualification,
             String preferredQualification,
@@ -96,6 +100,7 @@ public class JobEntity extends BaseEntity {
         this.experiment = experiment;
         this.education = education;
         this.companyIntroduction = companyIntroduction;
+        this.positionIntroduction = positionIntroduction;
         this.mainResponsibility = mainResponsibility;
         this.qualification = qualification;
         this.preferredQualification = preferredQualification;

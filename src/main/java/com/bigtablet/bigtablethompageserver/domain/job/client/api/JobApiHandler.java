@@ -3,22 +3,19 @@ package com.bigtablet.bigtablethompageserver.domain.job.client.api;
 import com.bigtablet.bigtablethompageserver.domain.job.application.response.JobResponse;
 import com.bigtablet.bigtablethompageserver.domain.job.application.usecase.JobUseCase;
 import com.bigtablet.bigtablethompageserver.domain.job.client.dto.request.EditJobRequest;
+import com.bigtablet.bigtablethompageserver.domain.job.client.dto.request.GetJobListRequest;
 import com.bigtablet.bigtablethompageserver.domain.job.client.dto.request.RegisterJobRequest;
-import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Department;
-import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Education;
-import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.RecruitType;
 import com.bigtablet.bigtablethompageserver.global.common.annotation.RestApiHandler;
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponse;
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponseData;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,57 +46,22 @@ public class JobApiHandler {
                 jobUseCase.getJob(idx)
         );
     }
-
+    
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponseData<List<JobResponse>> getAllJob() {
+    public BaseResponseData<List<JobResponse>> getJobList(@ModelAttribute final GetJobListRequest request) {
         return BaseResponseData.ok(
                 "조회 성공",
-                jobUseCase.getAllJob()
+                jobUseCase.getJobList(request)
         );
     }
 
-    @GetMapping("/search/title/{title}")
+    @GetMapping("/list/deactivate")
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponseData<List<JobResponse>> searchJobByTitle(@PathVariable("title") @NotBlank final String title) {
-        return BaseResponseData.ok(
-                "검색 성공",
-                jobUseCase.searchJobByTitle(title)
-        );
-    }
-
-    @GetMapping("/search/department/{department}")
-    @ResponseStatus(HttpStatus.OK)
-    public BaseResponseData<List<JobResponse>> searchJobByDepartment(@PathVariable("department") @NotNull final Department department) {
-        return BaseResponseData.ok(
-                "검색 성공",
-                jobUseCase.searchJobByDepartment(department)
-        );
-    }
-
-    @GetMapping("/search/education/{education}")
-    @ResponseStatus(HttpStatus.OK)
-    public BaseResponseData<List<JobResponse>> searchJobByEducation(@PathVariable("education") @NotNull final Education education) {
-        return BaseResponseData.ok(
-                "검색 성공",
-                jobUseCase.searchJobByEducation(education)
-        );
-    }
-
-    @GetMapping("/search/recruit-type/{recruitType}")
-    @ResponseStatus(HttpStatus.OK)
-    public BaseResponseData<List<JobResponse>> searchJobByRecruitType(@PathVariable("recruitType") @NotNull final RecruitType recruitType) {
-        return BaseResponseData.ok(
-                "검색 성공",
-                jobUseCase.searchJobByRecruitType(recruitType)
-        );
-    }
-
-    @GetMapping("/false")
-    public BaseResponseData<List<JobResponse>> getAllJobIsFalse() {
+    public BaseResponseData<List<JobResponse>> getDeactivateJobList(@ModelAttribute final GetJobListRequest request) {
         return BaseResponseData.ok(
                 "조회 성공",
-                jobUseCase.getAllJobIsFalse()
+                jobUseCase.getDeactivateJobList(request)
         );
     }
 
