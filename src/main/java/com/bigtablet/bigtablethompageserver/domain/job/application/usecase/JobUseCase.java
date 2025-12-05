@@ -1,12 +1,11 @@
 package com.bigtablet.bigtablethompageserver.domain.job.application.usecase;
 
+import com.bigtablet.bigtablethompageserver.domain.job.application.query.JobQueryService;
 import com.bigtablet.bigtablethompageserver.domain.job.application.response.JobResponse;
 import com.bigtablet.bigtablethompageserver.domain.job.application.service.JobService;
 import com.bigtablet.bigtablethompageserver.domain.job.client.dto.request.EditJobRequest;
+import com.bigtablet.bigtablethompageserver.domain.job.client.dto.request.GetJobListRequest;
 import com.bigtablet.bigtablethompageserver.domain.job.client.dto.request.RegisterJobRequest;
-import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Department;
-import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Education;
-import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.RecruitType;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.model.Job;
 import com.bigtablet.bigtablethompageserver.domain.job.exception.JobNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +18,7 @@ import java.util.List;
 public class JobUseCase {
 
     private final JobService jobService;
+    private final JobQueryService jobQueryService;
 
     public void registerJob(RegisterJobRequest request) {
         jobService.saveJob(
@@ -29,6 +29,7 @@ public class JobUseCase {
                 request.experiment(),
                 request.education(),
                 request.companyIntroduction(),
+                request.positionIntroduction(),
                 request.mainResponsibility(),
                 request.qualification(),
                 request.preferredQualification(),
@@ -42,52 +43,32 @@ public class JobUseCase {
         return JobResponse.of(job);
     }
 
-    public List<JobResponse> getAllJob() {
-        List<Job> jobs = jobService.findAllActive();
+    public List<JobResponse> getJobList(GetJobListRequest request) {
+        List<Job> jobs =
+                jobQueryService.getJobList(
+                        request.getPage(),
+                        request.getSize(),
+                        request.getTitle(),
+                        request.getDepartment(),
+                        request.getEducation(),
+                        request.getRecruitType()
+                );
         checkJobsIsEmpty(jobs);
-        return jobs.stream()
-                .map(JobResponse::of)
-                .toList();
+        return jobs.stream().map(JobResponse::of).toList();
     }
 
-    public List<JobResponse> searchJobByTitle(String title) {
-        List<Job> jobs = jobService.findByTitle(title);
+    public List<JobResponse> getDeactivateJobList(GetJobListRequest request) {
+        List<Job> jobs =
+                jobQueryService.getDeactivateJobList(
+                        request.getPage(),
+                        request.getSize(),
+                        request.getTitle(),
+                        request.getDepartment(),
+                        request.getEducation(),
+                        request.getRecruitType()
+                );
         checkJobsIsEmpty(jobs);
-        return jobs.stream()
-                .map(JobResponse::of)
-                .toList();
-    }
-
-    public List<JobResponse> searchJobByDepartment(Department department) {
-        List<Job> jobs = jobService.findByDepartment(department);
-        checkJobsIsEmpty(jobs);
-        return jobs.stream()
-                .map(JobResponse::of)
-                .toList();
-    }
-
-    public List<JobResponse> searchJobByEducation(Education education) {
-        List<Job> jobs = jobService.findByEducation(education);
-        checkJobsIsEmpty(jobs);
-        return jobs.stream()
-                .map(JobResponse::of)
-                .toList();
-    }
-
-    public List<JobResponse> searchJobByRecruitType(RecruitType recruitType) {
-        List<Job> jobs = jobService.findByRecruitType(recruitType);
-        checkJobsIsEmpty(jobs);
-        return jobs.stream()
-                .map(JobResponse::of)
-                .toList();
-    }
-
-    public List<JobResponse> getAllJobIsFalse() {
-        List<Job> jobs = jobService.findAllInactive();
-        checkJobsIsEmpty(jobs);
-        return jobs.stream()
-                .map(JobResponse::of)
-                .toList();
+        return jobs.stream().map(JobResponse::of).toList();
     }
 
     public void editJob(EditJobRequest request) {
@@ -100,6 +81,7 @@ public class JobUseCase {
                 request.experiment(),
                 request.education(),
                 request.companyIntroduction(),
+                request.positionIntroduction(),
                 request.mainResponsibility(),
                 request.qualification(),
                 request.preferredQualification(),

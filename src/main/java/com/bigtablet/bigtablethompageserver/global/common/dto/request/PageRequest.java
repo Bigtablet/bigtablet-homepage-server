@@ -2,12 +2,19 @@ package com.bigtablet.bigtablethompageserver.global.common.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import lombok.Getter;
+import lombok.Setter;
 
-public record PageRequest(
-        @NotNull
-        @Positive
-        int page,
-        @NotNull
-        @Positive
-        int size
-) {}
+@Getter
+@Setter
+public class PageRequest {
+
+    @NotNull
+    @Positive
+    private int page;
+
+    @NotNull
+    @Positive
+    private int size;
+
+}
