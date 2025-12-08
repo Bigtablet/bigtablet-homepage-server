@@ -9,7 +9,6 @@ import com.bigtablet.bigtablethompageserver.domain.talent.client.dto.request.Sen
 import com.bigtablet.bigtablethompageserver.domain.talent.domain.model.Talent;
 import com.bigtablet.bigtablethompageserver.domain.talent.exception.TalentAlreadyExistException;
 import com.bigtablet.bigtablethompageserver.domain.talent.exception.TalentIsEmptyException;
-import com.bigtablet.bigtablethompageserver.domain.talent.exception.TalentNotFoundException;
 import com.bigtablet.bigtablethompageserver.global.common.dto.request.PageRequest;
 import com.bigtablet.bigtablethompageserver.global.infra.email.renderer.MailTemplateRenderer;
 import com.bigtablet.bigtablethompageserver.global.infra.email.service.EmailService;
@@ -46,6 +45,7 @@ public class TalentUseCase {
 
     public void sendMailToTalent(SendEmailToTalentRequest request) {
         Talent talent = talentService.findByIdx(request.idx());
+        talentService.updateTalentIsActive(talent.idx(), false);
         String content = mailTemplateRenderer.renderOfferEmail(talent.name(), request.text());
         emailService.sendRecruit(talent.email(), "[Bigtablet, Inc. 채용]", content);
     }

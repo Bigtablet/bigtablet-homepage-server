@@ -4,6 +4,7 @@ import com.bigtablet.bigtablethompageserver.domain.talent.domain.entity.TalentEn
 import com.bigtablet.bigtablethompageserver.domain.talent.domain.model.Talent;
 import com.bigtablet.bigtablethompageserver.domain.talent.domain.repository.jpa.TalentJpaRepository;
 import com.bigtablet.bigtablethompageserver.domain.talent.exception.TalentNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,12 +29,13 @@ public class TalentService {
                 .department(department)
                 .portfolioUrl(portfolioUrl)
                 .etcUrl(etcUrl)
+                .isActive(true)
                 .build());
     }
 
     public Talent findByIdx(Long idx) {
         return talentJpaRepository
-                .findById(idx)
+                .findByIdx(idx)
                 .map(Talent::of)
                 .orElseThrow(()->TalentNotFoundException.EXCEPTION);
     }
@@ -42,7 +44,15 @@ public class TalentService {
         return talentJpaRepository
                 .findByEmail(email)
                 .map(Talent::of)
+                .orElseThrow(() -> TalentNotFoundException.EXCEPTION);
+    }
+
+    @Transactional
+    public void updateTalentIsActive(Long idx, boolean isActive) {
+        TalentEntity talentEntity = talentJpaRepository
+                .findByIdx(idx)
                 .orElseThrow(()->TalentNotFoundException.EXCEPTION);
+        talentEntity.setActive(isActive);
     }
 
 }
