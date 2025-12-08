@@ -7,6 +7,7 @@ import com.bigtablet.bigtablethompageserver.domain.recruit.application.service.R
 import com.bigtablet.bigtablethompageserver.domain.recruit.client.dto.request.RegisterRecruitRequest;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.Status;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.model.Recruit;
+import com.bigtablet.bigtablethompageserver.domain.recruit.exception.RecruitIsEmptyException;
 import com.bigtablet.bigtablethompageserver.global.infra.email.renderer.MailTemplateRenderer;
 import com.bigtablet.bigtablethompageserver.global.infra.email.service.EmailService;
 import lombok.RequiredArgsConstructor;
@@ -62,6 +63,7 @@ public class RecruitUseCase {
 
     public List<RecruitResponse> getAllRecruit() {
         List<Recruit> recruits = recruitService.findAll();
+        checkRecruitsIsEmpty(recruits);
         return recruits.stream()
                 .map(RecruitResponse::of)
                 .toList();
@@ -70,6 +72,7 @@ public class RecruitUseCase {
     public List<RecruitResponse> getAllRecruitByJobId(Long jobId) {
         Job job = jobService.findById(jobId);
         List<Recruit> recruits = recruitService.findAllByJobId(job.idx());
+        checkRecruitsIsEmpty(recruits);
         return recruits.stream()
                 .map(RecruitResponse::of)
                 .toList();
@@ -77,6 +80,7 @@ public class RecruitUseCase {
 
     public List<RecruitResponse> getAllRecruitByStatus(Status status) {
         List<Recruit> recruits = recruitService.findAllByStatus(status);
+        checkRecruitsIsEmpty(recruits);
         return recruits.stream()
                 .map(RecruitResponse::of)
                 .toList();
@@ -85,6 +89,7 @@ public class RecruitUseCase {
     public List<RecruitResponse> getAllRecruitByStatusAndJobId(Status status, Long jobId) {
         Job job = jobService.findById(jobId);
         List<Recruit> recruits = recruitService.findAllByStatusAndJobId(status, job.idx());
+        checkRecruitsIsEmpty(recruits);
         return recruits.stream()
                 .map(RecruitResponse::of)
                 .toList();
@@ -121,6 +126,12 @@ public class RecruitUseCase {
                 "[Bigtablet, Inc. 채용] " + recruit.name() + "님, 채용 전형 최종 결과 안내드립니다",
                 content
         );
+    }
+
+    public void checkRecruitsIsEmpty(List<Recruit> recruits) {
+        if (recruits.isEmpty()) {
+            throw RecruitIsEmptyException.EXCEPTION;
+        }
     }
 
 }

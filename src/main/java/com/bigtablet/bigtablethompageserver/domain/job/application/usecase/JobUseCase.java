@@ -7,6 +7,7 @@ import com.bigtablet.bigtablethompageserver.domain.job.client.dto.request.EditJo
 import com.bigtablet.bigtablethompageserver.domain.job.client.dto.request.GetJobListRequest;
 import com.bigtablet.bigtablethompageserver.domain.job.client.dto.request.RegisterJobRequest;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.model.Job;
+import com.bigtablet.bigtablethompageserver.domain.job.exception.JobIsEmptyException;
 import com.bigtablet.bigtablethompageserver.domain.job.exception.JobNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -97,7 +98,7 @@ public class JobUseCase {
 
     private void checkJobsIsEmpty(List<Job> jobs) {
         if (jobs.isEmpty()) {
-            throw JobNotFoundException.EXCEPTION;
+            throw JobIsEmptyException.EXCEPTION;
         }
     }
 

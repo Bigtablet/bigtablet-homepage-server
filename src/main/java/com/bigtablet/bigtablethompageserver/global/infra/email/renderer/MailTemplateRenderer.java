@@ -50,4 +50,21 @@ public class MailTemplateRenderer {
         return templateEngine.process("apply-confirm", context);
     }
 
+    public String renderTalentEmail(String name, LocalDateTime createdAt) {
+        Context context = new Context();
+        context.setVariable("name", name);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm 'KST'");
+        String formattedDate = createdAt.format(formatter);
+        context.setVariable("applicationDate", formattedDate);
+        return templateEngine.process("talent-email", context);
+    }
+
+    public String renderOfferEmail(String name, String text) {
+        Context context = new Context();
+        context.setVariable("name", name);
+        context.setVariable("content", text);
+        return templateEngine.process("offer-email", context);
+    }
+
+
 }
