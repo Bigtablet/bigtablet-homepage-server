@@ -3,6 +3,7 @@ package com.bigtablet.bigtablethompageserver.domain.talent.client.api;
 import com.bigtablet.bigtablethompageserver.domain.talent.application.response.TalentResponse;
 import com.bigtablet.bigtablethompageserver.domain.talent.application.usecase.TalentUseCase;
 import com.bigtablet.bigtablethompageserver.domain.talent.client.dto.request.RegisterTalentRequest;
+import com.bigtablet.bigtablethompageserver.domain.talent.client.dto.request.SearchTalentRequest;
 import com.bigtablet.bigtablethompageserver.domain.talent.client.dto.request.SendEmailToTalentRequest;
 import com.bigtablet.bigtablethompageserver.global.common.annotation.RestApiHandler;
 import com.bigtablet.bigtablethompageserver.global.common.dto.request.PageRequest;
@@ -57,6 +58,14 @@ public class TalentApiHandler {
         return BaseResponseData.ok(
                 "조회 성공",
                 talentUseCase.getTalentList(request)
+        );
+    }
+
+    @GetMapping("/search")
+    public BaseResponseData<List<TalentResponse>> searchTalent(@ModelAttribute final SearchTalentRequest request) {
+        return BaseResponseData.ok(
+                "검색 성공",
+                talentUseCase.searchTalent(request)
         );
     }
 
