@@ -10,7 +10,6 @@ import com.bigtablet.bigtablethompageserver.domain.talent.client.dto.request.Sen
 import com.bigtablet.bigtablethompageserver.domain.talent.domain.model.Talent;
 import com.bigtablet.bigtablethompageserver.domain.talent.exception.TalentAlreadyExistException;
 import com.bigtablet.bigtablethompageserver.domain.talent.exception.TalentIsEmptyException;
-import com.bigtablet.bigtablethompageserver.global.common.dto.request.PageRequest;
 import com.bigtablet.bigtablethompageserver.global.infra.email.renderer.MailTemplateRenderer;
 import com.bigtablet.bigtablethompageserver.global.infra.email.service.EmailService;
 import lombok.RequiredArgsConstructor;
