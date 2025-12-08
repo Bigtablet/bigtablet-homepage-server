@@ -7,12 +7,10 @@ import com.bigtablet.bigtablethompageserver.domain.talent.client.dto.request.Reg
 import com.bigtablet.bigtablethompageserver.domain.talent.client.dto.request.SearchTalentRequest;
 import com.bigtablet.bigtablethompageserver.domain.talent.client.dto.request.SendEmailToTalentRequest;
 import com.bigtablet.bigtablethompageserver.global.common.annotation.RestApiHandler;
-import com.bigtablet.bigtablethompageserver.global.common.dto.request.PageRequest;
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponse;
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponseData;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
