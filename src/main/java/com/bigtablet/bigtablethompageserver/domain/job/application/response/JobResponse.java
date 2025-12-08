@@ -20,6 +20,7 @@ public record JobResponse(
         String experiment,
         Education education,
         String companyIntroduction,
+        String positionIntroduction,
         String mainResponsibility,
         String qualification,
         String preferredQualification,
@@ -39,6 +40,7 @@ public record JobResponse(
                 .experiment(job.experiment())
                 .education(job.education())
                 .companyIntroduction(job.companyIntroduction())
+                .positionIntroduction(job.positionIntroduction())
                 .mainResponsibility(job.mainResponsibility())
                 .qualification(job.qualification())
                 .preferredQualification(job.preferredQualification())

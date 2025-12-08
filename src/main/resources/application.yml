@@ -23,10 +23,8 @@ spring:
 
   jpa:
     database: mysql
-    database-platform: org.hibernate.dialect.MySQL8Dialect
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
     hibernate:
       ddl-auto: none
@@ -34,10 +32,10 @@ spring:
 
   cloud:
     gcp:
+      project-id: bigtablet-homepage
+      credentials:
+        location: classpath:bigtablet-homepage-ffe77aff799f.json
       storage:
-        credentials:
-          location: classpath:bigtablet-homepage-ffe77aff799f.json
-        project-id: bigtablet-homepage
         bucket: bigtablet-homepage
 
   mail:

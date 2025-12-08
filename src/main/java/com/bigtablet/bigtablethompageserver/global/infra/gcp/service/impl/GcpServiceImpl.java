@@ -21,7 +21,7 @@ import java.util.UUID;
 @Service
 public class GcpServiceImpl implements GcpService {
 
-    @Value("${spring.cloud.gcp.storage.credentials.location}")
+    @Value("${spring.cloud.gcp.credentials.location}")
     private String keyFileName;
 
     @Value("${spring.cloud.gcp.storage.bucket}")

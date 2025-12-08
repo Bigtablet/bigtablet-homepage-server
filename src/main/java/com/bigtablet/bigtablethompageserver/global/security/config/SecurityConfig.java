@@ -4,7 +4,7 @@ import com.bigtablet.bigtablethompageserver.global.security.jwt.filter.JwtAuthen
 import com.bigtablet.bigtablethompageserver.global.security.jwt.filter.JwtExceptionFilter;
 import com.bigtablet.bigtablethompageserver.global.security.jwt.handler.JwtAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.boot.security.autoconfigure.web.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -45,7 +45,6 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .exceptionHandling(e -> e
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 )
-//                .redirectToHttps(withDefaults())
                 .authorizeHttpRequests(
                         authorize -> authorize
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
@@ -59,6 +58,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                                 .requestMatchers(HttpMethod.GET, "/blog/**").permitAll()
                                 .requestMatchers(HttpMethod.PATCH, "/blog").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/news/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/talent").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .addFilterAfter(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

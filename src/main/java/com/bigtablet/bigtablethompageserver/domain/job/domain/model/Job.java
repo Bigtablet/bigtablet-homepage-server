@@ -20,6 +20,7 @@ public record Job(
         String experiment,
         Education education,
         String companyIntroduction,
+        String positionIntroduction,
         String mainResponsibility,
         String qualification,
         String preferredQualification,
@@ -39,6 +40,7 @@ public record Job(
                 .experiment(entity.getExperiment())
                 .education(entity.getEducation())
                 .companyIntroduction(entity.getCompanyIntroduction())
+                .positionIntroduction(entity.getPositionIntroduction())
                 .mainResponsibility(entity.getMainResponsibility())
                 .qualification(entity.getQualification())
                 .preferredQualification(entity.getPreferredQualification())

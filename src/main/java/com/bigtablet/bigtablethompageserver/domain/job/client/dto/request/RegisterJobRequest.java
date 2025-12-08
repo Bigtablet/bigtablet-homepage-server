@@ -25,6 +25,8 @@ public record RegisterJobRequest(
         @NotBlank
         String companyIntroduction,
         @NotBlank
+        String positionIntroduction,
+        @NotBlank
         String mainResponsibility,
         @NotBlank
         String qualification,
