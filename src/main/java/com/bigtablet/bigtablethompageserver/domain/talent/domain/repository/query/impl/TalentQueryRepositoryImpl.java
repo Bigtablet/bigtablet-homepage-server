@@ -17,10 +17,10 @@ public class TalentQueryRepositoryImpl implements TalentQueryRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<Talent> findAllTalent(int page, int size) {
+    public List<Talent> findAllTalent(boolean isActive, int page, int size) {
         return jpaQueryFactory
                 .selectFrom(talentEntity)
-                .where(talentEntity.isActive.eq(true))
+                .where(talentEntity.isActive.eq(isActive))
                 .offset((long) (page - 1) * size)
                 .limit(size)
                 .orderBy(talentEntity.createdAt.desc())
@@ -39,12 +39,12 @@ public class TalentQueryRepositoryImpl implements TalentQueryRepository {
         return jpaQueryFactory
                 .selectFrom(talentEntity)
                 .where(
-                    talentEntity.isActive.eq(true)
-                        .and(
-                            talentEntity.name.containsIgnoreCase(keyword)
-                                .or(talentEntity.email.containsIgnoreCase(keyword))
-                                .or(talentEntity.department.containsIgnoreCase(keyword))
-                        )
+                        talentEntity.isActive.eq(true)
+                                .and(
+                                        talentEntity.name.containsIgnoreCase(keyword)
+                                                .or(talentEntity.email.containsIgnoreCase(keyword))
+                                                .or(talentEntity.department.containsIgnoreCase(keyword))
+                                )
                 )
                 .offset((long) (page - 1) * size)
                 .limit(size)

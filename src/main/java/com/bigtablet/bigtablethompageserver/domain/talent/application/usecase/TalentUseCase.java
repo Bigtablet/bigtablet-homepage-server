@@ -3,6 +3,7 @@ package com.bigtablet.bigtablethompageserver.domain.talent.application.usecase;
 import com.bigtablet.bigtablethompageserver.domain.talent.application.query.TalentQueryService;
 import com.bigtablet.bigtablethompageserver.domain.talent.application.response.TalentResponse;
 import com.bigtablet.bigtablethompageserver.domain.talent.application.service.TalentService;
+import com.bigtablet.bigtablethompageserver.domain.talent.client.dto.request.GetTalentListRequest;
 import com.bigtablet.bigtablethompageserver.domain.talent.client.dto.request.RegisterTalentRequest;
 import com.bigtablet.bigtablethompageserver.domain.talent.client.dto.request.SearchTalentRequest;
 import com.bigtablet.bigtablethompageserver.domain.talent.client.dto.request.SendEmailToTalentRequest;
@@ -55,8 +56,8 @@ public class TalentUseCase {
         return TalentResponse.of(talent);
     }
 
-    public List<TalentResponse> getTalentList(PageRequest request) {
-        List<Talent> talents = talentQueryService.findAllTalents(request.getPage(), request.getSize());
+    public List<TalentResponse> getTalentList(GetTalentListRequest request) {
+        List<Talent> talents = talentQueryService.findAllTalents(request.isActive(), request.getPage(), request.getSize());
         checkTalentsIsEmpty(talents);
         return talents.stream().map(TalentResponse::of).toList();
     }

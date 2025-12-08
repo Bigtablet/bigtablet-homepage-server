@@ -2,6 +2,7 @@ package com.bigtablet.bigtablethompageserver.domain.talent.client.api;
 
 import com.bigtablet.bigtablethompageserver.domain.talent.application.response.TalentResponse;
 import com.bigtablet.bigtablethompageserver.domain.talent.application.usecase.TalentUseCase;
+import com.bigtablet.bigtablethompageserver.domain.talent.client.dto.request.GetTalentListRequest;
 import com.bigtablet.bigtablethompageserver.domain.talent.client.dto.request.RegisterTalentRequest;
 import com.bigtablet.bigtablethompageserver.domain.talent.client.dto.request.SearchTalentRequest;
 import com.bigtablet.bigtablethompageserver.domain.talent.client.dto.request.SendEmailToTalentRequest;
@@ -11,6 +12,7 @@ import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseRespo
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponseData;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -54,7 +56,7 @@ public class TalentApiHandler {
     }
 
     @GetMapping("/list")
-    public BaseResponseData<List<TalentResponse>> getTalentList(@ModelAttribute final PageRequest request) {
+    public BaseResponseData<List<TalentResponse>> getTalentList(@ModelAttribute final GetTalentListRequest request) {
         return BaseResponseData.ok(
                 "조회 성공",
                 talentUseCase.getTalentList(request)

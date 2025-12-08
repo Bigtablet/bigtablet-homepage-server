@@ -13,8 +13,16 @@ public class TalentQueryService {
 
     private final TalentQueryRepository talentQueryRepository;
 
-    public List<Talent> findAllTalents(int page, int size) {
-        return talentQueryRepository.findAllTalent(page, size);
+    public List<Talent> findAllTalents(
+            boolean isActive,
+            int page,
+            int size
+    ) {
+        return talentQueryRepository.findAllTalent(
+                isActive,
+                page,
+                size
+        );
     }
 
     public List<Talent> searchTalents(

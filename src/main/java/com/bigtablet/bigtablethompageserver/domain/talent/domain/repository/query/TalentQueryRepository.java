@@ -6,7 +6,11 @@ import java.util.List;
 
 public interface TalentQueryRepository {
 
-    List<Talent> findAllTalent(int page, int size);
+    List<Talent> findAllTalent(
+            boolean isActive,
+            int page,
+            int size
+    );
 
     List<Talent> searchTalent(
             String keyword,
