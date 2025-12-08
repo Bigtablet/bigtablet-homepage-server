@@ -58,6 +58,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                                 .requestMatchers(HttpMethod.GET, "/blog/**").permitAll()
                                 .requestMatchers(HttpMethod.PATCH, "/blog").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/news/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/talent").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .addFilterAfter(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
