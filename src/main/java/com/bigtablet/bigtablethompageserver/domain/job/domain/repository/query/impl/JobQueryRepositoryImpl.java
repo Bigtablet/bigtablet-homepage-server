@@ -29,7 +29,7 @@ public class JobQueryRepositoryImpl implements JobQueryRepository {
             Education education,
             RecruitType recruitType
     ) {
-        BooleanBuilder condition = buildJobSearchCondition(
+        BooleanBuilder builder = buildJob(
                 true,
                 title,
                 department,
@@ -38,7 +38,7 @@ public class JobQueryRepositoryImpl implements JobQueryRepository {
         );
         return jpaQueryFactory
                 .selectFrom(jobEntity)
-                .where(condition)
+                .where(builder)
                 .offset((long) (page - 1) * size)
                 .limit(size)
                 .orderBy(jobEntity.createdAt.desc())
@@ -57,7 +57,7 @@ public class JobQueryRepositoryImpl implements JobQueryRepository {
             Education education,
             RecruitType recruitType
     ) {
-        BooleanBuilder condition = buildJobSearchCondition(
+        BooleanBuilder builder = buildJob(
                 false,
                 title,
                 department,
@@ -66,7 +66,7 @@ public class JobQueryRepositoryImpl implements JobQueryRepository {
         );
         return jpaQueryFactory
                 .selectFrom(jobEntity)
-                .where(condition)
+                .where(builder)
                 .offset((long) (page - 1) * size)
                 .limit(size)
                 .orderBy(jobEntity.createdAt.desc())
@@ -76,7 +76,7 @@ public class JobQueryRepositoryImpl implements JobQueryRepository {
                 .toList();
     }
 
-    private BooleanBuilder buildJobSearchCondition(
+    private BooleanBuilder buildJob(
             boolean isActive,
             String title,
             Department department,
