@@ -6,6 +6,7 @@ import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,11 +23,13 @@ public class EmailServiceImpl implements EmailService {
         this.recruitMailSender = recruitMailSender;
     }
 
+    @Async
     @Override
     public void sendNoReply(String to, String subject, String content) {
         send(noreplyMailSender, "noreply@bigtablet.com", to, subject, content);
     }
 
+    @Async
     @Override
     public void sendRecruit(String to, String subject, String content) {
         send(recruitMailSender, "recruit@bigtablet.com", to, subject, content);
