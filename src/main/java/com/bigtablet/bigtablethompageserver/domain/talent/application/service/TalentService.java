@@ -3,7 +3,9 @@ package com.bigtablet.bigtablethompageserver.domain.talent.application.service;
 import com.bigtablet.bigtablethompageserver.domain.talent.domain.entity.TalentEntity;
 import com.bigtablet.bigtablethompageserver.domain.talent.domain.model.Talent;
 import com.bigtablet.bigtablethompageserver.domain.talent.domain.repository.jpa.TalentJpaRepository;
+import com.bigtablet.bigtablethompageserver.domain.talent.exception.TalentAlreadyExistException;
 import com.bigtablet.bigtablethompageserver.domain.talent.exception.TalentNotFoundException;
+import com.google.api.gax.rpc.AlreadyExistsException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,11 +42,10 @@ public class TalentService {
                 .orElseThrow(()->TalentNotFoundException.EXCEPTION);
     }
 
-    public Talent findByEmail(String email) {
-        return talentJpaRepository
-                .findByEmail(email)
-                .map(Talent::of)
-                .orElseThrow(() -> TalentNotFoundException.EXCEPTION);
+    public void checkExistByEmail(String email) {
+        if (talentJpaRepository.existsByEmail(email)) {
+            throw TalentAlreadyExistException.EXCEPTION;
+        }
     }
 
     @Transactional
