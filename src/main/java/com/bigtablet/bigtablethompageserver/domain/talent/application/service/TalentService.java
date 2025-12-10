@@ -35,6 +35,7 @@ public class TalentService {
                 .build());
     }
 
+    @Transactional
     public Talent findByIdx(Long idx) {
         return talentJpaRepository
                 .findByIdx(idx)
