@@ -4,6 +4,7 @@ import com.bigtablet.bigtablethompageserver.global.infra.gcp.exception.FileError
 import com.bigtablet.bigtablethompageserver.global.infra.gcp.exception.FileIsEmptyException;
 import com.bigtablet.bigtablethompageserver.global.infra.gcp.exception.FileNotFoundException;
 import com.bigtablet.bigtablethompageserver.global.infra.gcp.exception.FileWrongTypeException;
+import com.bigtablet.bigtablethompageserver.global.infra.gcp.exception.StorageErrorException;
 import com.bigtablet.bigtablethompageserver.global.infra.gcp.service.GcpService;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.BlobInfo;
@@ -27,10 +28,11 @@ public class GcpServiceImpl implements GcpService {
     @Value("${spring.cloud.gcp.storage.bucket}")
     private String bucketName;
 
+    private Storage storage;
+
     @Override
     public String upload(MultipartFile multipartFile) throws IOException {
         checkFileIsEmpty(multipartFile);
-        InputStream keyFile = ResourceUtils.getURL(keyFileName).openStream();
         String contentType = multipartFile.getContentType();
         if (contentType == null) {
             throw FileErrorException.EXCEPTION;
@@ -40,26 +42,33 @@ public class GcpServiceImpl implements GcpService {
         String imageUrl = createImageUrl(uuid);
         BlobInfo blobInfo = BlobInfo.newBuilder(bucketName, uuid)
                 .setContentType(contentType).build();
-        Storage storage = StorageOptions.newBuilder()
-                .setCredentials(GoogleCredentials.fromStream(keyFile))
-                .build()
-                .getService();
+        Storage storage = getStorage();
         storage.create(blobInfo, multipartFile.getInputStream());
         return imageUrl;
     }
 
     @Override
-    public void delete(String fileUrl) throws IOException {
+    public void delete(String fileUrl) {
         String fileName = extractFileNameFromUrl(fileUrl);
-        InputStream keyFile = ResourceUtils.getURL(keyFileName).openStream();
-        Storage storage = StorageOptions.newBuilder()
-                .setCredentials(GoogleCredentials.fromStream(keyFile))
-                .build()
-                .getService();
+        Storage storage = getStorage();
         boolean deleted = storage.delete(bucketName, fileName);
         if (!deleted) {
             throw FileNotFoundException.EXCEPTION;
         }
+    }
+
+    private Storage getStorage() {
+        if (storage == null) {
+            try (InputStream keyFile = ResourceUtils.getURL(keyFileName).openStream()) {
+                storage = StorageOptions.newBuilder()
+                        .setCredentials(GoogleCredentials.fromStream(keyFile))
+                        .build()
+                        .getService();
+            } catch (IOException | RuntimeException e) {
+                throw StorageErrorException.EXCEPTION;
+            }
+        }
+        return storage;
     }
 
     private String extractFileNameFromUrl(String url) {

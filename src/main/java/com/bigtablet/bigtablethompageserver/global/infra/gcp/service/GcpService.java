@@ -8,6 +8,6 @@ public interface GcpService {
 
     String upload(MultipartFile multipartFile) throws IOException;
 
-    void delete(String fileUrl) throws IOException;
+    void delete(String fileUrl);
 
 }
