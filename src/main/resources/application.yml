@@ -57,3 +57,6 @@ application:
     secretKey: ${secrets.JWT_SECRET_KEY}
     expiration: 86400000
     refreshExpiration: 604800000
+
+slack:
+  webhook-url: ${secrets.SLACK_WEBHOOK}
