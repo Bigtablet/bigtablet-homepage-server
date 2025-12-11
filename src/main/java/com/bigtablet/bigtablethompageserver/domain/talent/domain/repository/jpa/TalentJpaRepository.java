@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface TalentJpaRepository extends JpaRepository<TalentEntity, Long> {
 
-    Optional<TalentEntity> findByEmail(String email);
+    boolean existsByEmail(String email);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select t from TalentEntity t where t.idx = :idx")

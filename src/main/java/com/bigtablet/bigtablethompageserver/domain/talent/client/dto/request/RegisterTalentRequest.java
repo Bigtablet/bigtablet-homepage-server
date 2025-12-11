@@ -17,6 +17,5 @@ public record RegisterTalentRequest(
         @URL
         @NotBlank
         String portfolioUrl,
-        @URL
-        List<String> etcUrl
+        List<@URL String> etcUrl
 ) {}
