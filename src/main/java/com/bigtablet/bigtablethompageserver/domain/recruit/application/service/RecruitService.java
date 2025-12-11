@@ -19,7 +19,7 @@ public class RecruitService {
 
     private final RecruitJpaRepository recruitJpaRepository;
 
-    public void saveRecruit(
+    public Recruit saveRecruit(
             Long jobId,
             String name,
             String phoneNumber,
@@ -39,7 +39,7 @@ public class RecruitService {
             String attachment2,
             String attachment3
     ) {
-        recruitJpaRepository.save(RecruitEntity.builder()
+        RecruitEntity entity = recruitJpaRepository.save(RecruitEntity.builder()
                 .jobId(jobId)
                 .name(name)
                 .phoneNumber(phoneNumber)
@@ -60,6 +60,7 @@ public class RecruitService {
                 .attachment3(attachment3)
                 .status(Status.DOCUMENT)
                 .build());
+        return Recruit.of(entity);
     }
 
     public Recruit findById(Long idx) {
