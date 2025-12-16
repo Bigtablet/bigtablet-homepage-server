@@ -123,6 +123,13 @@ public class RecruitService {
         recruitJpaRepository.save(entity);
     }
 
+    public void checkRecruitStatus(Long idx) {
+        RecruitEntity entity = getRecruitEntity(idx);
+        if (entity.getStatus().equals(Status.DOCUMENT)) {
+            throw RecruitNotFoundException.EXCEPTION;
+        }
+    }
+
     private RecruitEntity getRecruitEntity(Long idx) {
         return recruitJpaRepository
                 .findById(idx)
