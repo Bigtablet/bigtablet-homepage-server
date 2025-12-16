@@ -29,6 +29,7 @@ public class EmailServiceImpl implements EmailService {
         send(noreplyMailSender, "noreply@bigtablet.com", to, subject, content);
     }
 
+    @Async
     @Override
     public void sendRecruit(String to, String subject, String content) {
         send(recruitMailSender, "recruit@bigtablet.com", to, subject, content);
