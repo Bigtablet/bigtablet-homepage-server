@@ -121,7 +121,8 @@ public class RecruitUseCase {
     public void acceptRecruit(Long idx) {
         Recruit recruit = recruitService.findById(idx);
         String content = mailTemplateRenderer.renderAcceptEmail(recruit.name());
-        recruitService.acceptRecruit(idx);
+        recruitService.checkRecruitStatus(recruit.idx());
+        recruitService.acceptRecruit(recruit.idx());
         emailService.sendRecruit(
                 recruit.email(),
                 "[Bigtablet, Inc. 채용] " + recruit.name() + "님, 채용 전형 최종 결과 안내드립니다",
@@ -132,7 +133,8 @@ public class RecruitUseCase {
     public void rejectRecruit(Long idx) {
         Recruit recruit = recruitService.findById(idx);
         String content = mailTemplateRenderer.renderRejectEmail(recruit.name());
-        recruitService.rejectRecruit(idx);
+        recruitService.checkRecruitStatus(recruit.idx());
+        recruitService.rejectRecruit(recruit.idx());
         emailService.sendRecruit(
                 recruit.email(),
                 "[Bigtablet, Inc. 채용] " + recruit.name() + "님, 채용 전형 최종 결과 안내드립니다",

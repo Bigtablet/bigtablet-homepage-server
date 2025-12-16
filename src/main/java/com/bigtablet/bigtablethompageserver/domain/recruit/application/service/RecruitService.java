@@ -7,6 +7,7 @@ import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.Status;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.model.Recruit;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.repository.jpa.RecruitJpaRepository;
 import com.bigtablet.bigtablethompageserver.domain.recruit.exception.RecruitNotFoundException;
+import com.bigtablet.bigtablethompageserver.domain.recruit.exception.RecruitStatusErrorException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -121,6 +122,13 @@ public class RecruitService {
         RecruitEntity entity = getRecruitEntity(idx);
         entity.setStatus(Status.REJECTED);
         recruitJpaRepository.save(entity);
+    }
+
+    public void checkRecruitStatus(Long idx) {
+        RecruitEntity entity = getRecruitEntity(idx);
+        if (entity.getStatus().equals(Status.DOCUMENT)) {
+            throw RecruitStatusErrorException.EXCEPTION;
+        }
     }
 
     private RecruitEntity getRecruitEntity(Long idx) {
