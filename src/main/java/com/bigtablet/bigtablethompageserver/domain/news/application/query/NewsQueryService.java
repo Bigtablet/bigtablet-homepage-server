@@ -17,14 +17,7 @@ public class NewsQueryService {
 
     public List<News> getAllNewsList(int page, int size) {
         List<News> newsList = newsQueryRepository.findAll(page, size);
-        checkListIsEmpty(newsList);
         return newsList;
-    }
-
-    public void checkListIsEmpty(List<News> newsList) {
-        if (newsList == null || newsList.isEmpty()) {
-            throw NewsNotFoundException.EXCEPTION;
-        }
     }
 
 }
