@@ -91,6 +91,10 @@ public class JobUseCase {
         );
     }
 
+    public void deactivateJob(Long idx) {
+        jobService.deactivateJob(idx);
+    }
+
     public void deleteJob(Long idx) {
         Job job = jobService.findById(idx);
         jobService.deleteById(job.idx());

@@ -108,6 +108,13 @@ public class JobService {
         );
     }
 
+    public void deactivateJob(Long idx) {
+        jobJpaRepository
+                .findById(idx)
+                .orElseThrow(() -> JobNotFoundException.EXCEPTION)
+                .deactivate();
+    }
+
     public void checkJobIsExpired(Job job) {
         if (!job.isActive()) {
             throw JobIsExpiredException.EXCEPTION;
