@@ -16,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -70,6 +71,13 @@ public class JobApiHandler {
     public BaseResponse editJob(@RequestBody @Valid final EditJobRequest request) {
         jobUseCase.editJob(request);
         return BaseResponse.ok("수정 성공");
+    }
+
+    @PatchMapping
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse deactivateJob(@RequestParam @NotNull final Long idx) {
+        jobUseCase.deactivateJob(idx);
+        return BaseResponse.ok("비활성화 성공");
     }
 
     @DeleteMapping

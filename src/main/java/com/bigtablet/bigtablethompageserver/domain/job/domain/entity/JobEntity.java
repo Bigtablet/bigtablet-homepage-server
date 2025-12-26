@@ -108,4 +108,8 @@ public class JobEntity extends BaseEntity {
         this.endDate = endDate;
     }
 
+    public void deactivate() {
+        this.isActive = false;
+    }
+
 }
