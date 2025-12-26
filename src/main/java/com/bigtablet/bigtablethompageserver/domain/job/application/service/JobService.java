@@ -108,6 +108,7 @@ public class JobService {
         );
     }
 
+    @Transactional
     public void deactivateJob(Long idx) {
         jobJpaRepository
                 .findById(idx)
