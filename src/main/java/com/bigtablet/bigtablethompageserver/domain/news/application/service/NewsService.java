@@ -16,11 +16,17 @@ public class NewsService {
 
     private final NewsJpaRepository newsJpaRepository;
 
-    public void save(String titleKr, String titleEn, String newsUrl) {
+    public void save(
+            String titleKr,
+            String titleEn,
+            String newsUrl,
+            String thumbnailImageUrl
+    ) {
         newsJpaRepository.save(NewsEntity.builder()
                 .titleKr(titleKr)
                 .titleEn(titleEn)
                 .newsUrl(newsUrl)
+                .thumbnailImageUrl(thumbnailImageUrl)
                 .build());
     }
 

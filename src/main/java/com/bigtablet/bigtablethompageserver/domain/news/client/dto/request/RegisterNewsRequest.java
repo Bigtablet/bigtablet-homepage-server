@@ -8,6 +8,10 @@ public record RegisterNewsRequest(
         String titleKr,
         @NotBlank
         String titleEn,
+        @NotBlank
         @URL(message = "유효한 URL 형식이어야 합니다.")
-        String newsUrl
+        String newsUrl,
+        @NotBlank
+        @URL(message = "유효한 URL 형식이어야 합니다.")
+        String thumbnailImageUrl
 ) {}

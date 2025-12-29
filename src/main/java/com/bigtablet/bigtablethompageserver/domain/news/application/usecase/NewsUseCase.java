@@ -24,7 +24,8 @@ public class NewsUseCase {
         newsService.save(
                 request.titleKr(),
                 request.titleEn(),
-                request.newsUrl()
+                request.newsUrl(),
+                request.thumbnailImageUrl()
         );
     }
 
