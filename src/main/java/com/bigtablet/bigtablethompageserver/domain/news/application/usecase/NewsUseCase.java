@@ -47,7 +47,8 @@ public class NewsUseCase {
                 request.idx(),
                 request.titleKr(),
                 request.titleEn(),
-                request.newsUrl()
+                request.newsUrl(),
+                request.thumbnailImageUrl()
         );
     }
 

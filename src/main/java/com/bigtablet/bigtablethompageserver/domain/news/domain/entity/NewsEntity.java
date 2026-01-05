@@ -38,11 +38,13 @@ public class NewsEntity extends BaseEntity {
     public void update(
             String titleKr,
             String titleEn,
-            String newsUrl
+            String newsUrl,
+            String thumbnailImageUrl
     ) {
         this.titleKr = titleKr;
         this.titleEn = titleEn;
         this.newsUrl = newsUrl;
+        this.thumbnailImageUrl = thumbnailImageUrl;
     }
 
 }

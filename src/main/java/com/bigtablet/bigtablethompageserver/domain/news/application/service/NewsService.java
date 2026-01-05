@@ -36,9 +36,20 @@ public class NewsService {
     }
 
     @Transactional
-    public void update(Long idx, String titleKr, String titleEn, String newsUrl) {
+    public void update(
+            Long idx,
+            String titleKr,
+            String titleEn,
+            String newsUrl,
+            String thumbnailImageUrl
+    ) {
         NewsEntity entity = getNewsEntity(idx);
-        entity.update(titleKr, titleEn, newsUrl);
+        entity.update(
+                titleKr,
+                titleEn,
+                newsUrl,
+                thumbnailImageUrl
+        );
     }
 
     @Transactional
