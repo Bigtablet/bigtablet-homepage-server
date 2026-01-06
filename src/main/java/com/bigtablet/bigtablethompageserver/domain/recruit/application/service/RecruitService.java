@@ -71,38 +71,6 @@ public class RecruitService {
         return Recruit.of(entity);
     }
 
-    public List<Recruit> findAll() {
-        return recruitJpaRepository
-                .findAllByOrderByCreatedAtDesc()
-                .stream()
-                .map(Recruit::of)
-                .toList();
-    }
-
-    public List<Recruit> findAllByJobId(Long jobId) {
-        return recruitJpaRepository
-                .findAllByJobIdOrderByCreatedAtDesc(jobId)
-                .stream()
-                .map(Recruit::of)
-                .toList();
-    }
-
-    public List<Recruit> findAllByStatus(Status status) {
-        return recruitJpaRepository
-                .findAllByStatusOrderByCreatedAtAsc(status)
-                .stream()
-                .map(Recruit::of)
-                .toList();
-    }
-
-    public List<Recruit> findAllByStatusAndJobId(Status status, Long jobId) {
-        return recruitJpaRepository
-                .findAllByStatusAndJobIdOrderByCreatedAtAsc(status, jobId)
-                .stream()
-                .map(Recruit::of)
-                .toList();
-    }
-
     @Transactional
     public void updateStatus(Status status, Long idx) {
         RecruitEntity entity = getRecruitEntity(idx);

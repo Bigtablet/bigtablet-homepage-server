@@ -2,9 +2,11 @@ package com.bigtablet.bigtablethompageserver.domain.recruit.application.usecase;
 
 import com.bigtablet.bigtablethompageserver.domain.job.application.service.JobService;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.model.Job;
+import com.bigtablet.bigtablethompageserver.domain.recruit.application.query.RecruitQueryService;
 import com.bigtablet.bigtablethompageserver.domain.recruit.application.response.RecruitResponse;
 import com.bigtablet.bigtablethompageserver.domain.recruit.application.service.RecruitService;
-import com.bigtablet.bigtablethompageserver.domain.recruit.client.dto.request.RegisterRecruitRequest;
+import com.bigtablet.bigtablethompageserver.domain.recruit.client.request.GetRecruitListRequest;
+import com.bigtablet.bigtablethompageserver.domain.recruit.client.request.RegisterRecruitRequest;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.Status;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.model.Recruit;
 import com.bigtablet.bigtablethompageserver.domain.recruit.exception.RecruitIsEmptyException;
@@ -23,6 +25,7 @@ import java.util.List;
 public class RecruitUseCase {
 
     private final RecruitService recruitService;
+    private final RecruitQueryService recruitQueryService;
     private final EmailService emailService;
     private final JobService jobService;
     private final MailTemplateRenderer mailTemplateRenderer;
@@ -73,34 +76,14 @@ public class RecruitUseCase {
         return RecruitResponse.of(recruit);
     }
 
-    public List<RecruitResponse> getAllRecruit() {
-        List<Recruit> recruits = recruitService.findAll();
-        checkRecruitsIsEmpty(recruits);
-        return recruits.stream()
-                .map(RecruitResponse::of)
-                .toList();
-    }
-
-    public List<RecruitResponse> getAllRecruitByJobId(Long jobId) {
-        Job job = jobService.findById(jobId);
-        List<Recruit> recruits = recruitService.findAllByJobId(job.idx());
-        checkRecruitsIsEmpty(recruits);
-        return recruits.stream()
-                .map(RecruitResponse::of)
-                .toList();
-    }
-
-    public List<RecruitResponse> getAllRecruitByStatus(Status status) {
-        List<Recruit> recruits = recruitService.findAllByStatus(status);
-        checkRecruitsIsEmpty(recruits);
-        return recruits.stream()
-                .map(RecruitResponse::of)
-                .toList();
-    }
-
-    public List<RecruitResponse> getAllRecruitByStatusAndJobId(Status status, Long jobId) {
-        Job job = jobService.findById(jobId);
-        List<Recruit> recruits = recruitService.findAllByStatusAndJobId(status, job.idx());
+    public List<RecruitResponse> getRecruitList(GetRecruitListRequest request) {
+        Job job = jobService.findById(request.getJobId());
+        List<Recruit> recruits = recruitQueryService.findAllRecruits(
+                request.getPage(),
+                request.getSize(),
+                job.idx(),
+                request.getStatus()
+        );
         checkRecruitsIsEmpty(recruits);
         return recruits.stream()
                 .map(RecruitResponse::of)

@@ -1,4 +1,4 @@
-package com.bigtablet.bigtablethompageserver.domain.recruit.client.dto.request;
+package com.bigtablet.bigtablethompageserver.domain.recruit.client.request;
 
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.EducationLevel;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.Military;

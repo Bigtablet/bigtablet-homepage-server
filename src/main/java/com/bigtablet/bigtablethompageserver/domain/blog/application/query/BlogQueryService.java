@@ -3,7 +3,6 @@ package com.bigtablet.bigtablethompageserver.domain.blog.application.query;
 import com.bigtablet.bigtablethompageserver.domain.blog.domain.model.Blog;
 import com.bigtablet.bigtablethompageserver.domain.blog.domain.repository.query.BlogQueryRepository;
 import com.bigtablet.bigtablethompageserver.domain.blog.exception.BlogNotFoundException;
-import com.bigtablet.bigtablethompageserver.global.common.dto.request.PageRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

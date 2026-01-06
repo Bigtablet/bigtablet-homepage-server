@@ -8,13 +8,4 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RecruitJpaRepository extends JpaRepository<RecruitEntity, Long> {
-
-    List<RecruitEntity> findAllByJobIdOrderByCreatedAtDesc(Long jobId);
-
-    List<RecruitEntity> findAllByOrderByCreatedAtDesc();
-
-    List<RecruitEntity> findAllByStatusOrderByCreatedAtAsc(Status status);
-
-    List<RecruitEntity> findAllByStatusAndJobIdOrderByCreatedAtAsc(Status status, Long jobId);
-
 }

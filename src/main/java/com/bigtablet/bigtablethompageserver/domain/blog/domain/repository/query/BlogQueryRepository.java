@@ -1,14 +1,55 @@
 package com.bigtablet.bigtablethompageserver.domain.blog.domain.repository.query;
 
 import com.bigtablet.bigtablethompageserver.domain.blog.domain.model.Blog;
-import com.bigtablet.bigtablethompageserver.global.common.dto.request.PageRequest;
+import com.querydsl.core.types.ConstructorExpression;
+import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public interface BlogQueryRepository {
+import static com.bigtablet.bigtablethompageserver.domain.blog.domain.entity.QBlogEntity.blogEntity;
 
-    List<Blog> findAll(int page, int size);
+@Repository
+@RequiredArgsConstructor
+public class BlogQueryRepository {
 
-    List<Blog> findAllByTitle(int page, int size, String title);
+    private final JPAQueryFactory jpaQueryFactory;
+
+    public List<Blog> findAll(int page, int size) {
+        return jpaQueryFactory
+                .select(blogConstructorExpression())
+                .from(blogEntity)
+                .offset((long) (page - 1) * size)
+                .limit(size)
+                .orderBy(blogEntity.createdAt.desc())
+                .fetch();
+    }
+
+    public List<Blog> findAllByTitle(int page, int size, String title) {
+        return jpaQueryFactory
+                .select(blogConstructorExpression())
+                .from(blogEntity)
+                .where(blogEntity.titleKr.contains(title).or(blogEntity.titleEn.contains(title)))
+                .offset((long) (page - 1) * size)
+                .limit(size)
+                .orderBy(blogEntity.createdAt.desc())
+                .fetch();
+    }
+
+    private ConstructorExpression<Blog> blogConstructorExpression() {
+        return Projections.constructor(Blog.class,
+                blogEntity.idx,
+                blogEntity.titleKr,
+                blogEntity.titleEn,
+                blogEntity.contentKr,
+                blogEntity.contentEn,
+                blogEntity.imageUrl,
+                blogEntity.views,
+                blogEntity.createdAt,
+                blogEntity.modifiedAt
+        );
+    }
 
 }
