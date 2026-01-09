@@ -5,7 +5,6 @@ import com.bigtablet.bigtablethompageserver.domain.recruit.application.usecase.R
 import com.bigtablet.bigtablethompageserver.domain.recruit.client.request.GetRecruitListRequest;
 import com.bigtablet.bigtablethompageserver.domain.recruit.client.request.RegisterRecruitRequest;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.Status;
-import com.bigtablet.bigtablethompageserver.global.common.annotation.RestApiHandler;
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponse;
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponseData;
 import jakarta.validation.Valid;
@@ -18,14 +17,17 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @Validated
+@RestController
 @RequiredArgsConstructor
-@RestApiHandler("/recruit")
+@RequestMapping("/recruit")
 public class RecruitApiHandler {
 
     private final RecruitUseCase recruitUseCase;

@@ -8,19 +8,20 @@ import com.bigtablet.bigtablethompageserver.domain.auth.client.request.EmailSend
 import com.bigtablet.bigtablethompageserver.domain.auth.client.request.RefreshTokenRequest;
 import com.bigtablet.bigtablethompageserver.domain.auth.client.request.SignInRequest;
 import com.bigtablet.bigtablethompageserver.domain.auth.client.request.SignUpRequest;
-import com.bigtablet.bigtablethompageserver.global.common.annotation.RestApiHandler;
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponse;
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponseData;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
+@RestController
 @RequiredArgsConstructor
-@RestApiHandler("/auth")
+@RequestMapping("/auth")
 public class AuthApiHandler {
 
     private final AuthUseCase authUseCase;

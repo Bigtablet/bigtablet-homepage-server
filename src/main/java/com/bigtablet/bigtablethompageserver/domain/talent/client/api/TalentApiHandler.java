@@ -6,7 +6,6 @@ import com.bigtablet.bigtablethompageserver.domain.talent.client.dto.request.Get
 import com.bigtablet.bigtablethompageserver.domain.talent.client.dto.request.RegisterTalentRequest;
 import com.bigtablet.bigtablethompageserver.domain.talent.client.dto.request.SearchTalentRequest;
 import com.bigtablet.bigtablethompageserver.domain.talent.client.dto.request.SendEmailToTalentRequest;
-import com.bigtablet.bigtablethompageserver.global.common.annotation.RestApiHandler;
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponse;
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponseData;
 import jakarta.validation.Valid;
@@ -18,14 +17,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @Validated
+@RestController
 @RequiredArgsConstructor
-@RestApiHandler("/talent")
+@RequestMapping("/talent")
 public class TalentApiHandler {
 
     private final TalentUseCase talentUseCase;

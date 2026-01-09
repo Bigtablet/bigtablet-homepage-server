@@ -4,7 +4,6 @@ import com.bigtablet.bigtablethompageserver.domain.news.application.response.New
 import com.bigtablet.bigtablethompageserver.domain.news.application.usecase.NewsUseCase;
 import com.bigtablet.bigtablethompageserver.domain.news.client.dto.request.EditNewsRequest;
 import com.bigtablet.bigtablethompageserver.domain.news.client.dto.request.RegisterNewsRequest;
-import com.bigtablet.bigtablethompageserver.global.common.annotation.RestApiHandler;
 import com.bigtablet.bigtablethompageserver.global.common.dto.request.PageRequest;
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponse;
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponseData;
@@ -19,14 +18,17 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @Validated
+@RestController
 @RequiredArgsConstructor
-@RestApiHandler("/news")
+@RequestMapping("/news")
 public class NewsApiHandler {
 
     private final NewsUseCase newsUseCase;
