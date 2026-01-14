@@ -116,7 +116,6 @@ public class RecruitUseCase {
     public void rejectRecruit(Long idx) {
         Recruit recruit = recruitService.findById(idx);
         String content = mailTemplateRenderer.renderRejectEmail(recruit.name());
-        recruitService.checkRecruitStatus(recruit.idx());
         recruitService.rejectRecruit(recruit.idx());
         emailService.sendRecruit(
                 recruit.email(),
