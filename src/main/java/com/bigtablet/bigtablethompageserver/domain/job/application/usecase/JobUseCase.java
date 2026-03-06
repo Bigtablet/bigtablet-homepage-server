@@ -8,12 +8,13 @@ import com.bigtablet.bigtablethompageserver.domain.job.client.dto.request.GetJob
 import com.bigtablet.bigtablethompageserver.domain.job.client.dto.request.RegisterJobRequest;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.model.Job;
 import com.bigtablet.bigtablethompageserver.domain.job.exception.JobIsEmptyException;
-import com.bigtablet.bigtablethompageserver.domain.job.exception.JobNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JobUseCase {
@@ -22,7 +23,8 @@ public class JobUseCase {
     private final JobQueryService jobQueryService;
 
     public void registerJob(RegisterJobRequest request) {
-        jobService.saveJob(
+        log.info("[JobUseCase] registerJob - title={}", request.title());
+        jobService.save(
                 request.title(),
                 request.department(),
                 request.location(),
@@ -40,13 +42,13 @@ public class JobUseCase {
     }
 
     public JobResponse getJob(Long idx) {
-        Job job = jobService.findById(idx);
+        Job job = jobQueryService.find(idx);
         return JobResponse.of(job);
     }
 
     public List<JobResponse> getJobList(GetJobListRequest request) {
         List<Job> jobs =
-                jobQueryService.getJobList(
+                jobQueryService.findJobList(
                         request.getPage(),
                         request.getSize(),
                         request.getTitle(),
@@ -60,7 +62,7 @@ public class JobUseCase {
 
     public List<JobResponse> getDeactivateJobList(GetJobListRequest request) {
         List<Job> jobs =
-                jobQueryService.getDeactivateJobList(
+                jobQueryService.findDeactivateJobList(
                         request.getPage(),
                         request.getSize(),
                         request.getTitle(),
@@ -73,7 +75,8 @@ public class JobUseCase {
     }
 
     public void editJob(EditJobRequest request) {
-        jobService.updateJob(
+        log.info("[JobUseCase] editJob - idx={}", request.idx());
+        jobService.edit(
                 request.idx(),
                 request.title(),
                 request.department(),
@@ -92,12 +95,14 @@ public class JobUseCase {
     }
 
     public void deactivateJob(Long idx) {
-        jobService.deactivateJob(idx);
+        log.info("[JobUseCase] deactivateJob - idx={}", idx);
+        jobService.deactivate(idx);
     }
 
     public void deleteJob(Long idx) {
-        Job job = jobService.findById(idx);
-        jobService.deleteById(job.idx());
+        log.info("[JobUseCase] deleteJob - idx={}", idx);
+        Job job = jobQueryService.find(idx);
+        jobService.delete(job.idx());
     }
 
     private void checkJobsIsEmpty(List<Job> jobs) {

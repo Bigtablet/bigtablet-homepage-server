@@ -16,7 +16,6 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
@@ -74,11 +73,10 @@ public class JobEntity extends BaseEntity {
 
     private LocalDate endDate;
 
-    @Setter
     @Column(nullable = false)
     private boolean isActive;
 
-    public void update(
+    public void editJob(
             String title,
             Department department,
             Location location,
