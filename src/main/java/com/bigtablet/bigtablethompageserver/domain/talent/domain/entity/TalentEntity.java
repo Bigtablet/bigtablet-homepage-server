@@ -13,7 +13,6 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
@@ -48,8 +47,15 @@ public class TalentEntity extends BaseEntity {
     )
     private List<String> etcUrl;
 
-    @Setter
     @Column(nullable = false)
     private boolean isActive;
+
+    public void activate() {
+        this.isActive = true;
+    }
+
+    public void deactivate() {
+        this.isActive = false;
+    }
 
 }
