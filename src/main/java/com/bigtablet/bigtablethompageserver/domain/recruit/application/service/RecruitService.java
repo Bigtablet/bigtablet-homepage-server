@@ -7,20 +7,20 @@ import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.Status;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.model.Recruit;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.repository.jpa.RecruitJpaRepository;
 import com.bigtablet.bigtablethompageserver.domain.recruit.exception.RecruitNotFoundException;
-import com.bigtablet.bigtablethompageserver.domain.recruit.exception.RecruitStatusErrorException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RecruitService {
 
     private final RecruitJpaRepository recruitJpaRepository;
 
-    public Recruit saveRecruit(
+    @Transactional
+    public Recruit save(
             Long jobId,
             String name,
             String phoneNumber,
@@ -40,6 +40,7 @@ public class RecruitService {
             String attachment2,
             String attachment3
     ) {
+        log.info("[RecruitService] save - jobId={}, name={}", jobId, name);
         RecruitEntity entity = recruitJpaRepository.save(RecruitEntity.builder()
                 .jobId(jobId)
                 .name(name)
@@ -64,77 +65,31 @@ public class RecruitService {
         return Recruit.of(entity);
     }
 
-    public Recruit findById(Long idx) {
+    @Transactional
+    public void editStatus(Status status, Long idx) {
+        log.info("[RecruitService] editStatus - idx={}, status={}", idx, status);
         RecruitEntity entity = recruitJpaRepository
                 .findById(idx)
                 .orElseThrow(() -> RecruitNotFoundException.EXCEPTION);
-        return Recruit.of(entity);
-    }
-
-    public List<Recruit> findAll() {
-        return recruitJpaRepository
-                .findAllByOrderByCreatedAtDesc()
-                .stream()
-                .map(Recruit::of)
-                .toList();
-    }
-
-    public List<Recruit> findAllByJobId(Long jobId) {
-        return recruitJpaRepository
-                .findAllByJobIdOrderByCreatedAtDesc(jobId)
-                .stream()
-                .map(Recruit::of)
-                .toList();
-    }
-
-    public List<Recruit> findAllByStatus(Status status) {
-        return recruitJpaRepository
-                .findAllByStatusOrderByCreatedAtAsc(status)
-                .stream()
-                .map(Recruit::of)
-                .toList();
-    }
-
-    public List<Recruit> findAllByStatusAndJobId(Status status, Long jobId) {
-        return recruitJpaRepository
-                .findAllByStatusAndJobIdOrderByCreatedAtAsc(status, jobId)
-                .stream()
-                .map(Recruit::of)
-                .toList();
+        entity.editStatus(status);
     }
 
     @Transactional
-    public void updateStatus(Status status, Long idx) {
-        RecruitEntity entity = getRecruitEntity(idx);
-        entity.setStatus(status);
-        recruitJpaRepository.save(entity);
-    }
-
-    @Transactional
-    public void acceptRecruit(Long idx) {
-        RecruitEntity entity = getRecruitEntity(idx);
-        entity.setStatus(Status.ACCEPTED);
-        recruitJpaRepository.save(entity);
-    }
-
-    @Transactional
-    public void rejectRecruit(Long idx) {
-        RecruitEntity entity = getRecruitEntity(idx);
-        entity.setStatus(Status.REJECTED);
-        recruitJpaRepository.save(entity);
-    }
-
-    public void checkRecruitStatus(Long idx) {
-        RecruitEntity entity = getRecruitEntity(idx);
-        if (entity.getStatus().equals(Status.DOCUMENT)) {
-            throw RecruitStatusErrorException.EXCEPTION;
-        }
-    }
-
-    private RecruitEntity getRecruitEntity(Long idx) {
-        return recruitJpaRepository
+    public void accept(Long idx) {
+        log.info("[RecruitService] accept - idx={}", idx);
+        RecruitEntity entity = recruitJpaRepository
                 .findById(idx)
                 .orElseThrow(() -> RecruitNotFoundException.EXCEPTION);
+        entity.accept();
+    }
+
+    @Transactional
+    public void reject(Long idx) {
+        log.info("[RecruitService] reject - idx={}", idx);
+        RecruitEntity entity = recruitJpaRepository
+                .findById(idx)
+                .orElseThrow(() -> RecruitNotFoundException.EXCEPTION);
+        entity.reject();
     }
 
 }

@@ -1,7 +1,8 @@
 package com.bigtablet.bigtablethompageserver.domain.recruit.application.usecase;
 
-import com.bigtablet.bigtablethompageserver.domain.job.application.service.JobService;
+import com.bigtablet.bigtablethompageserver.domain.job.application.query.JobQueryService;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.model.Job;
+import com.bigtablet.bigtablethompageserver.domain.recruit.application.query.RecruitQueryService;
 import com.bigtablet.bigtablethompageserver.domain.recruit.application.response.RecruitResponse;
 import com.bigtablet.bigtablethompageserver.domain.recruit.application.service.RecruitService;
 import com.bigtablet.bigtablethompageserver.domain.recruit.client.dto.request.RegisterRecruitRequest;
@@ -13,25 +14,29 @@ import com.bigtablet.bigtablethompageserver.global.infra.email.service.EmailServ
 import com.bigtablet.bigtablethompageserver.global.infra.slack.exception.SlackErrorException;
 import com.bigtablet.bigtablethompageserver.global.infra.slack.service.SlackNotifier;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class RecruitUseCase {
 
     private final RecruitService recruitService;
+    private final RecruitQueryService recruitQueryService;
     private final EmailService emailService;
-    private final JobService jobService;
+    private final JobQueryService jobQueryService;
     private final MailTemplateRenderer mailTemplateRenderer;
     private final SlackNotifier slackNotifier;
 
     public void registerRecruit(RegisterRecruitRequest request) {
-        Job job = jobService.findById(request.jobId());
-        jobService.checkJobIsExpired(job);
-        Recruit recruit = recruitService.saveRecruit(
+        log.info("[RecruitUseCase] registerRecruit - jobId={}, name={}", request.jobId(), request.name());
+        Job job = jobQueryService.find(request.jobId());
+        jobQueryService.checkIsExpired(job);
+        Recruit recruit = recruitService.save(
                 job.idx(),
                 request.name(),
                 request.phoneNumber(),
@@ -69,12 +74,14 @@ public class RecruitUseCase {
     }
 
     public RecruitResponse getRecruit(Long idx) {
-        Recruit recruit = recruitService.findById(idx);
+        log.info("[RecruitUseCase] getRecruit - idx={}", idx);
+        Recruit recruit = recruitQueryService.find(idx);
         return RecruitResponse.of(recruit);
     }
 
     public List<RecruitResponse> getAllRecruit() {
-        List<Recruit> recruits = recruitService.findAll();
+        log.info("[RecruitUseCase] getAllRecruit");
+        List<Recruit> recruits = recruitQueryService.findAll();
         checkRecruitsIsEmpty(recruits);
         return recruits.stream()
                 .map(RecruitResponse::of)
@@ -82,8 +89,9 @@ public class RecruitUseCase {
     }
 
     public List<RecruitResponse> getAllRecruitByJobId(Long jobId) {
-        Job job = jobService.findById(jobId);
-        List<Recruit> recruits = recruitService.findAllByJobId(job.idx());
+        log.info("[RecruitUseCase] getAllRecruitByJobId - jobId={}", jobId);
+        Job job = jobQueryService.find(jobId);
+        List<Recruit> recruits = recruitQueryService.findAllByJobId(job.idx());
         checkRecruitsIsEmpty(recruits);
         return recruits.stream()
                 .map(RecruitResponse::of)
@@ -91,7 +99,8 @@ public class RecruitUseCase {
     }
 
     public List<RecruitResponse> getAllRecruitByStatus(Status status) {
-        List<Recruit> recruits = recruitService.findAllByStatus(status);
+        log.info("[RecruitUseCase] getAllRecruitByStatus - status={}", status);
+        List<Recruit> recruits = recruitQueryService.findAllByStatus(status);
         checkRecruitsIsEmpty(recruits);
         return recruits.stream()
                 .map(RecruitResponse::of)
@@ -99,8 +108,9 @@ public class RecruitUseCase {
     }
 
     public List<RecruitResponse> getAllRecruitByStatusAndJobId(Status status, Long jobId) {
-        Job job = jobService.findById(jobId);
-        List<Recruit> recruits = recruitService.findAllByStatusAndJobId(status, job.idx());
+        log.info("[RecruitUseCase] getAllRecruitByStatusAndJobId - status={}, jobId={}", status, jobId);
+        Job job = jobQueryService.find(jobId);
+        List<Recruit> recruits = recruitQueryService.findAllByStatusAndJobId(status, job.idx());
         checkRecruitsIsEmpty(recruits);
         return recruits.stream()
                 .map(RecruitResponse::of)
@@ -108,9 +118,10 @@ public class RecruitUseCase {
     }
 
     public void editStatus(Status status, Long idx) {
-        Recruit recruit = recruitService.findById(idx);
+        log.info("[RecruitUseCase] editStatus - idx={}, status={}", idx, status);
+        Recruit recruit = recruitQueryService.find(idx);
         String content = mailTemplateRenderer.renderRecruitEmail(recruit.name(), status);
-        recruitService.updateStatus(status, idx);
+        recruitService.editStatus(status, idx);
         emailService.sendRecruit(
                 recruit.email(),
                 "[Bigtablet, Inc. 채용] " + recruit.name() + "님, 면접 전형 안내드립니다",
@@ -119,10 +130,11 @@ public class RecruitUseCase {
     }
 
     public void acceptRecruit(Long idx) {
-        Recruit recruit = recruitService.findById(idx);
+        log.info("[RecruitUseCase] acceptRecruit - idx={}", idx);
+        Recruit recruit = recruitQueryService.find(idx);
         String content = mailTemplateRenderer.renderAcceptEmail(recruit.name());
-        recruitService.checkRecruitStatus(recruit.idx());
-        recruitService.acceptRecruit(recruit.idx());
+        recruitQueryService.checkStatus(recruit.idx());
+        recruitService.accept(recruit.idx());
         emailService.sendRecruit(
                 recruit.email(),
                 "[Bigtablet, Inc. 채용] " + recruit.name() + "님, 채용 전형 최종 결과 안내드립니다",
@@ -131,10 +143,10 @@ public class RecruitUseCase {
     }
 
     public void rejectRecruit(Long idx) {
-        Recruit recruit = recruitService.findById(idx);
+        log.info("[RecruitUseCase] rejectRecruit - idx={}", idx);
+        Recruit recruit = recruitQueryService.find(idx);
         String content = mailTemplateRenderer.renderRejectEmail(recruit.name());
-        recruitService.checkRecruitStatus(recruit.idx());
-        recruitService.rejectRecruit(recruit.idx());
+        recruitService.reject(recruit.idx());
         emailService.sendRecruit(
                 recruit.email(),
                 "[Bigtablet, Inc. 채용] " + recruit.name() + "님, 채용 전형 최종 결과 안내드립니다",
@@ -142,7 +154,7 @@ public class RecruitUseCase {
         );
     }
 
-    public void checkRecruitsIsEmpty(List<Recruit> recruits) {
+    private void checkRecruitsIsEmpty(List<Recruit> recruits) {
         if (recruits.isEmpty()) {
             throw RecruitIsEmptyException.EXCEPTION;
         }
