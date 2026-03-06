@@ -170,13 +170,13 @@ jobs:
               --arg img "${{ secrets.DOCKER_USERNAME }}/bigtablet-homepage-server:${{ needs.build.outputs.version }}" \
               --arg url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
               '{
-                text: "✅ PROD 배포 성공",
+                text: "✅ HOMEPAGE SERVER PROD 배포 성공",
                 blocks: [
                   {
                     type: "section",
                     text: {
                       type: "mrkdwn",
-                      text: "*✅ PROD 배포 성공*\n*Repo:* \($repo)\n*Tag:* \($tag)\n*SHA:* \($sha | .[0:7])\n*Actor:* \($actor)\n*Image:* \($img)\n*Run:* <\($url)|Open Actions Run>"
+                      text: "*✅ HOMEPAGE SERVER PROD 배포 성공*\n*Repo:* \($repo)\n*Tag:* \($tag)\n*SHA:* \($sha | .[0:7])\n*Actor:* \($actor)\n*Image:* \($img)\n*Run:* <\($url)|Open Actions Run>"
                     }
                   }
                 ]
@@ -199,13 +199,13 @@ jobs:
               --arg docker_result "${{ needs.docker.result }}" \
               --arg deploy_result "${{ needs.deploy.result }}" \
               '{
-                text: "❌ PROD 배포 실패",
+                text: "❌ HOMEPAGE SERVER PROD 배포 실패",
                 blocks: [
                   {
                     type: "section",
                     text: {
                       type: "mrkdwn",
-                      text: ("*❌ PROD 배포 실패*\n"
+                      text: ("*❌ HOMEPAGE SERVER PROD 배포 실패*\n"
                             + "*Repo:* \($repo)\n"
                             + "*Tag:* \($tag)\n"
                             + "*SHA:* \($sha[0:7])\n"
