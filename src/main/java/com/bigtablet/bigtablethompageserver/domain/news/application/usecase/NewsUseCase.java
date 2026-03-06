@@ -9,11 +9,13 @@ import com.bigtablet.bigtablethompageserver.domain.news.domain.model.News;
 import com.bigtablet.bigtablethompageserver.domain.news.exception.NewsIsEmptyException;
 import com.bigtablet.bigtablethompageserver.global.common.dto.request.PageRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Service
+@Slf4j
+@Component
 @RequiredArgsConstructor
 public class NewsUseCase {
 
@@ -21,6 +23,7 @@ public class NewsUseCase {
     private final NewsQueryService newsQueryService;
 
     public void registerNews(RegisterNewsRequest request) {
+        log.info("[NewsUseCase] registerNews - titleKr={}", request.titleKr());
         newsService.save(
                 request.titleKr(),
                 request.titleEn(),
@@ -29,12 +32,14 @@ public class NewsUseCase {
     }
 
     public NewsResponse getNews(Long idx) {
-        News news = newsService.findById(idx);
+        log.info("[NewsUseCase] getNews - idx={}", idx);
+        News news = newsQueryService.find(idx);
         return NewsResponse.of(news);
     }
 
     public List<NewsResponse> getAllNewsList(PageRequest request) {
-        List<News> newsList = newsQueryService.getAllNewsList(request.getPage(), request.getSize());
+        log.info("[NewsUseCase] getAllNewsList - page={}, size={}", request.getPage(), request.getSize());
+        List<News> newsList = newsQueryService.findAll(request.getPage(), request.getSize());
         checkNewsListIsEmpty(newsList);
         return newsList.stream()
                 .map(NewsResponse::of)
@@ -42,7 +47,8 @@ public class NewsUseCase {
     }
 
     public void editNews(EditNewsRequest request) {
-        newsService.update(
+        log.info("[NewsUseCase] editNews - idx={}", request.idx());
+        newsService.edit(
                 request.idx(),
                 request.titleKr(),
                 request.titleEn(),
@@ -51,10 +57,11 @@ public class NewsUseCase {
     }
 
     public void deleteNews(Long idx) {
+        log.info("[NewsUseCase] deleteNews - idx={}", idx);
         newsService.delete(idx);
     }
 
-    public void checkNewsListIsEmpty(List<News> newsList) {
+    private void checkNewsListIsEmpty(List<News> newsList) {
         if (newsList.isEmpty()) {
             throw NewsIsEmptyException.EXCEPTION;
         }
