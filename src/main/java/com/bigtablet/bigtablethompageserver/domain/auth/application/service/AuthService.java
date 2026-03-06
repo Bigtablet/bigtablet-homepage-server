@@ -9,6 +9,7 @@ import com.bigtablet.bigtablethompageserver.global.security.jwt.JwtProvider;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -26,6 +28,7 @@ public class AuthService {
     private final RedisRepository redisRepository;
 
     public JsonWebTokenResponse generateToken(String email) {
+        log.info("[AuthService] generateToken - email={}", email);
         return JsonWebTokenResponse.builder()
                 .accessToken(jwtProvider.generateAccessToken(email))
                 .refreshToken(jwtProvider.generateRefreshToken(email))
@@ -33,6 +36,7 @@ public class AuthService {
     }
 
     public RefreshTokenResponse refreshToken(String refreshToken) {
+        log.info("[AuthService] refreshToken");
         Jws<Claims> claims = jwtProvider.getClaims(refreshToken);
         return RefreshTokenResponse.builder()
                 .accessToken(jwtProvider.generateAccessToken(claims.getBody().getSubject()))
@@ -46,6 +50,7 @@ public class AuthService {
     }
 
     public void checkAuthNum(String email, String authCode) {
+        log.info("[AuthService] checkAuthNum - email={}", email);
         String code = redisRepository.getByKey(email, String.class);
         if (!Objects.equals(code, authCode)) {
             throw EmailCodeValidException.EXCEPTION;
@@ -54,6 +59,7 @@ public class AuthService {
     }
 
     public String createRandomNum(String email) {
+        log.info("[AuthService] createRandomNum - email={}", email);
         Optional.ofNullable(redisRepository.getByKey(email, String.class))
                 .ifPresent(value -> redisRepository.delete(email));
         Random r = new Random();
