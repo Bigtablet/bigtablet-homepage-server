@@ -1,8 +1,7 @@
 package com.bigtablet.bigtablethompageserver.domain.user.client.api;
 
 import com.bigtablet.bigtablethompageserver.domain.user.application.response.UserResponse;
-import com.bigtablet.bigtablethompageserver.domain.user.application.service.UserService;
-import com.bigtablet.bigtablethompageserver.domain.user.domain.model.User;
+import com.bigtablet.bigtablethompageserver.domain.user.application.usecase.UserUseCase;
 import com.bigtablet.bigtablethompageserver.global.common.annotation.RestApiHandler;
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponseData;
 import lombok.RequiredArgsConstructor;
@@ -14,19 +13,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RestApiHandler("/user")
 public class UserApiHandler {
 
-    private final UserService userService;
+    private final UserUseCase userUseCase;
 
     /**
      * 내 정보 조회(토큰기반) API
-     *
      * @return status, message, data { UserResponse }
-     *
-     * */
+     */
     @GetMapping
     public BaseResponseData<UserResponse> getUserByToken() {
         return BaseResponseData.ok(
                 "조회 성공",
-                UserResponse.of(userService.getUser()));
+                userUseCase.get());
     }
 
 }
