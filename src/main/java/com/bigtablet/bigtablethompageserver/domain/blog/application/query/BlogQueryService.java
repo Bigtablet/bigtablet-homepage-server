@@ -1,6 +1,8 @@
 package com.bigtablet.bigtablethompageserver.domain.blog.application.query;
 
+import com.bigtablet.bigtablethompageserver.domain.blog.domain.entity.BlogEntity;
 import com.bigtablet.bigtablethompageserver.domain.blog.domain.model.Blog;
+import com.bigtablet.bigtablethompageserver.domain.blog.domain.repository.jpa.BlogJpaRepository;
 import com.bigtablet.bigtablethompageserver.domain.blog.domain.repository.query.BlogQueryRepository;
 import com.bigtablet.bigtablethompageserver.domain.blog.exception.BlogNotFoundException;
 import com.bigtablet.bigtablethompageserver.global.common.dto.request.PageRequest;
@@ -11,26 +13,24 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class BlogQueryService{
+public class BlogQueryService {
 
+    private final BlogJpaRepository blogJpaRepository;
     private final BlogQueryRepository blogQueryRepository;
 
-    public List<Blog> getAllBlogList(int page, int size) {
-        List<Blog> blogs = blogQueryRepository.findAll(page, size);
-        checkListIsEmpty(blogs);
-        return blogs;
+    public Blog find(Long idx) {
+        BlogEntity entity = blogJpaRepository
+                .findById(idx)
+                .orElseThrow(() -> BlogNotFoundException.EXCEPTION);
+        return Blog.of(entity);
     }
 
-    public List<Blog> searchBlogByTitle(int page, int size, String title) {
-        List<Blog> blogs = blogQueryRepository.findAllByTitle(page, size, title);
-        checkListIsEmpty(blogs);
-        return blogs;
+    public List<Blog> findAll(int page, int size) {
+        return blogQueryRepository.findAll(page, size);
     }
 
-    public void checkListIsEmpty(List<Blog> blogList) {
-        if (blogList == null || blogList.isEmpty()) {
-            throw BlogNotFoundException.EXCEPTION;
-        }
+    public List<Blog> findAllByTitle(int page, int size, String title) {
+        return blogQueryRepository.findAllByTitle(page, size, title);
     }
 
 }
