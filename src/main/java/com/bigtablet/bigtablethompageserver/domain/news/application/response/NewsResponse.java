@@ -11,6 +11,7 @@ public record NewsResponse(
         String titleKr,
         String titleEn,
         String newsUrl,
+        String thumbnailImageUrl,
         LocalDateTime createdAt,
         LocalDateTime modifiedAt
 ) {
@@ -20,6 +21,7 @@ public record NewsResponse(
                 .titleKr(news.titleKr())
                 .titleEn(news.titleEn())
                 .newsUrl(news.newsUrl())
+                .thumbnailImageUrl(news.thumbnailImageUrl())
                 .createdAt(news.createdAt())
                 .modifiedAt(news.modifiedAt())
                 .build();

@@ -11,5 +11,7 @@ public record EditNewsRequest(
         @NotBlank
         String titleEn,
         @NotBlank
-        String newsUrl
+        String newsUrl,
+        @NotBlank
+        String thumbnailImageUrl
 ) {}

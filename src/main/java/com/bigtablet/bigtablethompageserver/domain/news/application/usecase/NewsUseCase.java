@@ -27,7 +27,8 @@ public class NewsUseCase {
         newsService.save(
                 request.titleKr(),
                 request.titleEn(),
-                request.newsUrl()
+                request.newsUrl(),
+                request.thumbnailImageUrl()
         );
     }
 
@@ -52,7 +53,8 @@ public class NewsUseCase {
                 request.idx(),
                 request.titleKr(),
                 request.titleEn(),
-                request.newsUrl()
+                request.newsUrl(),
+                request.thumbnailImageUrl()
         );
     }
 

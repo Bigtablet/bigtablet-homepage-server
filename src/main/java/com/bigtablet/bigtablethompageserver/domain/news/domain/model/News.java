@@ -11,6 +11,7 @@ public record News(
         String titleKr,
         String titleEn,
         String newsUrl,
+        String thumbnailImageUrl,
         LocalDateTime createdAt,
         LocalDateTime modifiedAt
 ) {
@@ -20,6 +21,7 @@ public record News(
                 .titleKr(entity.getTitleKr())
                 .titleEn(entity.getTitleEn())
                 .newsUrl(entity.getNewsUrl())
+                .thumbnailImageUrl(entity.getThumbnailImageUrl())
                 .createdAt(entity.getCreatedAt())
                 .modifiedAt(entity.getModifiedAt())
                 .build();

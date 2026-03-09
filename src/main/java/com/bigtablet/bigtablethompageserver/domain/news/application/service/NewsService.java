@@ -16,20 +16,21 @@ public class NewsService {
     private final NewsJpaRepository newsJpaRepository;
 
     @Transactional
-    public void save(String titleKr, String titleEn, String newsUrl) {
+    public void save(String titleKr, String titleEn, String newsUrl, String thumbnailImageUrl) {
         log.info("[NewsService] save - titleKr={}", titleKr);
         newsJpaRepository.save(NewsEntity.builder()
                 .titleKr(titleKr)
                 .titleEn(titleEn)
                 .newsUrl(newsUrl)
+                .thumbnailImageUrl(thumbnailImageUrl)
                 .build());
     }
 
     @Transactional
-    public void edit(Long idx, String titleKr, String titleEn, String newsUrl) {
+    public void edit(Long idx, String titleKr, String titleEn, String newsUrl, String thumbnailImageUrl) {
         log.info("[NewsService] edit - idx={}", idx);
         NewsEntity entity = getNewsEntity(idx);
-        entity.editNews(titleKr, titleEn, newsUrl);
+        entity.editNews(titleKr, titleEn, newsUrl, thumbnailImageUrl);
     }
 
     @Transactional
