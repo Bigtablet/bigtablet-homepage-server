@@ -23,17 +23,13 @@ public class JobScheduler {
 	@Transactional
 	@Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
 	public void deactivateEndedJobs() {
-		LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
-		List<JobEntity> jobsEnded = jobJpaRepository.findAll().stream()
-				.filter(j -> j.getEndDate() != null
-						&& j.getEndDate().plusDays(1).isEqual(today))
-				.toList();
+		LocalDate yesterday = LocalDate.now(ZoneId.of("Asia/Seoul")).minusDays(1);
+		List<JobEntity> jobsEnded = jobJpaRepository.findAllByIsActiveTrueAndEndDate(yesterday);
 		if (!jobsEnded.isEmpty()) {
-			jobsEnded.forEach(j -> j.deactivate());
+			jobsEnded.forEach(JobEntity::deactivate);
 			jobJpaRepository.saveAll(jobsEnded);
 			log.info("[JobScheduler] deactivateEndedJobs - count={}, time={}", jobsEnded.size(), LocalDateTime.now());
 		}
-		log.info("[JobScheduler] deactivateEndedJobs - completed, time={}", LocalDateTime.now());
 	}
 
 }

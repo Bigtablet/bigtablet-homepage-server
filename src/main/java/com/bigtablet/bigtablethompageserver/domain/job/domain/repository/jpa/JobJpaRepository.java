@@ -6,6 +6,7 @@ import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Education;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.RecruitType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface JobJpaRepository extends JpaRepository<JobEntity, Long> {
@@ -21,5 +22,7 @@ public interface JobJpaRepository extends JpaRepository<JobEntity, Long> {
     List<JobEntity> findAllByRecruitTypeAndIsActiveTrue(RecruitType recruitType);
 
     List<JobEntity> findAllByIsActiveFalseOrderByCreatedAtDesc();
+
+    List<JobEntity> findAllByIsActiveTrueAndEndDate(LocalDate endDate);
 
 }
