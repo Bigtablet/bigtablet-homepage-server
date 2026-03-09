@@ -1,27 +1,23 @@
 package com.bigtablet.bigtablethompageserver.domain.news.application.service;
 
 import com.bigtablet.bigtablethompageserver.domain.news.domain.entity.NewsEntity;
-import com.bigtablet.bigtablethompageserver.domain.news.domain.model.News;
 import com.bigtablet.bigtablethompageserver.domain.news.domain.repository.jpa.NewsJpaRepository;
 import com.bigtablet.bigtablethompageserver.domain.news.exception.NewsNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class NewsService {
 
     private final NewsJpaRepository newsJpaRepository;
 
-    public void save(
-            String titleKr,
-            String titleEn,
-            String newsUrl,
-            String thumbnailImageUrl
-    ) {
+    @Transactional
+    public void save(String titleKr, String titleEn, String newsUrl, String thumbnailImageUrl) {
+        log.info("[NewsService] save - titleKr={}", titleKr);
         newsJpaRepository.save(NewsEntity.builder()
                 .titleKr(titleKr)
                 .titleEn(titleEn)
@@ -30,30 +26,16 @@ public class NewsService {
                 .build());
     }
 
-    public News findById(Long idx) {
-        NewsEntity entity = getNewsEntity(idx);
-        return News.of(entity);
-    }
-
     @Transactional
-    public void update(
-            Long idx,
-            String titleKr,
-            String titleEn,
-            String newsUrl,
-            String thumbnailImageUrl
-    ) {
+    public void edit(Long idx, String titleKr, String titleEn, String newsUrl, String thumbnailImageUrl) {
+        log.info("[NewsService] edit - idx={}", idx);
         NewsEntity entity = getNewsEntity(idx);
-        entity.update(
-                titleKr,
-                titleEn,
-                newsUrl,
-                thumbnailImageUrl
-        );
+        entity.editNews(titleKr, titleEn, newsUrl, thumbnailImageUrl);
     }
 
     @Transactional
     public void delete(Long idx) {
+        log.info("[NewsService] delete - idx={}", idx);
         NewsEntity entity = getNewsEntity(idx);
         newsJpaRepository.deleteById(entity.getIdx());
     }

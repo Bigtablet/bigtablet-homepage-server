@@ -35,7 +35,7 @@ public class NewsEntity extends BaseEntity {
     @Column(nullable = false)
     private String thumbnailImageUrl;
 
-    public void update(
+    public void editNews(
             String titleKr,
             String titleEn,
             String newsUrl,

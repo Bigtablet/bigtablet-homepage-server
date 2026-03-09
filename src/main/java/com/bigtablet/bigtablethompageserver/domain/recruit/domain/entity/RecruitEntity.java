@@ -15,7 +15,6 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 @Entity
@@ -78,9 +77,20 @@ public class RecruitEntity extends BaseEntity {
 
     private String attachment3;
 
-    @Setter
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    public void editStatus(Status status) {
+        this.status = status;
+    }
+
+    public void accept() {
+        this.status = Status.ACCEPTED;
+    }
+
+    public void reject() {
+        this.status = Status.REJECTED;
+    }
 
 }

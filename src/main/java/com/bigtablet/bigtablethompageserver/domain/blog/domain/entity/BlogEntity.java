@@ -10,7 +10,6 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 @Entity
@@ -39,10 +38,13 @@ public class BlogEntity extends BaseEntity {
     @Column(nullable = false)
     private String imageUrl;
 
-    @Setter
     private int views;
 
-    public void update(
+    public void addViews() {
+        this.views++;
+    }
+
+    public void editBlog(
             String titleKr,
             String titleEn,
             String contentKr,

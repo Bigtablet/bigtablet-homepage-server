@@ -5,20 +5,14 @@ import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Department;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Education;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Location;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.RecruitType;
-import com.bigtablet.bigtablethompageserver.domain.job.domain.model.Job;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.repository.jpa.JobJpaRepository;
-import com.bigtablet.bigtablethompageserver.domain.job.exception.JobIsExpiredException;
 import com.bigtablet.bigtablethompageserver.domain.job.exception.JobNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -27,7 +21,8 @@ public class JobService {
 
     private final JobJpaRepository jobJpaRepository;
 
-    public void saveJob(
+    @Transactional
+    public void save(
             String title,
             Department department,
             Location location,
@@ -42,6 +37,7 @@ public class JobService {
             LocalDate startDate,
             LocalDate endDate
     ) {
+        log.info("[JobService] save - title={}", title);
         jobJpaRepository.save(JobEntity.builder()
                 .title(title)
                 .department(department)
@@ -60,19 +56,8 @@ public class JobService {
                 .build());
     }
 
-    public Job findById(Long idx) {
-        JobEntity entity = jobJpaRepository
-                .findById(idx)
-                .orElseThrow(() -> JobNotFoundException.EXCEPTION);
-        return Job.of(entity);
-    }
-
-    public void deleteById(Long idx) {
-        jobJpaRepository.deleteById(idx);
-    }
-
     @Transactional
-    public void updateJob(
+    public void edit(
             Long idx,
             String title,
             Department department,
@@ -88,10 +73,11 @@ public class JobService {
             LocalDate startDate,
             LocalDate endDate
     ) {
+        log.info("[JobService] edit - idx={}", idx);
         JobEntity entity = jobJpaRepository
                 .findById(idx)
                 .orElseThrow(() -> JobNotFoundException.EXCEPTION);
-        entity.update(
+        entity.editJob(
                 title,
                 department,
                 location,
@@ -109,33 +95,18 @@ public class JobService {
     }
 
     @Transactional
-    public void deactivateJob(Long idx) {
+    public void deactivate(Long idx) {
+        log.info("[JobService] deactivate - idx={}", idx);
         jobJpaRepository
                 .findById(idx)
                 .orElseThrow(() -> JobNotFoundException.EXCEPTION)
                 .deactivate();
     }
 
-    public void checkJobIsExpired(Job job) {
-        if (!job.isActive()) {
-            throw JobIsExpiredException.EXCEPTION;
-        }
-    }
-
     @Transactional
-    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
-    public void deactivateEndedJobs() {
-        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
-        List<JobEntity> jobsEnded = jobJpaRepository.findAll().stream()
-                .filter(j -> j.getEndDate() != null
-                        && j.getEndDate().plusDays(1).isEqual(today))
-                .toList();
-        if (!jobsEnded.isEmpty()) {
-            jobsEnded.forEach(j -> j.setActive(false));
-            jobJpaRepository.saveAll(jobsEnded);
-            log.info("🔥 {} | Deactivated ended jobs : {}", LocalDateTime.now(), jobsEnded.size());
-        }
-        log.info("✅ {} | End scheduled job", LocalDateTime.now());
+    public void delete(Long idx) {
+        log.info("[JobService] delete - idx={}", idx);
+        jobJpaRepository.deleteById(idx);
     }
 
 }

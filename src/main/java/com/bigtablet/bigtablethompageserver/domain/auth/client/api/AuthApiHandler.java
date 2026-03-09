@@ -8,32 +8,29 @@ import com.bigtablet.bigtablethompageserver.domain.auth.client.request.EmailSend
 import com.bigtablet.bigtablethompageserver.domain.auth.client.request.RefreshTokenRequest;
 import com.bigtablet.bigtablethompageserver.domain.auth.client.request.SignInRequest;
 import com.bigtablet.bigtablethompageserver.domain.auth.client.request.SignUpRequest;
+import com.bigtablet.bigtablethompageserver.global.common.annotation.RestApiHandler;
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponse;
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponseData;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@Validated
 @RequiredArgsConstructor
-@RequestMapping("/auth")
+@RestApiHandler("/auth")
 public class AuthApiHandler {
 
     private final AuthUseCase authUseCase;
 
     /**
      * 회원가입 API
-     *
      * @param request SignUpRequest
-     *
      * @return status, message
-     *
-     * */
+     */
     @PostMapping("/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
     public BaseResponse signUp(@RequestBody @Valid final SignUpRequest request) {
@@ -43,12 +40,9 @@ public class AuthApiHandler {
 
     /**
      * 로그인 API
-     *
-     * @param request email, password
-     *
+     * @param request SignInRequest email, password
      * @return status, message, data { JsonWebTokenResponse }
-     *
-     * */
+     */
     @PostMapping("/sign-in")
     public BaseResponseData<JsonWebTokenResponse> signIn(@RequestBody @Valid final SignInRequest request) {
         return BaseResponseData.ok(
@@ -59,12 +53,9 @@ public class AuthApiHandler {
 
     /**
      * 토큰 재발급 API
-     *
      * @param request RefreshTokenRequest
-     *
      * @return status, message, data { RefreshTokenResponse }
-     *
-     * */
+     */
     @PostMapping("/refresh")
     public BaseResponseData<RefreshTokenResponse> refresh(@RequestBody @Valid final RefreshTokenRequest request) {
         return BaseResponseData.ok(
@@ -75,12 +66,9 @@ public class AuthApiHandler {
 
     /**
      * 이메일 전송 API
-     *
-     * @param request email
-     *
+     * @param request EmailSendRequest email
      * @return status, message
-     *
-     * */
+     */
     @PostMapping("/email")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponse sendEmail(@RequestBody @Valid final EmailSendRequest request) {
@@ -90,12 +78,9 @@ public class AuthApiHandler {
 
     /**
      * 인증번호 확인 API
-     *
-     * @param request email, authCode
-     *
+     * @param request EmailCheckRequest email, authCode
      * @return status, message
-     *
-     * */
+     */
     @PostMapping("/email/check")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponse checkEmail(@RequestBody @Valid final EmailCheckRequest request) {

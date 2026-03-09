@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: "21"
+          distribution: "temurin"
+
+      - name: Set application.yml values
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: src/main/resources/application.yml
+        env:
+          spring.security.user.name: ${{ secrets.SECURITY_USER_NAME }}
+          spring.security.user.password: ${{ secrets.SECURITY_USER_PASSWORD }}
+          spring.datasource.url: ${{ secrets.DB_URL }}
+          spring.datasource.username: ${{ secrets.DB_USERNAME }}
+          spring.datasource.password: ${{ secrets.DB_PASSWORD }}
+          application.jwt.secretKey: ${{ secrets.JWT_SECRET_KEY }}
+          spring.mail.port: ${{ secrets.SMTP_PORT }}
+          spring.mail.email_noreply: ${{ secrets.SMTP_EMAIL_NOREPLY }}
+          spring.mail.password_noreply: ${{ secrets.SMTP_PASSWORD_NOREPLY }}
+          spring.mail.email_recruit: ${{ secrets.SMTP_EMAIL_RECRUIT }}
+          spring.mail.password_recruit: ${{ secrets.SMTP_PASSWORD_RECRUIT }}
+          spring.data.redis.host: ${{ secrets.REDIS_HOST }}
+          spring.data.redis.port: ${{ secrets.REDIS_PORT }}
+          spring.data.redis.password: ${{ secrets.REDIS_PASSWORD }}
+          slack.webhook-url: ${{ secrets.SLACK_WEBHOOK }}
+
+      - name: Create GCP Service Account Key File
+        run: |
+          mkdir -p src/main/resources
+          echo '${{ secrets.GCP_SERVICE_KEY }}' > src/main/resources/bigtablet-homepage-ffe77aff799f.json
+
+      - name: chmod gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build with Gradle
+        run: |
+          set -euo pipefail
+          ./gradlew --no-daemon --stacktrace build -x test

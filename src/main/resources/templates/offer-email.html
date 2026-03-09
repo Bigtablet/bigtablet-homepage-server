@@ -13,7 +13,8 @@
             .pad-footer { padding: 24px 20px !important; }
             .h1 { font-size: 22px !important; line-height: 1.25 !important; }
             .h2 { font-size: 18px !important; line-height: 1.25 !important; }
-            .p-base { font-size: 14px !important; line-height: 1.5 !important; }
+            .p-base { margin: 0; padding: 0; font-size: 14px !important; line-height: 1.2; !important; }
+            .p-thank { display: flex; flex-direction: column; gap: 16px }
         }
         .highlight { font-weight: bold; color: #2563eb; }
         .muted { color: #6B7280; }
@@ -55,7 +56,7 @@
                 <tr>
                     <td align="center" style="padding:16px 40px 10px 40px;">
                         <p class="p-base" style="font-family:Arial, sans-serif;color:#374151;font-size:16px;line-height:1.6;text-align:left;">
-                            안녕하세요, <strong th:text="${name}">홍길동</strong>님.<br><br>
+                            안녕하세요, <strong th:text="${name}">홍길동</strong>님.<br>
                             Bigtablet, Inc.에서 <span th:text="${name}">홍길동</span>님께 <span class="highlight">채용 제안</span>을 드리고자 합니다.
                         </p>
 
@@ -67,8 +68,16 @@
                         </div>
 
                         <p class="p-base" style="font-family:Arial, sans-serif;color:#374151;font-size:16px;line-height:1.6;text-align:left;">
-                            긍정적인 답변 기다리겠습니다, 감사합니다.
+                            긍정적인 답변 기다리겠습니다.
                         </p>
+                        <div class="p-thank">
+                            <p style="margin: 0; font-family:Arial, sans-serif;color:#374151;font-size:16px;line-height:1.6;text-align:left;">
+                                감사합니다.
+                            </p>
+                            <p style="margin: 0; font-family:Arial, sans-serif;color:#374151;font-size:16px;line-height:1.6;text-align:left;">
+                                주식회사 빅태블릿 드림.
+                            </p>
+                        </div>
 
                         <hr class="hr">
                     </td>
@@ -78,7 +87,7 @@
                 <tr>
                     <td class="pad-note" style="padding:20px 20px;text-align:center;">
                         <p class="p-base" style="margin:0;font-family:Arial, sans-serif;font-size:14px;color:#6B7280;line-height:1.5;">
-                            문의사항은 아래 이메일로 연락해 주세요.<br>
+                            문의 사항은 아래 이메일로 연락해 주세요.<br>
                             <a href="mailto:recruit@bigtablet.com" style="color:#111827;text-decoration:underline;">
                                 recruit@bigtablet.com
                             </a>
@@ -90,7 +99,7 @@
                 <tr>
                     <td class="pad-footer" style="padding:40px;text-align:center;">
                         <p style="margin:0;font-family:Arial, sans-serif;font-size:12px;color:#9CA3AF;">
-                            © 2025 Bigtablet, Inc.
+                            © 2026 Bigtablet, Inc.
                         </p>
                     </td>
                 </tr>

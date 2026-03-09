@@ -1,4 +1,4 @@
-name: Release CI/CD using GitHub Actions & Docker
+name: Deploy prod
 
 on:
   push:
@@ -10,10 +10,10 @@ permissions:
   id-token: write
 
 jobs:
-  release:
+  build:
     runs-on: ubuntu-latest
-    env:
-      IMAGE: ${{ secrets.DOCKER_USERNAME }}/bigtablet-homepage-server
+    outputs:
+      version: ${{ steps.version.outputs.tag }}
 
     steps:
       - name: Checkout
@@ -66,7 +66,34 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build with Gradle
-        run: ./gradlew bootJar
+        id: gradle
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./gradlew --no-daemon --stacktrace bootJar 2>&1 | tee gradle.log
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-jar
+          path: build/libs/*.jar
+          retention-days: 1
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: build
+    env:
+      IMAGE: ${{ secrets.DOCKER_USERNAME }}/bigtablet-homepage-server
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-jar
+          path: build/libs
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -75,7 +102,7 @@ jobs:
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Build & Push image with SBOM & provenance
-        id: build
+        id: docker_build
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -83,7 +110,7 @@ jobs:
           push: true
           platforms: linux/amd64
           tags: |
-            ${{ env.IMAGE }}:${{ steps.version.outputs.tag }}
+            ${{ env.IMAGE }}:${{ needs.build.outputs.version }}
           provenance: true
           sbom: true
           cache-from: type=gha
@@ -94,9 +121,17 @@ jobs:
 
       - name: Sign image (keyless)
         run: |
-          cosign sign --yes "$IMAGE@${{ steps.build.outputs.digest }}"
+          cosign sign --yes "$IMAGE@${{ steps.docker_build.outputs.digest }}"
 
-      - name: Deploy to prod (SSH)
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build, docker]
+    environment: production
+    env:
+      IMAGE: ${{ secrets.DOCKER_USERNAME }}/bigtablet-homepage-server
+
+    steps:
+      - name: Deploy to prod server
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST_PROD }}
@@ -106,8 +141,82 @@ jobs:
           envs: IMAGE
           script: |
             set -e
-            VERSION=${{ steps.version.outputs.tag }}
+            VERSION=${{ needs.build.outputs.version }}
             docker pull $IMAGE:$VERSION
             docker rm -f bigtablet-homepage-server 2>/dev/null || true
-            docker run -d --name bigtablet-homepage-server --restart unless-stopped --network host -e SERVER_ADDRESS=127.0.0.1 -e SERVER_PORT=8080 $IMAGE:$VERSION
+            docker run -d --name bigtablet-homepage-server --restart unless-stopped --network host \
+              -e SERVER_ADDRESS=127.0.0.1 \
+              -e SERVER_PORT=8080 \
+              $IMAGE:$VERSION
             docker image prune -af || true
+
+  notify:
+    runs-on: ubuntu-latest
+    needs: [build, docker, deploy]
+    if: always()
+
+    steps:
+      - name: Slack notify (success)
+        if: needs.build.result == 'success' && needs.docker.result == 'success' && needs.deploy.result == 'success'
+        env:
+          GIT_SLACK_WEBHOOK_URL: ${{ secrets.GIT_SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+            --data "$(jq -n \
+              --arg repo "${{ github.repository }}" \
+              --arg tag "${{ needs.build.outputs.version }}" \
+              --arg sha "${{ github.sha }}" \
+              --arg actor "${{ github.actor }}" \
+              --arg img "${{ secrets.DOCKER_USERNAME }}/bigtablet-homepage-server:${{ needs.build.outputs.version }}" \
+              --arg url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+              '{
+                text: "✅ HOMEPAGE SERVER PROD 배포 성공",
+                blocks: [
+                  {
+                    type: "section",
+                    text: {
+                      type: "mrkdwn",
+                      text: "*✅ HOMEPAGE SERVER PROD 배포 성공*\n*Repo:* \($repo)\n*Tag:* \($tag)\n*SHA:* \($sha | .[0:7])\n*Actor:* \($actor)\n*Image:* \($img)\n*Run:* <\($url)|Open Actions Run>"
+                    }
+                  }
+                ]
+              }')" \
+            "$GIT_SLACK_WEBHOOK_URL"
+
+      - name: Slack notify (failure)
+        if: needs.build.result == 'failure' || needs.docker.result == 'failure' || needs.deploy.result == 'failure'
+        env:
+          GIT_SLACK_WEBHOOK_URL: ${{ secrets.GIT_SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+            --data "$(jq -n \
+              --arg repo "${{ github.repository }}" \
+              --arg tag "${{ needs.build.outputs.version }}" \
+              --arg sha "${{ github.sha }}" \
+              --arg actor "${{ github.actor }}" \
+              --arg url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+              --arg build_result "${{ needs.build.result }}" \
+              --arg docker_result "${{ needs.docker.result }}" \
+              --arg deploy_result "${{ needs.deploy.result }}" \
+              '{
+                text: "❌ HOMEPAGE SERVER PROD 배포 실패",
+                blocks: [
+                  {
+                    type: "section",
+                    text: {
+                      type: "mrkdwn",
+                      text: ("*❌ HOMEPAGE SERVER PROD 배포 실패*\n"
+                            + "*Repo:* \($repo)\n"
+                            + "*Tag:* \($tag)\n"
+                            + "*SHA:* \($sha[0:7])\n"
+                            + "*Actor:* \($actor)\n"
+                            + "*Run:* <\($url)|Open Actions Run>\n\n"
+                            + "*Step results*\n"
+                            + "• Build: `\($build_result)`\n"
+                            + "• Docker: `\($docker_result)`\n"
+                            + "• Deploy: `\($deploy_result)`")
+                    }
+                  }
+                ]
+              }')" \
+            "$GIT_SLACK_WEBHOOK_URL"
