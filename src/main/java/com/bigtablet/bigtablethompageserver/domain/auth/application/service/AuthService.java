@@ -13,9 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -62,7 +62,7 @@ public class AuthService {
         log.info("[AuthService] createRandomNum - email={}", email);
         Optional.ofNullable(redisRepository.getByKey(email, String.class))
                 .ifPresent(value -> redisRepository.delete(email));
-        Random r = new Random();
+        SecureRandom r = new SecureRandom();
         StringBuilder randomNumber = new StringBuilder();
         for (int i = 0; i < 6; i++) {
             randomNumber.append(r.nextInt(10));
