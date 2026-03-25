@@ -17,6 +17,11 @@ public record BlogResponse(
         LocalDateTime createdAt,
         LocalDateTime modifiedAt
 ) {
+    /**
+     * Blog 도메인 객체를 BlogResponse로 변환합니다.
+     * @param blog Blog 변환할 도메인 객체
+     * @return BlogResponse 변환된 응답 DTO
+     */
     public static BlogResponse of(Blog blog) {
         return BlogResponse.builder()
                 .idx(blog.idx())

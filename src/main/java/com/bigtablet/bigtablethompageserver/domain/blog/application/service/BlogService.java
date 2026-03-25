@@ -15,6 +15,15 @@ public class BlogService {
 
     private final BlogJpaRepository blogJpaRepository;
 
+    /**
+     * 블로그 저장
+     * @param titleKr String 한국어 제목
+     * @param titleEn String 영어 제목
+     * @param contentKr String 한국어 내용
+     * @param contentEn String 영어 내용
+     * @param imageUrl String 이미지 URL
+     * @return void
+     */
     @Transactional
     public void save(String titleKr, String titleEn, String contentKr, String contentEn, String imageUrl) {
         log.info("[BlogService] save - titleKr={}", titleKr);
@@ -28,6 +37,16 @@ public class BlogService {
                 .build());
     }
 
+    /**
+     * 블로그 수정
+     * @param idx Long 블로그 ID
+     * @param titleKr String 한국어 제목
+     * @param titleEn String 영어 제목
+     * @param contentKr String 한국어 내용
+     * @param contentEn String 영어 내용
+     * @param imageUrl String 이미지 URL
+     * @return void
+     */
     @Transactional
     public void edit(Long idx, String titleKr, String titleEn, String contentKr, String contentEn, String imageUrl) {
         log.info("[BlogService] edit - idx={}", idx);
@@ -35,6 +54,11 @@ public class BlogService {
         entity.editBlog(titleKr, titleEn, contentKr, contentEn, imageUrl);
     }
 
+    /**
+     * 블로그 조회수 증가
+     * @param idx Long 블로그 ID
+     * @return void
+     */
     @Transactional
     public void addViews(Long idx) {
         log.info("[BlogService] addViews - idx={}", idx);
@@ -42,6 +66,11 @@ public class BlogService {
         entity.addViews();
     }
 
+    /**
+     * 블로그 삭제
+     * @param idx Long 블로그 ID
+     * @return void
+     */
     @Transactional
     public void delete(Long idx) {
         log.info("[BlogService] delete - idx={}", idx);
@@ -51,6 +80,11 @@ public class BlogService {
         blogJpaRepository.deleteById(entity.getIdx());
     }
 
+    /**
+     * ID로 BlogEntity 조회 (비관적 락)
+     * @param idx Long 블로그 ID
+     * @return BlogEntity 블로그 엔티티
+     */
     private BlogEntity getBlogEntity(Long idx) {
         return blogJpaRepository
                 .findByIdxForUpdate(idx)
