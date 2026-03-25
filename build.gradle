@@ -26,6 +26,7 @@ repositories {
 
 ext {
     querydslVersion = "7.1"
+    set('spring-security.version', '7.0.4')
 }
 
 dependencies {
