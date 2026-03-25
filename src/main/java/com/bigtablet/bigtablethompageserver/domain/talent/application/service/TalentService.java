@@ -17,6 +17,15 @@ public class TalentService {
 
     private final TalentJpaRepository talentJpaRepository;
 
+    /**
+     * 인재풀 등록
+     * @param email String 이메일
+     * @param name String 이름
+     * @param department String 부서
+     * @param portfolioUrl String 포트폴리오 URL
+     * @param etcUrl List<String> 기타 URL 목록
+     * @return void
+     */
     @Transactional
     public void save(
             String email,
@@ -36,6 +45,12 @@ public class TalentService {
                 .build());
     }
 
+    /**
+     * 인재 활성 상태 변경
+     * @param idx Long 인재 ID
+     * @param isActive boolean 활성 여부
+     * @return void
+     */
     @Transactional
     public void editActive(Long idx, boolean isActive) {
         log.info("[TalentService] editActive - idx={}, isActive={}", idx, isActive);
