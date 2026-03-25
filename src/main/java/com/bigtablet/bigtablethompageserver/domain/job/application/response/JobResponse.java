@@ -30,6 +30,11 @@ public record JobResponse(
         LocalDateTime createdAt,
         LocalDateTime modifiedAt
 ) {
+    /**
+     * Job 도메인 객체를 JobResponse로 변환합니다.
+     * @param job Job 변환할 도메인 객체
+     * @return JobResponse 변환된 응답 DTO
+     */
     public static JobResponse of(Job job) {
         return JobResponse.builder()
                 .idx(job.idx())

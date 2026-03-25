@@ -20,6 +20,9 @@ public class JobScheduler {
 
 	private final JobJpaRepository jobJpaRepository;
 
+	/**
+	 * 마감일이 지난 채용 공고를 자동 비활성화하는 스케줄러 (매일 자정 실행)
+	 */
 	@Transactional
 	@Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
 	public void deactivateEndedJobs() {
