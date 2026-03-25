@@ -13,6 +13,11 @@ public record User(
         LocalDateTime createdAt,
         LocalDateTime modifiedAt
 ) {
+    /**
+     * UserEntity를 User 도메인 객체로 변환합니다.
+     * @param entity UserEntity 변환할 엔티티
+     * @return User 변환된 도메인 객체
+     */
     public static User of(UserEntity entity) {
         return User.builder()
                 .email(entity.getEmail())

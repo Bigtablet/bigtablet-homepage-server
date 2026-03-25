@@ -14,6 +14,10 @@ public class UserUseCase {
 
     private final UserQueryService userQueryService;
 
+    /**
+     * 현재 로그인한 유저 프로필 조회 (토큰 기반)
+     * @return UserResponse 유저 응답
+     */
     public UserResponse get() {
         log.info("[UserUseCase] get - by token");
         User user = userQueryService.find();
