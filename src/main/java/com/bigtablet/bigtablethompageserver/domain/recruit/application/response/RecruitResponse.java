@@ -33,6 +33,11 @@ public record RecruitResponse(
         LocalDateTime createdAt,
         LocalDateTime modifiedAt
 ) {
+    /**
+     * Recruit 도메인 객체를 RecruitResponse로 변환합니다.
+     * @param recruit Recruit 변환할 도메인 객체
+     * @return RecruitResponse 변환된 응답 DTO
+     */
     public static RecruitResponse of(Recruit recruit) {
         return RecruitResponse.builder()
                 .idx(recruit.idx())
