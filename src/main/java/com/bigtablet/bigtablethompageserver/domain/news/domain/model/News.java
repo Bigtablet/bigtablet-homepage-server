@@ -15,6 +15,11 @@ public record News(
         LocalDateTime createdAt,
         LocalDateTime modifiedAt
 ) {
+    /**
+     * NewsEntity를 News 도메인 객체로 변환합니다.
+     * @param entity NewsEntity 변환할 엔티티
+     * @return News 변환된 도메인 객체
+     */
     public static News of(NewsEntity entity) {
         return News.builder()
                 .idx(entity.getIdx())
