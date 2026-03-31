@@ -69,7 +69,7 @@ public class NewsService {
      */
     private NewsEntity getNewsEntity(Long idx) {
         return newsJpaRepository
-                .findByIdx(idx)
+                .findById(idx)
                 .orElseThrow(() -> NewsNotFoundException.EXCEPTION);
     }
 

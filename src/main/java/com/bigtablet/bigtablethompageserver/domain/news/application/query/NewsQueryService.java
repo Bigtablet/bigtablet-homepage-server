@@ -24,7 +24,7 @@ public class NewsQueryService {
      */
     public News find(Long idx) {
         NewsEntity entity = newsJpaRepository
-                .findByIdx(idx)
+                .findById(idx)
                 .orElseThrow(() -> NewsNotFoundException.EXCEPTION);
         return News.of(entity);
     }
