@@ -55,7 +55,7 @@ public class TalentService {
     public void editActive(Long idx, boolean isActive) {
         log.info("[TalentService] editActive - idx={}, isActive={}", idx, isActive);
         TalentEntity entity = talentJpaRepository
-                .findByIdx(idx)
+                .findById(idx)
                 .orElseThrow(() -> TalentNotFoundException.EXCEPTION);
         if (isActive) {
             entity.activate();

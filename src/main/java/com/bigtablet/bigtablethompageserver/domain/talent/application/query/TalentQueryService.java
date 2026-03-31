@@ -24,7 +24,7 @@ public class TalentQueryService {
      */
     public Talent find(Long idx) {
         return talentJpaRepository
-                .findByIdx(idx)
+                .findById(idx)
                 .map(Talent::of)
                 .orElseThrow(() -> TalentNotFoundException.EXCEPTION);
     }

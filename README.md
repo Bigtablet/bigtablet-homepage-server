@@ -1,6 +1,6 @@
 # Bigtablet Homepage Server
 ### This project was developed using the following technologies.
-- **Spring Boot** (4.0.0)
+- **Spring Boot** (4.0.4)
 - **Java** (21)
 - **MySQL** (8.0)
 ---
@@ -15,16 +15,16 @@
      ```bash
       ./gradlew build
       ./gradlew bootRun
-      java -jar build/libs/bigtablet-homepage-server-1.5.8.jar
+      java -jar build/libs/bigtablet-homepage-server-1.5.11.jar
      ```
    - If you're on Window
      ```bash
       gradlew build
       gradlew bootRun
-      java -jar build/libs/bigtablet-homepage-server-1.5.8.jar
+      java -jar build/libs/bigtablet-homepage-server-1.5.11.jar
      ```
 4. If a port conflict occurs on port 8080, change the port number at the end of the command below to one that is not in use, and then run it.
    ```bash
-   java -jar build/libs/bigtablet-homepage-server-1.5.8.jar --server.port=[port number]
+   java -jar build/libs/bigtablet-homepage-server-1.5.11.jar --server.port=[port number]
    ```
   
