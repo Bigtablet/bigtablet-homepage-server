@@ -15,6 +15,14 @@ public class NewsService {
 
     private final NewsJpaRepository newsJpaRepository;
 
+    /**
+     * 뉴스 저장
+     * @param titleKr String 한국어 제목
+     * @param titleEn String 영어 제목
+     * @param newsUrl String 뉴스 URL
+     * @param thumbnailImageUrl String 썸네일 이미지 URL
+     * @return void
+     */
     @Transactional
     public void save(String titleKr, String titleEn, String newsUrl, String thumbnailImageUrl) {
         log.info("[NewsService] save - titleKr={}", titleKr);
@@ -26,6 +34,15 @@ public class NewsService {
                 .build());
     }
 
+    /**
+     * 뉴스 수정
+     * @param idx Long 뉴스 ID
+     * @param titleKr String 한국어 제목
+     * @param titleEn String 영어 제목
+     * @param newsUrl String 뉴스 URL
+     * @param thumbnailImageUrl String 썸네일 이미지 URL
+     * @return void
+     */
     @Transactional
     public void edit(Long idx, String titleKr, String titleEn, String newsUrl, String thumbnailImageUrl) {
         log.info("[NewsService] edit - idx={}", idx);
@@ -33,6 +50,11 @@ public class NewsService {
         entity.editNews(titleKr, titleEn, newsUrl, thumbnailImageUrl);
     }
 
+    /**
+     * 뉴스 삭제
+     * @param idx Long 뉴스 ID
+     * @return void
+     */
     @Transactional
     public void delete(Long idx) {
         log.info("[NewsService] delete - idx={}", idx);
@@ -40,6 +62,11 @@ public class NewsService {
         newsJpaRepository.deleteById(entity.getIdx());
     }
 
+    /**
+     * ID로 NewsEntity 조회 (내부용)
+     * @param idx Long 뉴스 ID
+     * @return NewsEntity 뉴스 엔티티
+     */
     private NewsEntity getNewsEntity(Long idx) {
         return newsJpaRepository
                 .findByIdx(idx)

@@ -17,6 +17,11 @@ public record Talent(
         LocalDateTime createdAt,
         LocalDateTime modifiedAt
 ) {
+    /**
+     * TalentEntity를 Talent 도메인 객체로 변환합니다.
+     * @param entity TalentEntity 변환할 엔티티
+     * @return Talent 변환된 도메인 객체
+     */
     public static Talent of(TalentEntity entity) {
         return Talent.builder()
                 .idx(entity.getIdx())

@@ -17,13 +17,16 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserEntity extends BaseEntity {
 
+    // 이메일 (로그인 ID)
     @Id
     @Column(nullable = false, unique = true)
     private String email;
 
+    // 암호화된 비밀번호
     @Column(nullable = false)
     private String password;
 
+    // 사용자 이름
     @Column(nullable = false)
     private String name;
 

@@ -32,6 +32,11 @@ public class RecruitUseCase {
     private final MailTemplateRenderer mailTemplateRenderer;
     private final SlackNotifier slackNotifier;
 
+    /**
+     * 채용 지원 등록 (지원 접수 확인 이메일 + 슬랙 알림 발송)
+     * @param request RegisterRecruitRequest 채용 지원 등록 요청 정보
+     * @return void
+     */
     public void registerRecruit(RegisterRecruitRequest request) {
         log.info("[RecruitUseCase] registerRecruit - jobId={}, name={}", request.jobId(), request.name());
         Job job = jobQueryService.find(request.jobId());
@@ -73,12 +78,21 @@ public class RecruitUseCase {
         }
     }
 
+    /**
+     * 지원서 단건 조회
+     * @param idx Long 지원서 식별자
+     * @return RecruitResponse 지원서 응답
+     */
     public RecruitResponse getRecruit(Long idx) {
         log.info("[RecruitUseCase] getRecruit - idx={}", idx);
         Recruit recruit = recruitQueryService.find(idx);
         return RecruitResponse.of(recruit);
     }
 
+    /**
+     * 전체 지원서 목록 조회
+     * @return List<RecruitResponse> 지원서 응답 목록
+     */
     public List<RecruitResponse> getAllRecruit() {
         log.info("[RecruitUseCase] getAllRecruit");
         List<Recruit> recruits = recruitQueryService.findAll();
@@ -88,6 +102,11 @@ public class RecruitUseCase {
                 .toList();
     }
 
+    /**
+     * 채용 공고별 지원서 목록 조회
+     * @param jobId Long 채용 공고 식별자
+     * @return List<RecruitResponse> 지원서 응답 목록
+     */
     public List<RecruitResponse> getAllRecruitByJobId(Long jobId) {
         log.info("[RecruitUseCase] getAllRecruitByJobId - jobId={}", jobId);
         Job job = jobQueryService.find(jobId);
@@ -98,6 +117,11 @@ public class RecruitUseCase {
                 .toList();
     }
 
+    /**
+     * 상태별 지원서 목록 조회
+     * @param status Status 지원서 상태
+     * @return List<RecruitResponse> 지원서 응답 목록
+     */
     public List<RecruitResponse> getAllRecruitByStatus(Status status) {
         log.info("[RecruitUseCase] getAllRecruitByStatus - status={}", status);
         List<Recruit> recruits = recruitQueryService.findAllByStatus(status);
@@ -107,6 +131,12 @@ public class RecruitUseCase {
                 .toList();
     }
 
+    /**
+     * 상태 및 채용 공고별 지원서 목록 조회
+     * @param status Status 지원서 상태
+     * @param jobId Long 채용 공고 식별자
+     * @return List<RecruitResponse> 지원서 응답 목록
+     */
     public List<RecruitResponse> getAllRecruitByStatusAndJobId(Status status, Long jobId) {
         log.info("[RecruitUseCase] getAllRecruitByStatusAndJobId - status={}, jobId={}", status, jobId);
         Job job = jobQueryService.find(jobId);
@@ -117,6 +147,12 @@ public class RecruitUseCase {
                 .toList();
     }
 
+    /**
+     * 지원서 상태 변경 (면접 안내 이메일 발송)
+     * @param status Status 변경할 지원서 상태
+     * @param idx Long 지원서 식별자
+     * @return void
+     */
     public void editStatus(Status status, Long idx) {
         log.info("[RecruitUseCase] editStatus - idx={}, status={}", idx, status);
         Recruit recruit = recruitQueryService.find(idx);
@@ -129,6 +165,11 @@ public class RecruitUseCase {
         );
     }
 
+    /**
+     * 지원자 최종 합격 처리 (합격 이메일 발송)
+     * @param idx Long 지원서 식별자
+     * @return void
+     */
     public void acceptRecruit(Long idx) {
         log.info("[RecruitUseCase] acceptRecruit - idx={}", idx);
         Recruit recruit = recruitQueryService.find(idx);
@@ -142,6 +183,11 @@ public class RecruitUseCase {
         );
     }
 
+    /**
+     * 지원자 최종 불합격 처리 (불합격 이메일 발송)
+     * @param idx Long 지원서 식별자
+     * @return void
+     */
     public void rejectRecruit(Long idx) {
         log.info("[RecruitUseCase] rejectRecruit - idx={}", idx);
         Recruit recruit = recruitQueryService.find(idx);
@@ -154,6 +200,11 @@ public class RecruitUseCase {
         );
     }
 
+    /**
+     * 지원서 목록 비어있는지 검증
+     * @param recruits List<Recruit> 지원서 도메인 객체 목록
+     * @return void
+     */
     private void checkRecruitsIsEmpty(List<Recruit> recruits) {
         if (recruits.isEmpty()) {
             throw RecruitIsEmptyException.EXCEPTION;

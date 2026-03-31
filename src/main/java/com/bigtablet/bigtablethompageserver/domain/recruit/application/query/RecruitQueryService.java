@@ -17,6 +17,11 @@ public class RecruitQueryService {
 
     private final RecruitJpaRepository recruitJpaRepository;
 
+    /**
+     * ID로 지원서 조회
+     * @param idx Long 지원서 ID
+     * @return Recruit 지원서 도메인 객체
+     */
     public Recruit find(Long idx) {
         RecruitEntity entity = recruitJpaRepository
                 .findById(idx)
@@ -24,6 +29,10 @@ public class RecruitQueryService {
         return Recruit.of(entity);
     }
 
+    /**
+     * 전체 지원서 목록 조회 (최신순)
+     * @return List<Recruit> 지원서 도메인 객체 목록
+     */
     public List<Recruit> findAll() {
         return recruitJpaRepository
                 .findAllByOrderByCreatedAtDesc()
@@ -32,6 +41,11 @@ public class RecruitQueryService {
                 .toList();
     }
 
+    /**
+     * 채용 공고별 지원서 목록 조회 (최신순)
+     * @param jobId Long 채용 공고 ID
+     * @return List<Recruit> 지원서 도메인 객체 목록
+     */
     public List<Recruit> findAllByJobId(Long jobId) {
         return recruitJpaRepository
                 .findAllByJobIdOrderByCreatedAtDesc(jobId)
@@ -40,6 +54,11 @@ public class RecruitQueryService {
                 .toList();
     }
 
+    /**
+     * 상태별 지원서 목록 조회 (오래된순)
+     * @param status Status 지원서 상태
+     * @return List<Recruit> 지원서 도메인 객체 목록
+     */
     public List<Recruit> findAllByStatus(Status status) {
         return recruitJpaRepository
                 .findAllByStatusOrderByCreatedAtAsc(status)
@@ -48,6 +67,12 @@ public class RecruitQueryService {
                 .toList();
     }
 
+    /**
+     * 상태 및 채용 공고별 지원서 목록 조회 (오래된순)
+     * @param status Status 지원서 상태
+     * @param jobId Long 채용 공고 ID
+     * @return List<Recruit> 지원서 도메인 객체 목록
+     */
     public List<Recruit> findAllByStatusAndJobId(Status status, Long jobId) {
         return recruitJpaRepository
                 .findAllByStatusAndJobIdOrderByCreatedAtAsc(status, jobId)
@@ -56,6 +81,11 @@ public class RecruitQueryService {
                 .toList();
     }
 
+    /**
+     * 지원서 상태 검증 (서류 전형 상태인 경우 예외 발생)
+     * @param idx Long 지원서 ID
+     * @return void
+     */
     public void checkStatus(Long idx) {
         RecruitEntity entity = recruitJpaRepository
                 .findById(idx)

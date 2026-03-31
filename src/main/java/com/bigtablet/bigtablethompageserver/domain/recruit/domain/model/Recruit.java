@@ -33,6 +33,11 @@ public record Recruit(
         LocalDateTime createdAt,
         LocalDateTime modifiedAt
 ) {
+    /**
+     * RecruitEntity를 Recruit 도메인 객체로 변환합니다.
+     * @param entity RecruitEntity 변환할 엔티티
+     * @return Recruit 변환된 도메인 객체
+     */
     public static Recruit of(RecruitEntity entity) {
         return Recruit.builder()
                 .idx(entity.getIdx())

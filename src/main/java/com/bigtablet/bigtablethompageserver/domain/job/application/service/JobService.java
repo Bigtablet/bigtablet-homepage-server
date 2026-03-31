@@ -21,6 +21,23 @@ public class JobService {
 
     private final JobJpaRepository jobJpaRepository;
 
+    /**
+     * 채용 공고 저장
+     * @param title String 공고 제목
+     * @param department Department 부서
+     * @param location Location 근무 지역
+     * @param recruitType RecruitType 채용 유형
+     * @param experiment String 경력 요건
+     * @param education Education 학력 요건
+     * @param companyIntroduction String 회사 소개
+     * @param positionIntroduction String 포지션 소개
+     * @param mainResponsibility String 주요 업무
+     * @param qualification String 자격 요건
+     * @param preferredQualification String 우대 사항
+     * @param startDate LocalDate 공고 시작일
+     * @param endDate LocalDate 공고 마감일
+     * @return void
+     */
     @Transactional
     public void save(
             String title,
@@ -56,6 +73,24 @@ public class JobService {
                 .build());
     }
 
+    /**
+     * 채용 공고 수정
+     * @param idx Long 채용 공고 ID
+     * @param title String 공고 제목
+     * @param department Department 부서
+     * @param location Location 근무 지역
+     * @param recruitType RecruitType 채용 유형
+     * @param experiment String 경력 요건
+     * @param education Education 학력 요건
+     * @param companyIntroduction String 회사 소개
+     * @param positionIntroduction String 포지션 소개
+     * @param mainResponsibility String 주요 업무
+     * @param qualification String 자격 요건
+     * @param preferredQualification String 우대 사항
+     * @param startDate LocalDate 공고 시작일
+     * @param endDate LocalDate 공고 마감일
+     * @return void
+     */
     @Transactional
     public void edit(
             Long idx,
@@ -94,6 +129,11 @@ public class JobService {
         );
     }
 
+    /**
+     * 채용 공고 비활성화
+     * @param idx Long 채용 공고 ID
+     * @return void
+     */
     @Transactional
     public void deactivate(Long idx) {
         log.info("[JobService] deactivate - idx={}", idx);
@@ -103,6 +143,11 @@ public class JobService {
                 .deactivate();
     }
 
+    /**
+     * 채용 공고 삭제
+     * @param idx Long 채용 공고 ID
+     * @return void
+     */
     @Transactional
     public void delete(Long idx) {
         log.info("[JobService] delete - idx={}", idx);

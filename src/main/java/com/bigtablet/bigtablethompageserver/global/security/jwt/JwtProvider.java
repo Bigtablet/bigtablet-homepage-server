@@ -26,10 +26,19 @@ public class JwtProvider {
 
     private final JwtProperties jwtProperties;
 
+    /**
+     * JWT 서명 키 생성
+     * @return SecretKey HMAC-SHA 서명 키
+     */
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(jwtProperties.getSecretKey().getBytes(StandardCharsets.UTF_8));
     }
 
+    /**
+     * JWT 토큰 파싱 및 검증
+     * @param token String JWT 토큰 문자열
+     * @return Jws<Claims> 검증된 클레임 정보
+     */
     public Jws<Claims> getClaims(final String token) {
         try {
             return Jwts.parser()
@@ -49,6 +58,11 @@ public class JwtProvider {
         }
     }
 
+    /**
+     * 액세스 토큰 생성
+     * @param email String 사용자 이메일
+     * @return String JWT 토큰
+     */
     public String generateAccessToken(final String email) {
         Instant now = Instant.now();
         return Jwts.builder()
@@ -63,6 +77,11 @@ public class JwtProvider {
                 .compact();
     }
 
+    /**
+     * 리프레시 토큰 생성
+     * @param email String 사용자 이메일
+     * @return String JWT 토큰
+     */
     public String generateRefreshToken(final String email) {
         Instant now = Instant.now();
         return Jwts.builder()

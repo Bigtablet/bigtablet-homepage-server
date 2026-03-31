@@ -17,6 +17,11 @@ public class NewsQueryService {
     private final NewsJpaRepository newsJpaRepository;
     private final NewsQueryRepository newsQueryRepository;
 
+    /**
+     * ID로 뉴스 조회
+     * @param idx Long 뉴스 ID
+     * @return News 뉴스 도메인 객체
+     */
     public News find(Long idx) {
         NewsEntity entity = newsJpaRepository
                 .findByIdx(idx)
@@ -24,6 +29,12 @@ public class NewsQueryService {
         return News.of(entity);
     }
 
+    /**
+     * 뉴스 목록 페이지 조회
+     * @param page int 페이지 번호
+     * @param size int 페이지 크기
+     * @return List<News> 뉴스 도메인 객체 목록
+     */
     public List<News> findAll(int page, int size) {
         return newsQueryRepository.findAll(page, size);
     }
