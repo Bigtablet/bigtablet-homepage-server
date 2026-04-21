@@ -97,11 +97,10 @@ public class RecruitUseCase {
     public List<RecruitResponse> getRecruitList(GetRecruitListRequest request) {
         log.info("[RecruitUseCase] getRecruitList - page={}, size={}, jobId={}, status={}",
                 request.getPage(), request.getSize(), request.getJobId(), request.getStatus());
-        Job job = jobQueryService.find(request.getJobId());
         List<Recruit> recruits = recruitQueryService.findAllRecruits(
                 request.getPage(),
                 request.getSize(),
-                job.idx(),
+                request.getJobId(),
                 request.getStatus()
         );
         return recruits.stream()
