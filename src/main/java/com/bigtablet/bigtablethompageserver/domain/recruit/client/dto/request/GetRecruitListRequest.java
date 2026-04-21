@@ -1,7 +1,8 @@
-package com.bigtablet.bigtablethompageserver.domain.recruit.client.request;
+package com.bigtablet.bigtablethompageserver.domain.recruit.client.dto.request;
 
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.Status;
 import com.bigtablet.bigtablethompageserver.global.common.dto.request.PageRequest;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +10,9 @@ import lombok.Setter;
 @Setter
 public class GetRecruitListRequest extends PageRequest {
 
+    @NotNull
     private Long jobId;
+
     private Status status;
 
 }
