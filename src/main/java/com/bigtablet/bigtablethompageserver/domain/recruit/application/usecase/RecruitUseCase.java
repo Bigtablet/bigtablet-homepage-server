@@ -5,10 +5,10 @@ import com.bigtablet.bigtablethompageserver.domain.job.domain.model.Job;
 import com.bigtablet.bigtablethompageserver.domain.recruit.application.query.RecruitQueryService;
 import com.bigtablet.bigtablethompageserver.domain.recruit.application.response.RecruitResponse;
 import com.bigtablet.bigtablethompageserver.domain.recruit.application.service.RecruitService;
+import com.bigtablet.bigtablethompageserver.domain.recruit.client.dto.request.GetRecruitListRequest;
 import com.bigtablet.bigtablethompageserver.domain.recruit.client.dto.request.RegisterRecruitRequest;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.Status;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.model.Recruit;
-import com.bigtablet.bigtablethompageserver.domain.recruit.exception.RecruitIsEmptyException;
 import com.bigtablet.bigtablethompageserver.global.infra.email.renderer.MailTemplateRenderer;
 import com.bigtablet.bigtablethompageserver.global.infra.email.service.EmailService;
 import com.bigtablet.bigtablethompageserver.global.infra.slack.exception.SlackErrorException;
@@ -90,58 +90,20 @@ public class RecruitUseCase {
     }
 
     /**
-     * 전체 지원서 목록 조회
+     * 페이지네이션 + jobId/status 필터로 지원서 목록 조회
+     * @param request GetRecruitListRequest 지원서 목록 조회 요청 (page, size, jobId, status)
      * @return List<RecruitResponse> 지원서 응답 목록
      */
-    public List<RecruitResponse> getAllRecruit() {
-        log.info("[RecruitUseCase] getAllRecruit");
-        List<Recruit> recruits = recruitQueryService.findAll();
-        checkRecruitsIsEmpty(recruits);
-        return recruits.stream()
-                .map(RecruitResponse::of)
-                .toList();
-    }
-
-    /**
-     * 채용 공고별 지원서 목록 조회
-     * @param jobId Long 채용 공고 식별자
-     * @return List<RecruitResponse> 지원서 응답 목록
-     */
-    public List<RecruitResponse> getAllRecruitByJobId(Long jobId) {
-        log.info("[RecruitUseCase] getAllRecruitByJobId - jobId={}", jobId);
-        Job job = jobQueryService.find(jobId);
-        List<Recruit> recruits = recruitQueryService.findAllByJobId(job.idx());
-        checkRecruitsIsEmpty(recruits);
-        return recruits.stream()
-                .map(RecruitResponse::of)
-                .toList();
-    }
-
-    /**
-     * 상태별 지원서 목록 조회
-     * @param status Status 지원서 상태
-     * @return List<RecruitResponse> 지원서 응답 목록
-     */
-    public List<RecruitResponse> getAllRecruitByStatus(Status status) {
-        log.info("[RecruitUseCase] getAllRecruitByStatus - status={}", status);
-        List<Recruit> recruits = recruitQueryService.findAllByStatus(status);
-        checkRecruitsIsEmpty(recruits);
-        return recruits.stream()
-                .map(RecruitResponse::of)
-                .toList();
-    }
-
-    /**
-     * 상태 및 채용 공고별 지원서 목록 조회
-     * @param status Status 지원서 상태
-     * @param jobId Long 채용 공고 식별자
-     * @return List<RecruitResponse> 지원서 응답 목록
-     */
-    public List<RecruitResponse> getAllRecruitByStatusAndJobId(Status status, Long jobId) {
-        log.info("[RecruitUseCase] getAllRecruitByStatusAndJobId - status={}, jobId={}", status, jobId);
-        Job job = jobQueryService.find(jobId);
-        List<Recruit> recruits = recruitQueryService.findAllByStatusAndJobId(status, job.idx());
-        checkRecruitsIsEmpty(recruits);
+    public List<RecruitResponse> getRecruitList(GetRecruitListRequest request) {
+        log.info("[RecruitUseCase] getRecruitList - page={}, size={}, jobId={}, status={}",
+                request.getPage(), request.getSize(), request.getJobId(), request.getStatus());
+        Job job = jobQueryService.find(request.getJobId());
+        List<Recruit> recruits = recruitQueryService.findAllRecruits(
+                request.getPage(),
+                request.getSize(),
+                job.idx(),
+                request.getStatus()
+        );
         return recruits.stream()
                 .map(RecruitResponse::of)
                 .toList();
@@ -198,17 +160,6 @@ public class RecruitUseCase {
                 "[Bigtablet, Inc. 채용] " + recruit.name() + "님, 채용 전형 최종 결과 안내드립니다",
                 content
         );
-    }
-
-    /**
-     * 지원서 목록 비어있는지 검증
-     * @param recruits List<Recruit> 지원서 도메인 객체 목록
-     * @return void
-     */
-    private void checkRecruitsIsEmpty(List<Recruit> recruits) {
-        if (recruits.isEmpty()) {
-            throw RecruitIsEmptyException.EXCEPTION;
-        }
     }
 
 }
