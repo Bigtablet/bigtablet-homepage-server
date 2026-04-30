@@ -2,6 +2,7 @@ package com.bigtablet.bigtablethompageserver.domain.recruit.client.dto.request;
 
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.EducationLevel;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.Military;
+import com.bigtablet.bigtablethompageserver.domain.recruit.domain.model.RecruitInput;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -52,4 +53,33 @@ public record RegisterRecruitRequest(
         String attachment2,
         @URL(message = "유효한 URL 형식이어야 합니다.")
         String attachment3
-) {}
+) {
+    /**
+     * Request DTO를 RecruitInput 도메인 입력 데이터로 변환한다 (jobId 오버라이드 지원)
+     * @param resolvedJobId Long 검증/조회된 채용 공고 ID
+     * @return RecruitInput 채용 지원서 입력 데이터
+     */
+    public RecruitInput toRecruitInput(Long resolvedJobId) {
+        return new RecruitInput(
+                resolvedJobId,
+                name,
+                phoneNumber,
+                email,
+                address,
+                addressDetail,
+                portfolio,
+                coverLetter,
+                profileImage,
+                educationLevel,
+                schoolName,
+                admissionYear,
+                graduationYear,
+                department,
+                military,
+                attachment1,
+                attachment2,
+                attachment3
+        );
+    }
+}
+

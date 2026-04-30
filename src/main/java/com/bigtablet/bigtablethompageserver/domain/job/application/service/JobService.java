@@ -24,22 +24,7 @@ public class JobService {
     @Transactional
     public void save(JobInput input) {
         log.info("[JobService] save - title={}", input.title());
-        jobJpaRepository.save(JobEntity.builder()
-                .title(input.title())
-                .department(input.department())
-                .location(input.location())
-                .recruitType(input.recruitType())
-                .experiment(input.experiment())
-                .education(input.education())
-                .companyIntroduction(input.companyIntroduction())
-                .positionIntroduction(input.positionIntroduction())
-                .mainResponsibility(input.mainResponsibility())
-                .qualification(input.qualification())
-                .preferredQualification(input.preferredQualification())
-                .startDate(input.startDate())
-                .endDate(input.endDate())
-                .isActive(true)
-                .build());
+        jobJpaRepository.save(JobEntity.create(input));
     }
 
     /**

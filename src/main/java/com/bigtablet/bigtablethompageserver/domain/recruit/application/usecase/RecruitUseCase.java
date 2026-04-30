@@ -9,7 +9,6 @@ import com.bigtablet.bigtablethompageserver.domain.recruit.client.dto.request.Ge
 import com.bigtablet.bigtablethompageserver.domain.recruit.client.dto.request.RegisterRecruitRequest;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.Status;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.model.Recruit;
-import com.bigtablet.bigtablethompageserver.domain.recruit.domain.model.RecruitInput;
 import com.bigtablet.bigtablethompageserver.global.infra.email.renderer.MailTemplateRenderer;
 import com.bigtablet.bigtablethompageserver.global.infra.email.service.EmailService;
 import com.bigtablet.bigtablethompageserver.global.infra.slack.exception.SlackErrorException;
@@ -42,28 +41,7 @@ public class RecruitUseCase {
         log.info("[RecruitUseCase] registerRecruit - jobId={}, name={}", request.jobId(), request.name());
         Job job = jobQueryService.find(request.jobId());
         jobQueryService.checkIsExpired(job);
-        Recruit recruit = recruitService.save(
-                RecruitInput.builder()
-                        .jobId(job.idx())
-                        .name(request.name())
-                        .phoneNumber(request.phoneNumber())
-                        .email(request.email())
-                        .address(request.address())
-                        .addressDetail(request.addressDetail())
-                        .portfolio(request.portfolio())
-                        .coverLetter(request.coverLetter())
-                        .profileImage(request.profileImage())
-                        .educationLevel(request.educationLevel())
-                        .schoolName(request.schoolName())
-                        .admissionYear(request.admissionYear())
-                        .graduationYear(request.graduationYear())
-                        .department(request.department())
-                        .military(request.military())
-                        .attachment1(request.attachment1())
-                        .attachment2(request.attachment2())
-                        .attachment3(request.attachment3())
-                        .build()
-        );
+        Recruit recruit = recruitService.save(request.toRecruitInput(job.idx()));
         String content = mailTemplateRenderer.renderApplyConfirmEmail(request.name(), job.title(), LocalDateTime.now());
         emailService.sendRecruit(
                 request.email(),

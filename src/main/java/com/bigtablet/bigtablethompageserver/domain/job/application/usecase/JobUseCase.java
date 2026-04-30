@@ -7,7 +7,6 @@ import com.bigtablet.bigtablethompageserver.domain.job.client.dto.request.EditJo
 import com.bigtablet.bigtablethompageserver.domain.job.client.dto.request.GetJobListRequest;
 import com.bigtablet.bigtablethompageserver.domain.job.client.dto.request.RegisterJobRequest;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.model.Job;
-import com.bigtablet.bigtablethompageserver.domain.job.domain.model.JobInput;
 import com.bigtablet.bigtablethompageserver.domain.job.exception.JobIsEmptyException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,23 +29,7 @@ public class JobUseCase {
      */
     public void registerJob(RegisterJobRequest request) {
         log.info("[JobUseCase] registerJob - title={}", request.title());
-        jobService.save(
-                JobInput.builder()
-                        .title(request.title())
-                        .department(request.department())
-                        .location(request.location())
-                        .recruitType(request.recruitType())
-                        .experiment(request.experiment())
-                        .education(request.education())
-                        .companyIntroduction(request.companyIntroduction())
-                        .positionIntroduction(request.positionIntroduction())
-                        .mainResponsibility(request.mainResponsibility())
-                        .qualification(request.qualification())
-                        .preferredQualification(request.preferredQualification())
-                        .startDate(request.startDate())
-                        .endDate(request.endDate())
-                        .build()
-        );
+        jobService.save(request.toJobInput());
     }
 
     /**
@@ -104,24 +87,7 @@ public class JobUseCase {
      */
     public void editJob(EditJobRequest request) {
         log.info("[JobUseCase] editJob - idx={}", request.idx());
-        jobService.edit(
-                request.idx(),
-                JobInput.builder()
-                        .title(request.title())
-                        .department(request.department())
-                        .location(request.location())
-                        .recruitType(request.recruitType())
-                        .experiment(request.experiment())
-                        .education(request.education())
-                        .companyIntroduction(request.companyIntroduction())
-                        .positionIntroduction(request.positionIntroduction())
-                        .mainResponsibility(request.mainResponsibility())
-                        .qualification(request.qualification())
-                        .preferredQualification(request.preferredQualification())
-                        .startDate(request.startDate())
-                        .endDate(request.endDate())
-                        .build()
-        );
+        jobService.edit(request.idx(), request.toJobInput());
     }
 
     /**

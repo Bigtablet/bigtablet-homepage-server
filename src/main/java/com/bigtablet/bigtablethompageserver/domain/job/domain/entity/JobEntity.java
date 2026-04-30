@@ -93,6 +93,30 @@ public class JobEntity extends BaseEntity {
     private boolean isActive;
 
     /**
+     * JobInput으로 새 활성 상태 채용 공고 엔티티를 생성한다
+     * @param input JobInput 채용 공고 입력 데이터
+     * @return JobEntity 신규 채용 공고 엔티티
+     */
+    public static JobEntity create(JobInput input) {
+        return JobEntity.builder()
+                .title(input.title())
+                .department(input.department())
+                .location(input.location())
+                .recruitType(input.recruitType())
+                .experiment(input.experiment())
+                .education(input.education())
+                .companyIntroduction(input.companyIntroduction())
+                .positionIntroduction(input.positionIntroduction())
+                .mainResponsibility(input.mainResponsibility())
+                .qualification(input.qualification())
+                .preferredQualification(input.preferredQualification())
+                .startDate(input.startDate())
+                .endDate(input.endDate())
+                .isActive(true)
+                .build();
+    }
+
+    /**
      * 채용 공고 정보를 수정한다
      * @param input JobInput 채용 공고 입력 데이터
      */

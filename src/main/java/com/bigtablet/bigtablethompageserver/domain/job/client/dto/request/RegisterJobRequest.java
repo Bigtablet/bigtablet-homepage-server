@@ -4,6 +4,7 @@ import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Department;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Education;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.Location;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.RecruitType;
+import com.bigtablet.bigtablethompageserver.domain.job.domain.model.JobInput;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -36,4 +37,25 @@ public record RegisterJobRequest(
         LocalDate startDate,
         LocalDate endDate
 ) {
+    /**
+     * Request DTO를 JobInput 도메인 입력 데이터로 변환한다
+     * @return JobInput 채용 공고 입력 데이터
+     */
+    public JobInput toJobInput() {
+        return new JobInput(
+                title,
+                department,
+                location,
+                recruitType,
+                experiment,
+                education,
+                companyIntroduction,
+                positionIntroduction,
+                mainResponsibility,
+                qualification,
+                preferredQualification,
+                startDate,
+                endDate
+        );
+    }
 }

@@ -6,6 +6,7 @@ import com.bigtablet.bigtablethompageserver.domain.recruit.domain.model.Recruit;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.model.RecruitInput;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.repository.jpa.RecruitJpaRepository;
 import com.bigtablet.bigtablethompageserver.domain.recruit.exception.RecruitNotFoundException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,27 +27,7 @@ public class RecruitService {
     @Transactional
     public Recruit save(RecruitInput input) {
         log.info("[RecruitService] save - jobId={}, name={}", input.jobId(), input.name());
-        RecruitEntity entity = recruitJpaRepository.save(RecruitEntity.builder()
-                .jobId(input.jobId())
-                .name(input.name())
-                .phoneNumber(input.phoneNumber())
-                .email(input.email())
-                .address(input.address())
-                .addressDetail(input.addressDetail())
-                .portfolio(input.portfolio())
-                .coverLetter(input.coverLetter())
-                .profileImage(input.profileImage())
-                .educationLevel(input.educationLevel())
-                .schoolName(input.schoolName())
-                .admissionYear(input.admissionYear())
-                .graduationYear(input.graduationYear())
-                .department(input.department())
-                .military(input.military())
-                .attachment1(input.attachment1())
-                .attachment2(input.attachment2())
-                .attachment3(input.attachment3())
-                .status(Status.DOCUMENT)
-                .build());
+        RecruitEntity entity = recruitJpaRepository.save(RecruitEntity.create(input));
         return Recruit.of(entity);
     }
 
