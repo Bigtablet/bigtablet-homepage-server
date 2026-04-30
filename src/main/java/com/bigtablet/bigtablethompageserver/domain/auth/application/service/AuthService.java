@@ -1,7 +1,7 @@
 package com.bigtablet.bigtablethompageserver.domain.auth.application.service;
 
-import com.bigtablet.bigtablethompageserver.domain.auth.application.response.JsonWebTokenResponse;
-import com.bigtablet.bigtablethompageserver.domain.auth.application.response.RefreshTokenResponse;
+import com.bigtablet.bigtablethompageserver.domain.auth.domain.model.AccessToken;
+import com.bigtablet.bigtablethompageserver.domain.auth.domain.model.AuthToken;
 import com.bigtablet.bigtablethompageserver.domain.user.exception.PasswordWrongException;
 import com.bigtablet.bigtablethompageserver.global.common.repository.redis.RedisRepository;
 import com.bigtablet.bigtablethompageserver.global.infra.email.exception.EmailCodeValidException;
@@ -30,11 +30,11 @@ public class AuthService {
     /**
      * JWT 토큰 생성 (액세스 + 리프레시)
      * @param email String 사용자 이메일
-     * @return JsonWebTokenResponse 액세스 토큰과 리프레시 토큰
+     * @return AuthToken 액세스 토큰과 리프레시 토큰을 담은 도메인 객체
      */
-    public JsonWebTokenResponse generateToken(String email) {
+    public AuthToken generateToken(String email) {
         log.info("[AuthService] generateToken - email={}", email);
-        return JsonWebTokenResponse.builder()
+        return AuthToken.builder()
                 .accessToken(jwtProvider.generateAccessToken(email))
                 .refreshToken(jwtProvider.generateRefreshToken(email))
                 .build();
@@ -43,12 +43,12 @@ public class AuthService {
     /**
      * 리프레시 토큰으로 액세스 토큰 재발급
      * @param refreshToken String 리프레시 토큰
-     * @return RefreshTokenResponse 재발급된 액세스 토큰
+     * @return AccessToken 재발급된 액세스 토큰 도메인 객체
      */
-    public RefreshTokenResponse refreshToken(String refreshToken) {
+    public AccessToken refreshToken(String refreshToken) {
         log.info("[AuthService] refreshToken");
         Jws<Claims> claims = jwtProvider.getClaims(refreshToken);
-        return RefreshTokenResponse.builder()
+        return AccessToken.builder()
                 .accessToken(jwtProvider.generateAccessToken(claims.getBody().getSubject()))
                 .build();
     }

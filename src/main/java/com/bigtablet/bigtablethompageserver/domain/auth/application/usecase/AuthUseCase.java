@@ -52,7 +52,7 @@ public class AuthUseCase {
         log.info("[AuthUseCase] signIn - email={}", request.email());
         User user = userQueryService.find(request.email());
         authService.checkPassword(request.password(), user.password());
-        return authService.generateToken(request.email());
+        return JsonWebTokenResponse.of(authService.generateToken(request.email()));
     }
 
     /**
@@ -62,7 +62,7 @@ public class AuthUseCase {
      */
     public RefreshTokenResponse refresh(RefreshTokenRequest request) {
         log.info("[AuthUseCase] refresh");
-        return authService.refreshToken(request.refreshToken());
+        return RefreshTokenResponse.of(authService.refreshToken(request.refreshToken()));
     }
 
     /**
