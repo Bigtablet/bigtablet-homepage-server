@@ -3,6 +3,7 @@ package com.bigtablet.bigtablethompageserver.domain.recruit.domain.entity;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.EducationLevel;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.Military;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.Status;
+import com.bigtablet.bigtablethompageserver.domain.recruit.domain.model.RecruitInput;
 import com.bigtablet.bigtablethompageserver.global.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -100,6 +101,35 @@ public class RecruitEntity extends BaseEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    /**
+     * RecruitInput으로 새 지원서 엔티티를 생성한다 (서류 전형 상태)
+     * @param input RecruitInput 채용 지원서 입력 데이터
+     * @return RecruitEntity 신규 지원서 엔티티
+     */
+    public static RecruitEntity create(RecruitInput input) {
+        return RecruitEntity.builder()
+                .jobId(input.jobId())
+                .name(input.name())
+                .phoneNumber(input.phoneNumber())
+                .email(input.email())
+                .address(input.address())
+                .addressDetail(input.addressDetail())
+                .portfolio(input.portfolio())
+                .coverLetter(input.coverLetter())
+                .profileImage(input.profileImage())
+                .educationLevel(input.educationLevel())
+                .schoolName(input.schoolName())
+                .admissionYear(input.admissionYear())
+                .graduationYear(input.graduationYear())
+                .department(input.department())
+                .military(input.military())
+                .attachment1(input.attachment1())
+                .attachment2(input.attachment2())
+                .attachment3(input.attachment3())
+                .status(Status.DOCUMENT)
+                .build();
+    }
 
     /**
      * 지원서 전형 상태를 변경한다

@@ -29,21 +29,7 @@ public class JobUseCase {
      */
     public void registerJob(RegisterJobRequest request) {
         log.info("[JobUseCase] registerJob - title={}", request.title());
-        jobService.save(
-                request.title(),
-                request.department(),
-                request.location(),
-                request.recruitType(),
-                request.experiment(),
-                request.education(),
-                request.companyIntroduction(),
-                request.positionIntroduction(),
-                request.mainResponsibility(),
-                request.qualification(),
-                request.preferredQualification(),
-                request.startDate(),
-                request.endDate()
-        );
+        jobService.save(request.toJobInput());
     }
 
     /**
@@ -101,22 +87,7 @@ public class JobUseCase {
      */
     public void editJob(EditJobRequest request) {
         log.info("[JobUseCase] editJob - idx={}", request.idx());
-        jobService.edit(
-                request.idx(),
-                request.title(),
-                request.department(),
-                request.location(),
-                request.recruitType(),
-                request.experiment(),
-                request.education(),
-                request.companyIntroduction(),
-                request.positionIntroduction(),
-                request.mainResponsibility(),
-                request.qualification(),
-                request.preferredQualification(),
-                request.startDate(),
-                request.endDate()
-        );
+        jobService.edit(request.idx(), request.toJobInput());
     }
 
     /**

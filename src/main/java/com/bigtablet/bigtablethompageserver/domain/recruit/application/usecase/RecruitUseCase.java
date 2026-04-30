@@ -41,26 +41,7 @@ public class RecruitUseCase {
         log.info("[RecruitUseCase] registerRecruit - jobId={}, name={}", request.jobId(), request.name());
         Job job = jobQueryService.find(request.jobId());
         jobQueryService.checkIsExpired(job);
-        Recruit recruit = recruitService.save(
-                job.idx(),
-                request.name(),
-                request.phoneNumber(),
-                request.email(),
-                request.address(),
-                request.addressDetail(),
-                request.portfolio(),
-                request.coverLetter(),
-                request.profileImage(),
-                request.educationLevel(),
-                request.schoolName(),
-                request.admissionYear(),
-                request.graduationYear(),
-                request.department(),
-                request.military(),
-                request.attachment1(),
-                request.attachment2(),
-                request.attachment3()
-        );
+        Recruit recruit = recruitService.save(request.toRecruitInput(job.idx()));
         String content = mailTemplateRenderer.renderApplyConfirmEmail(request.name(), job.title(), LocalDateTime.now());
         emailService.sendRecruit(
                 request.email(),
