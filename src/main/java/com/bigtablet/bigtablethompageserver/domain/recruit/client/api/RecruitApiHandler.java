@@ -32,8 +32,8 @@ public class RecruitApiHandler {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public BaseResponse registerRecruit(@RequestBody @Valid final RegisterRecruitRequest registerRecruitRequest) {
-        recruitUseCase.registerRecruit(registerRecruitRequest);
+    public BaseResponse registerRecruit(@RequestBody @Valid final RegisterRecruitRequest request) {
+        recruitUseCase.registerRecruit(request);
         return BaseResponse.created("등록 성공");
     }
 
@@ -57,13 +57,13 @@ public class RecruitApiHandler {
 
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponse editStatus(
+    public BaseResponse updateStatus(
             @RequestParam @NotNull
             final Status status,
             @RequestParam @NotNull
             final Long idx
     ) {
-        recruitUseCase.editStatus(status, idx);
+        recruitUseCase.updateStatus(status, idx);
         return BaseResponse.ok("수정 성공");
     }
 

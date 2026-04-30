@@ -70,8 +70,8 @@ public class JobApiHandler {
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponse editJob(@RequestBody @Valid final EditJobRequest request) {
-        jobUseCase.editJob(request);
+    public BaseResponse updateJob(@RequestBody @Valid final EditJobRequest request) {
+        jobUseCase.updateJob(request);
         return BaseResponse.ok("수정 성공");
     }
 
