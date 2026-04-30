@@ -42,20 +42,20 @@ public record RegisterJobRequest(
      * @return JobInput 채용 공고 입력 데이터
      */
     public JobInput toJobInput() {
-        return new JobInput(
-                title,
-                department,
-                location,
-                recruitType,
-                experiment,
-                education,
-                companyIntroduction,
-                positionIntroduction,
-                mainResponsibility,
-                qualification,
-                preferredQualification,
-                startDate,
-                endDate
-        );
+        return JobInput.builder()
+                .title(title)
+                .department(department)
+                .location(location)
+                .recruitType(recruitType)
+                .experiment(experiment)
+                .education(education)
+                .companyIntroduction(companyIntroduction)
+                .positionIntroduction(positionIntroduction)
+                .mainResponsibility(mainResponsibility)
+                .qualification(qualification)
+                .preferredQualification(preferredQualification)
+                .startDate(startDate)
+                .endDate(endDate)
+                .build();
     }
 }

@@ -60,26 +60,26 @@ public record RegisterRecruitRequest(
      * @return RecruitInput 채용 지원서 입력 데이터
      */
     public RecruitInput toRecruitInput(Long resolvedJobId) {
-        return new RecruitInput(
-                resolvedJobId,
-                name,
-                phoneNumber,
-                email,
-                address,
-                addressDetail,
-                portfolio,
-                coverLetter,
-                profileImage,
-                educationLevel,
-                schoolName,
-                admissionYear,
-                graduationYear,
-                department,
-                military,
-                attachment1,
-                attachment2,
-                attachment3
-        );
+        return RecruitInput.builder()
+                .jobId(resolvedJobId)
+                .name(name)
+                .phoneNumber(phoneNumber)
+                .email(email)
+                .address(address)
+                .addressDetail(addressDetail)
+                .portfolio(portfolio)
+                .coverLetter(coverLetter)
+                .profileImage(profileImage)
+                .educationLevel(educationLevel)
+                .schoolName(schoolName)
+                .admissionYear(admissionYear)
+                .graduationYear(graduationYear)
+                .department(department)
+                .military(military)
+                .attachment1(attachment1)
+                .attachment2(attachment2)
+                .attachment3(attachment3)
+                .build();
     }
 }
 
