@@ -8,6 +8,7 @@ import com.bigtablet.bigtablethompageserver.domain.blog.client.dto.request.Regis
 import com.bigtablet.bigtablethompageserver.domain.blog.domain.model.Blog;
 import com.bigtablet.bigtablethompageserver.domain.blog.exception.BlogIsEmptyException;
 import com.bigtablet.bigtablethompageserver.global.common.dto.request.PageRequest;
+import com.bigtablet.bigtablethompageserver.global.common.util.CollectionValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -57,7 +58,7 @@ public class BlogUseCase {
     public List<BlogResponse> getAllBlogList(PageRequest request) {
         log.info("[BlogUseCase] getAllBlogList - page={}, size={}", request.getPage(), request.getSize());
         List<Blog> blogs = blogQueryService.findAll(request.getPage(), request.getSize());
-        checkBlogsIsEmpty(blogs);
+        CollectionValidator.throwIfEmpty(blogs, BlogIsEmptyException.EXCEPTION);
         return blogs.stream()
                 .map(BlogResponse::of)
                 .toList();
@@ -72,7 +73,7 @@ public class BlogUseCase {
     public List<BlogResponse> searchBlogByTitle(PageRequest request, String title) {
         log.info("[BlogUseCase] searchBlogByTitle - title={}", title);
         List<Blog> blogs = blogQueryService.findAllByTitle(request.getPage(), request.getSize(), title);
-        checkBlogsIsEmpty(blogs);
+        CollectionValidator.throwIfEmpty(blogs, BlogIsEmptyException.EXCEPTION);
         return blogs.stream()
                 .map(BlogResponse::of)
                 .toList();
@@ -113,17 +114,6 @@ public class BlogUseCase {
     public void addViews(Long idx) {
         log.info("[BlogUseCase] addViews - idx={}", idx);
         blogService.addViews(idx);
-    }
-
-    /**
-     * 블로그 목록 비어있는지 검증
-     * @param blogs List<Blog> 블로그 도메인 객체 목록
-     * @return void
-     */
-    private void checkBlogsIsEmpty(List<Blog> blogs) {
-        if (blogs.isEmpty()) {
-            throw BlogIsEmptyException.EXCEPTION;
-        }
     }
 
 }
