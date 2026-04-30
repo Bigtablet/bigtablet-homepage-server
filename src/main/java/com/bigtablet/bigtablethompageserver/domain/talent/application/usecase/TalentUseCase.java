@@ -9,6 +9,7 @@ import com.bigtablet.bigtablethompageserver.domain.talent.client.dto.request.Sea
 import com.bigtablet.bigtablethompageserver.domain.talent.client.dto.request.SendEmailToTalentRequest;
 import com.bigtablet.bigtablethompageserver.domain.talent.domain.model.Talent;
 import com.bigtablet.bigtablethompageserver.domain.talent.exception.TalentIsEmptyException;
+import com.bigtablet.bigtablethompageserver.global.common.util.CollectionValidator;
 import com.bigtablet.bigtablethompageserver.global.infra.email.renderer.MailTemplateRenderer;
 import com.bigtablet.bigtablethompageserver.global.infra.email.service.EmailService;
 import lombok.RequiredArgsConstructor;
@@ -79,7 +80,7 @@ public class TalentUseCase {
     public List<TalentResponse> getTalentList(GetTalentListRequest request) {
         log.info("[TalentUseCase] getTalentList - isActive={}, page={}, size={}", request.isActive(), request.getPage(), request.getSize());
         List<Talent> talents = talentQueryService.findAllTalents(request.isActive(), request.getPage(), request.getSize());
-        checkTalentsIsEmpty(talents);
+        CollectionValidator.throwIfEmpty(talents, TalentIsEmptyException.EXCEPTION);
         return talents.stream().map(TalentResponse::of).toList();
     }
 
@@ -95,19 +96,8 @@ public class TalentUseCase {
                 request.getPage(),
                 request.getSize()
         );
-        checkTalentsIsEmpty(talents);
+        CollectionValidator.throwIfEmpty(talents, TalentIsEmptyException.EXCEPTION);
         return talents.stream().map(TalentResponse::of).toList();
-    }
-
-    /**
-     * 인재 목록 비어있는지 검증
-     * @param talents List<Talent> 인재 도메인 객체 목록
-     * @return void
-     */
-    private void checkTalentsIsEmpty(List<Talent> talents) {
-        if (talents.isEmpty()) {
-            throw TalentIsEmptyException.EXCEPTION;
-        }
     }
 
 }
