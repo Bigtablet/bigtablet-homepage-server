@@ -34,10 +34,10 @@ public class AuthService {
      */
     public AuthToken generateToken(String email) {
         log.info("[AuthService] generateToken - email={}", email);
-        return AuthToken.builder()
-                .accessToken(jwtProvider.generateAccessToken(email))
-                .refreshToken(jwtProvider.generateRefreshToken(email))
-                .build();
+        return new AuthToken(
+                jwtProvider.generateAccessToken(email),
+                jwtProvider.generateRefreshToken(email)
+        );
     }
 
     /**
@@ -48,9 +48,7 @@ public class AuthService {
     public AccessToken refreshToken(String refreshToken) {
         log.info("[AuthService] refreshToken");
         Jws<Claims> claims = jwtProvider.getClaims(refreshToken);
-        return AccessToken.builder()
-                .accessToken(jwtProvider.generateAccessToken(claims.getBody().getSubject()))
-                .build();
+        return new AccessToken(jwtProvider.generateAccessToken(claims.getBody().getSubject()));
     }
 
     /**
