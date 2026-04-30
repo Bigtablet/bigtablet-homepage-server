@@ -60,8 +60,8 @@ public class NewsApiHandler {
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponse editNews(@RequestBody @Valid final EditNewsRequest request) {
-        newsUseCase.editNews(request);
+    public BaseResponse updateNews(@RequestBody @Valid final EditNewsRequest request) {
+        newsUseCase.updateNews(request);
         return BaseResponse.ok("수정 성공");
     }
 

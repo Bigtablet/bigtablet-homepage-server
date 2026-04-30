@@ -68,8 +68,8 @@ public class NewsUseCase {
      * @param request EditNewsRequest 뉴스 수정 요청 정보
      * @return void
      */
-    public void editNews(EditNewsRequest request) {
-        log.info("[NewsUseCase] editNews - idx={}", request.idx());
+    public void updateNews(EditNewsRequest request) {
+        log.info("[NewsUseCase] updateNews - idx={}", request.idx());
         newsService.edit(
                 request.idx(),
                 request.titleKr(),

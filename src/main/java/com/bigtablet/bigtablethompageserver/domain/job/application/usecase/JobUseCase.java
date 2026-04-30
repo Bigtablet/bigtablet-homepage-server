@@ -86,8 +86,8 @@ public class JobUseCase {
      * @param request EditJobRequest 채용 공고 수정 요청 정보
      * @return void
      */
-    public void editJob(EditJobRequest request) {
-        log.info("[JobUseCase] editJob - idx={}", request.idx());
+    public void updateJob(EditJobRequest request) {
+        log.info("[JobUseCase] updateJob - idx={}", request.idx());
         jobService.edit(request.idx(), request.toJobInput());
     }
 

@@ -95,8 +95,8 @@ public class RecruitUseCase {
      * @param idx Long 지원서 식별자
      * @return void
      */
-    public void editStatus(Status status, Long idx) {
-        log.info("[RecruitUseCase] editStatus - idx={}, status={}", idx, status);
+    public void updateStatus(Status status, Long idx) {
+        log.info("[RecruitUseCase] updateStatus - idx={}, status={}", idx, status);
         Recruit recruit = recruitQueryService.find(idx);
         String content = mailTemplateRenderer.renderRecruitEmail(recruit.name(), status);
         recruitService.editStatus(status, idx);

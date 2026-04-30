@@ -84,8 +84,8 @@ public class BlogUseCase {
      * @param request EditBlogRequest 블로그 수정 요청 정보
      * @return void
      */
-    public void editBlog(EditBlogRequest request) {
-        log.info("[BlogUseCase] editBlog - idx={}", request.idx());
+    public void updateBlog(EditBlogRequest request) {
+        log.info("[BlogUseCase] updateBlog - idx={}", request.idx());
         blogService.edit(
                 request.idx(),
                 request.titleKr(),

@@ -76,8 +76,8 @@ public class BlogApiHandler {
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponse editBlog(@RequestBody @Valid final EditBlogRequest request) {
-        blogUseCase.editBlog(request);
+    public BaseResponse updateBlog(@RequestBody @Valid final EditBlogRequest request) {
+        blogUseCase.updateBlog(request);
         return BaseResponse.ok("수정 성공");
     }
 
