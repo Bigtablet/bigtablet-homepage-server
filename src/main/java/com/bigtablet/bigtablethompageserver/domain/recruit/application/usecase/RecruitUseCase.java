@@ -48,11 +48,15 @@ public class RecruitUseCase {
                 "[Bigtablet, Inc. 채용] " + request.name() + "님, 지원 접수 완료 안내드립니다",
                 content
         );
-        slackNotifier.sendApplicantNotification(
-                job.title(),
-                recruit.name(),
-                recruit.idx()
-        );
+        try {
+            slackNotifier.sendApplicantNotification(
+                    job.title(),
+                    recruit.name(),
+                    recruit.idx()
+            );
+        } catch (Exception e) {
+            log.error("[RecruitUseCase] Slack 알림 디스패치 실패 - recruitIdx={}", recruit.idx(), e);
+        }
     }
 
     /**
