@@ -16,6 +16,7 @@ import com.bigtablet.bigtablethompageserver.global.infra.slack.service.SlackNoti
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -95,6 +96,7 @@ public class RecruitUseCase {
      * @param idx Long 지원서 식별자
      * @return void
      */
+    @Transactional
     public void updateStatus(Status status, Long idx) {
         log.info("[RecruitUseCase] updateStatus - idx={}, status={}", idx, status);
         Recruit recruit = recruitQueryService.find(idx);
@@ -112,11 +114,12 @@ public class RecruitUseCase {
      * @param idx Long 지원서 식별자
      * @return void
      */
+    @Transactional
     public void acceptRecruit(Long idx) {
         log.info("[RecruitUseCase] acceptRecruit - idx={}", idx);
         Recruit recruit = recruitQueryService.find(idx);
         String content = mailTemplateRenderer.renderAcceptEmail(recruit.name());
-        recruitQueryService.checkStatus(recruit.idx());
+        recruitQueryService.checkStatus(recruit);
         recruitService.accept(recruit.idx());
         emailService.sendRecruit(
                 recruit.email(),
@@ -130,6 +133,7 @@ public class RecruitUseCase {
      * @param idx Long 지원서 식별자
      * @return void
      */
+    @Transactional
     public void rejectRecruit(Long idx) {
         log.info("[RecruitUseCase] rejectRecruit - idx={}", idx);
         Recruit recruit = recruitQueryService.find(idx);
