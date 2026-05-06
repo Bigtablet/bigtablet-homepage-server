@@ -7,11 +7,13 @@ import com.bigtablet.bigtablethompageserver.domain.news.domain.repository.query.
 import com.bigtablet.bigtablethompageserver.domain.news.exception.NewsNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class NewsQueryService {
 
     private final NewsJpaRepository newsJpaRepository;

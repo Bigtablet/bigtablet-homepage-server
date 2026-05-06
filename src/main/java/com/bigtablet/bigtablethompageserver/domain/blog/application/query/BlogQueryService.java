@@ -7,11 +7,13 @@ import com.bigtablet.bigtablethompageserver.domain.blog.domain.repository.query.
 import com.bigtablet.bigtablethompageserver.domain.blog.exception.BlogNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class BlogQueryService {
 
     private final BlogJpaRepository blogJpaRepository;
