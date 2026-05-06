@@ -11,7 +11,6 @@ import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.Status;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.model.Recruit;
 import com.bigtablet.bigtablethompageserver.global.infra.email.renderer.MailTemplateRenderer;
 import com.bigtablet.bigtablethompageserver.global.infra.email.service.EmailService;
-import com.bigtablet.bigtablethompageserver.global.infra.slack.exception.SlackErrorException;
 import com.bigtablet.bigtablethompageserver.global.infra.slack.service.SlackNotifier;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,15 +48,11 @@ public class RecruitUseCase {
                 "[Bigtablet, Inc. 채용] " + request.name() + "님, 지원 접수 완료 안내드립니다",
                 content
         );
-        try {
-            slackNotifier.sendApplicantNotification(
-                    job.title(),
-                    recruit.name(),
-                    recruit.idx()
-            );
-        } catch (Exception e) {
-            throw SlackErrorException.EXCEPTION;
-        }
+        slackNotifier.sendApplicantNotification(
+                job.title(),
+                recruit.name(),
+                recruit.idx()
+        );
     }
 
     /**
