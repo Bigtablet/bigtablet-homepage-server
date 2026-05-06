@@ -119,7 +119,7 @@ public class RecruitUseCase {
         log.info("[RecruitUseCase] acceptRecruit - idx={}", idx);
         Recruit recruit = recruitQueryService.find(idx);
         String content = mailTemplateRenderer.renderAcceptEmail(recruit.name());
-        recruitQueryService.checkStatus(recruit.idx());
+        recruitQueryService.checkStatus(recruit);
         recruitService.accept(recruit.idx());
         emailService.sendRecruit(
                 recruit.email(),
