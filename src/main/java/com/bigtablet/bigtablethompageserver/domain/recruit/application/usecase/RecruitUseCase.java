@@ -11,7 +11,6 @@ import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.Status;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.model.Recruit;
 import com.bigtablet.bigtablethompageserver.global.infra.email.renderer.MailTemplateRenderer;
 import com.bigtablet.bigtablethompageserver.global.infra.email.service.EmailService;
-import com.bigtablet.bigtablethompageserver.global.infra.slack.exception.SlackErrorException;
 import com.bigtablet.bigtablethompageserver.global.infra.slack.service.SlackNotifier;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,7 +55,7 @@ public class RecruitUseCase {
                     recruit.idx()
             );
         } catch (Exception e) {
-            throw SlackErrorException.EXCEPTION;
+            log.error("[RecruitUseCase] Slack 알림 디스패치 실패 - recruitIdx={}", recruit.idx(), e);
         }
     }
 
