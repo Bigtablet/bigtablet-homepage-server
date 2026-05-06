@@ -43,7 +43,7 @@ public class UserQueryService {
      * @return void
      */
     public void checkEmailExists(String email) {
-        if (userJpaRepository.findByEmail(email).isPresent()) {
+        if (userJpaRepository.existsByEmail(email)) {
             throw UserAlreadyExistException.EXCEPTION;
         }
     }
