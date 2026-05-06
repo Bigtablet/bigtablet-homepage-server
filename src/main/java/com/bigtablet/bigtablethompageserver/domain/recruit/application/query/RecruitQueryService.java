@@ -9,11 +9,13 @@ import com.bigtablet.bigtablethompageserver.domain.recruit.exception.RecruitNotF
 import com.bigtablet.bigtablethompageserver.domain.recruit.exception.RecruitStatusErrorException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class RecruitQueryService {
 
     private final RecruitJpaRepository recruitJpaRepository;

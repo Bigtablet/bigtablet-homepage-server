@@ -11,11 +11,13 @@ import com.bigtablet.bigtablethompageserver.domain.job.exception.JobIsExpiredExc
 import com.bigtablet.bigtablethompageserver.domain.job.exception.JobNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class JobQueryService {
 
     private final JobJpaRepository jobJpaRepository;
