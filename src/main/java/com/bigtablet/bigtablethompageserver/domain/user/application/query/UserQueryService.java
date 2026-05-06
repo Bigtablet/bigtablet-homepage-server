@@ -43,7 +43,7 @@ public class UserQueryService {
      * @return void
      */
     public void checkEmailExists(String email) {
-        if (userJpaRepository.existsByEmail(email)) {
+        if (userJpaRepository.existsByEmailIgnoreCase(email)) {
             throw UserAlreadyExistException.EXCEPTION;
         }
     }
