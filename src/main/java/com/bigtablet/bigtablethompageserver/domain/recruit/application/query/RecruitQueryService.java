@@ -9,11 +9,13 @@ import com.bigtablet.bigtablethompageserver.domain.recruit.exception.RecruitNotF
 import com.bigtablet.bigtablethompageserver.domain.recruit.exception.RecruitStatusErrorException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class RecruitQueryService {
 
     private final RecruitJpaRepository recruitJpaRepository;
@@ -50,14 +52,11 @@ public class RecruitQueryService {
 
     /**
      * 지원서 상태 검증 (서류 전형 상태인 경우 예외 발생)
-     * @param idx Long 지원서 ID
+     * @param recruit Recruit 검증할 지원서 도메인 객체
      * @return void
      */
-    public void checkStatus(Long idx) {
-        RecruitEntity entity = recruitJpaRepository
-                .findById(idx)
-                .orElseThrow(() -> RecruitNotFoundException.EXCEPTION);
-        if (entity.getStatus().equals(Status.DOCUMENT)) {
+    public void checkStatus(Recruit recruit) {
+        if (recruit.status().equals(Status.DOCUMENT)) {
             throw RecruitStatusErrorException.EXCEPTION;
         }
     }

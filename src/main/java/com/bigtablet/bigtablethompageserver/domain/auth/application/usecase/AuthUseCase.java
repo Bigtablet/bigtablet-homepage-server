@@ -3,9 +3,9 @@ package com.bigtablet.bigtablethompageserver.domain.auth.application.usecase;
 import com.bigtablet.bigtablethompageserver.domain.auth.application.response.JsonWebTokenResponse;
 import com.bigtablet.bigtablethompageserver.domain.auth.application.response.RefreshTokenResponse;
 import com.bigtablet.bigtablethompageserver.domain.auth.application.service.AuthService;
-import com.bigtablet.bigtablethompageserver.domain.auth.client.request.RefreshTokenRequest;
-import com.bigtablet.bigtablethompageserver.domain.auth.client.request.SignInRequest;
-import com.bigtablet.bigtablethompageserver.domain.auth.client.request.SignUpRequest;
+import com.bigtablet.bigtablethompageserver.domain.auth.client.dto.request.RefreshTokenRequest;
+import com.bigtablet.bigtablethompageserver.domain.auth.client.dto.request.SignInRequest;
+import com.bigtablet.bigtablethompageserver.domain.auth.client.dto.request.SignUpRequest;
 import com.bigtablet.bigtablethompageserver.domain.user.application.query.UserQueryService;
 import com.bigtablet.bigtablethompageserver.domain.user.application.service.UserService;
 import com.bigtablet.bigtablethompageserver.domain.user.domain.model.User;
@@ -52,7 +52,7 @@ public class AuthUseCase {
         log.info("[AuthUseCase] signIn - email={}", request.email());
         User user = userQueryService.find(request.email());
         authService.checkPassword(request.password(), user.password());
-        return authService.generateToken(request.email());
+        return JsonWebTokenResponse.of(authService.generateToken(request.email()));
     }
 
     /**
@@ -62,7 +62,7 @@ public class AuthUseCase {
      */
     public RefreshTokenResponse refresh(RefreshTokenRequest request) {
         log.info("[AuthUseCase] refresh");
-        return authService.refreshToken(request.refreshToken());
+        return RefreshTokenResponse.of(authService.refreshToken(request.refreshToken()));
     }
 
     /**

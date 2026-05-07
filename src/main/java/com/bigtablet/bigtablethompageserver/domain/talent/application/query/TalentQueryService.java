@@ -7,11 +7,13 @@ import com.bigtablet.bigtablethompageserver.domain.talent.exception.TalentAlread
 import com.bigtablet.bigtablethompageserver.domain.talent.exception.TalentNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class TalentQueryService {
 
     private final TalentJpaRepository talentJpaRepository;

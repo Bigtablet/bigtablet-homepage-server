@@ -14,6 +14,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.List;
 
@@ -45,8 +46,9 @@ public class TalentEntity extends BaseEntity {
     @Column(nullable = false)
     private String portfolioUrl;
 
-    // 기타 URL 목록
+    // 기타 URL 목록 (페이지 단위로 묶어 로드해 N+1 회피)
     @ElementCollection
+    @BatchSize(size = 100)
     @CollectionTable(
             name = "tb_url",
             joinColumns = @JoinColumn(name = "talent_id")

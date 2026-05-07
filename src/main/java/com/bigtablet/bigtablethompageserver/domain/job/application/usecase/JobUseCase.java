@@ -8,6 +8,7 @@ import com.bigtablet.bigtablethompageserver.domain.job.client.dto.request.GetJob
 import com.bigtablet.bigtablethompageserver.domain.job.client.dto.request.RegisterJobRequest;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.model.Job;
 import com.bigtablet.bigtablethompageserver.domain.job.exception.JobIsEmptyException;
+import com.bigtablet.bigtablethompageserver.global.common.util.CollectionValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -29,21 +30,7 @@ public class JobUseCase {
      */
     public void registerJob(RegisterJobRequest request) {
         log.info("[JobUseCase] registerJob - title={}", request.title());
-        jobService.save(
-                request.title(),
-                request.department(),
-                request.location(),
-                request.recruitType(),
-                request.experiment(),
-                request.education(),
-                request.companyIntroduction(),
-                request.positionIntroduction(),
-                request.mainResponsibility(),
-                request.qualification(),
-                request.preferredQualification(),
-                request.startDate(),
-                request.endDate()
-        );
+        jobService.save(request.toJobInput());
     }
 
     /**
@@ -71,7 +58,7 @@ public class JobUseCase {
                         request.getEducation(),
                         request.getRecruitType()
                 );
-        checkJobsIsEmpty(jobs);
+        CollectionValidator.throwIfEmpty(jobs, JobIsEmptyException.EXCEPTION);
         return jobs.stream().map(JobResponse::of).toList();
     }
 
@@ -90,7 +77,7 @@ public class JobUseCase {
                         request.getEducation(),
                         request.getRecruitType()
                 );
-        checkJobsIsEmpty(jobs);
+        CollectionValidator.throwIfEmpty(jobs, JobIsEmptyException.EXCEPTION);
         return jobs.stream().map(JobResponse::of).toList();
     }
 
@@ -99,24 +86,9 @@ public class JobUseCase {
      * @param request EditJobRequest 채용 공고 수정 요청 정보
      * @return void
      */
-    public void editJob(EditJobRequest request) {
-        log.info("[JobUseCase] editJob - idx={}", request.idx());
-        jobService.edit(
-                request.idx(),
-                request.title(),
-                request.department(),
-                request.location(),
-                request.recruitType(),
-                request.experiment(),
-                request.education(),
-                request.companyIntroduction(),
-                request.positionIntroduction(),
-                request.mainResponsibility(),
-                request.qualification(),
-                request.preferredQualification(),
-                request.startDate(),
-                request.endDate()
-        );
+    public void updateJob(EditJobRequest request) {
+        log.info("[JobUseCase] updateJob - idx={}", request.idx());
+        jobService.edit(request.idx(), request.toJobInput());
     }
 
     /**
@@ -138,17 +110,6 @@ public class JobUseCase {
         log.info("[JobUseCase] deleteJob - idx={}", idx);
         Job job = jobQueryService.find(idx);
         jobService.delete(job.idx());
-    }
-
-    /**
-     * 채용 공고 목록 비어있는지 검증
-     * @param jobs List<Job> 채용 공고 도메인 객체 목록
-     * @return void
-     */
-    private void checkJobsIsEmpty(List<Job> jobs) {
-        if (jobs.isEmpty()) {
-            throw JobIsEmptyException.EXCEPTION;
-        }
     }
 
 }

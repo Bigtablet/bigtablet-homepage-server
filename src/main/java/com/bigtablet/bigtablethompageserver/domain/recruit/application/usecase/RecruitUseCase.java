@@ -11,11 +11,11 @@ import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.Status;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.model.Recruit;
 import com.bigtablet.bigtablethompageserver.global.infra.email.renderer.MailTemplateRenderer;
 import com.bigtablet.bigtablethompageserver.global.infra.email.service.EmailService;
-import com.bigtablet.bigtablethompageserver.global.infra.slack.exception.SlackErrorException;
 import com.bigtablet.bigtablethompageserver.global.infra.slack.service.SlackNotifier;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,26 +41,7 @@ public class RecruitUseCase {
         log.info("[RecruitUseCase] registerRecruit - jobId={}, name={}", request.jobId(), request.name());
         Job job = jobQueryService.find(request.jobId());
         jobQueryService.checkIsExpired(job);
-        Recruit recruit = recruitService.save(
-                job.idx(),
-                request.name(),
-                request.phoneNumber(),
-                request.email(),
-                request.address(),
-                request.addressDetail(),
-                request.portfolio(),
-                request.coverLetter(),
-                request.profileImage(),
-                request.educationLevel(),
-                request.schoolName(),
-                request.admissionYear(),
-                request.graduationYear(),
-                request.department(),
-                request.military(),
-                request.attachment1(),
-                request.attachment2(),
-                request.attachment3()
-        );
+        Recruit recruit = recruitService.save(request.toRecruitInput(job.idx()));
         String content = mailTemplateRenderer.renderApplyConfirmEmail(request.name(), job.title(), LocalDateTime.now());
         emailService.sendRecruit(
                 request.email(),
@@ -74,7 +55,7 @@ public class RecruitUseCase {
                     recruit.idx()
             );
         } catch (Exception e) {
-            throw SlackErrorException.EXCEPTION;
+            log.error("[RecruitUseCase] Slack 알림 디스패치 실패 - recruitIdx={}", recruit.idx(), e);
         }
     }
 
@@ -114,8 +95,9 @@ public class RecruitUseCase {
      * @param idx Long 지원서 식별자
      * @return void
      */
-    public void editStatus(Status status, Long idx) {
-        log.info("[RecruitUseCase] editStatus - idx={}, status={}", idx, status);
+    @Transactional
+    public void updateStatus(Status status, Long idx) {
+        log.info("[RecruitUseCase] updateStatus - idx={}, status={}", idx, status);
         Recruit recruit = recruitQueryService.find(idx);
         String content = mailTemplateRenderer.renderRecruitEmail(recruit.name(), status);
         recruitService.editStatus(status, idx);
@@ -131,11 +113,12 @@ public class RecruitUseCase {
      * @param idx Long 지원서 식별자
      * @return void
      */
+    @Transactional
     public void acceptRecruit(Long idx) {
         log.info("[RecruitUseCase] acceptRecruit - idx={}", idx);
         Recruit recruit = recruitQueryService.find(idx);
         String content = mailTemplateRenderer.renderAcceptEmail(recruit.name());
-        recruitQueryService.checkStatus(recruit.idx());
+        recruitQueryService.checkStatus(recruit);
         recruitService.accept(recruit.idx());
         emailService.sendRecruit(
                 recruit.email(),
@@ -149,6 +132,7 @@ public class RecruitUseCase {
      * @param idx Long 지원서 식별자
      * @return void
      */
+    @Transactional
     public void rejectRecruit(Long idx) {
         log.info("[RecruitUseCase] rejectRecruit - idx={}", idx);
         Recruit recruit = recruitQueryService.find(idx);

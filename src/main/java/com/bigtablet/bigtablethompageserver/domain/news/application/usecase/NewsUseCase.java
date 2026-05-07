@@ -8,6 +8,7 @@ import com.bigtablet.bigtablethompageserver.domain.news.client.dto.request.Regis
 import com.bigtablet.bigtablethompageserver.domain.news.domain.model.News;
 import com.bigtablet.bigtablethompageserver.domain.news.exception.NewsIsEmptyException;
 import com.bigtablet.bigtablethompageserver.global.common.dto.request.PageRequest;
+import com.bigtablet.bigtablethompageserver.global.common.util.CollectionValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -56,7 +57,7 @@ public class NewsUseCase {
     public List<NewsResponse> getAllNewsList(PageRequest request) {
         log.info("[NewsUseCase] getAllNewsList - page={}, size={}", request.getPage(), request.getSize());
         List<News> newsList = newsQueryService.findAll(request.getPage(), request.getSize());
-        checkNewsListIsEmpty(newsList);
+        CollectionValidator.throwIfEmpty(newsList, NewsIsEmptyException.EXCEPTION);
         return newsList.stream()
                 .map(NewsResponse::of)
                 .toList();
@@ -67,8 +68,8 @@ public class NewsUseCase {
      * @param request EditNewsRequest 뉴스 수정 요청 정보
      * @return void
      */
-    public void editNews(EditNewsRequest request) {
-        log.info("[NewsUseCase] editNews - idx={}", request.idx());
+    public void updateNews(EditNewsRequest request) {
+        log.info("[NewsUseCase] updateNews - idx={}", request.idx());
         newsService.edit(
                 request.idx(),
                 request.titleKr(),
@@ -86,17 +87,6 @@ public class NewsUseCase {
     public void deleteNews(Long idx) {
         log.info("[NewsUseCase] deleteNews - idx={}", idx);
         newsService.delete(idx);
-    }
-
-    /**
-     * 뉴스 목록 비어있는지 검증
-     * @param newsList List<News> 뉴스 도메인 객체 목록
-     * @return void
-     */
-    private void checkNewsListIsEmpty(List<News> newsList) {
-        if (newsList.isEmpty()) {
-            throw NewsIsEmptyException.EXCEPTION;
-        }
     }
 
 }

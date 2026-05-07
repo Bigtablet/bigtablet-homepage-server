@@ -7,9 +7,11 @@ import com.bigtablet.bigtablethompageserver.domain.user.exception.UserNotFoundEx
 import com.bigtablet.bigtablethompageserver.global.common.repository.user.UserSecurity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserQueryService {
 
     private final UserJpaRepository userJpaRepository;
@@ -41,7 +43,7 @@ public class UserQueryService {
      * @return void
      */
     public void checkEmailExists(String email) {
-        if (userJpaRepository.findByEmail(email).isPresent()) {
+        if (userJpaRepository.existsByEmailIgnoreCase(email)) {
             throw UserAlreadyExistException.EXCEPTION;
         }
     }

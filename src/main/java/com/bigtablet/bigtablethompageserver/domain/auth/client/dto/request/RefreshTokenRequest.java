@@ -1,4 +1,4 @@
-package com.bigtablet.bigtablethompageserver.domain.auth.client.request;
+package com.bigtablet.bigtablethompageserver.domain.auth.client.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 
