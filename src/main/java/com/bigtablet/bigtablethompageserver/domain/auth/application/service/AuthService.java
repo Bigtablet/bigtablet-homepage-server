@@ -2,19 +2,15 @@ package com.bigtablet.bigtablethompageserver.domain.auth.application.service;
 
 import com.bigtablet.bigtablethompageserver.domain.auth.domain.model.AccessToken;
 import com.bigtablet.bigtablethompageserver.domain.auth.domain.model.AuthToken;
-import com.bigtablet.bigtablethompageserver.domain.user.exception.PasswordWrongException;
 import com.bigtablet.bigtablethompageserver.global.common.repository.redis.RedisRepository;
-import com.bigtablet.bigtablethompageserver.global.infra.email.exception.EmailCodeValidException;
 import com.bigtablet.bigtablethompageserver.global.security.jwt.JwtProvider;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -24,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 public class AuthService {
 
     private final JwtProvider jwtProvider;
-    private final PasswordEncoder passwordEncoder;
     private final RedisRepository redisRepository;
 
     /**
@@ -49,33 +44,6 @@ public class AuthService {
         log.info("[AuthService] refreshToken");
         Jws<Claims> claims = jwtProvider.getClaims(refreshToken);
         return new AccessToken(jwtProvider.generateAccessToken(claims.getBody().getSubject()));
-    }
-
-    /**
-     * 비밀번호 일치 여부 검증
-     * @param rawPassword String 평문 비밀번호
-     * @param hashedPassword String 해시된 비밀번호
-     * @return void
-     */
-    public void checkPassword(String rawPassword, String hashedPassword) {
-        if (!passwordEncoder.matches(rawPassword, hashedPassword)) {
-            throw PasswordWrongException.EXCEPTION;
-        }
-    }
-
-    /**
-     * 이메일 인증 코드 검증 (Redis 기반)
-     * @param email String 사용자 이메일
-     * @param authCode String 인증 코드
-     * @return void
-     */
-    public void checkAuthNum(String email, String authCode) {
-        log.info("[AuthService] checkAuthNum - email={}", email);
-        String code = redisRepository.getByKey(email, String.class);
-        if (!Objects.equals(code, authCode)) {
-            throw EmailCodeValidException.EXCEPTION;
-        }
-        redisRepository.delete(email);
     }
 
     /**
