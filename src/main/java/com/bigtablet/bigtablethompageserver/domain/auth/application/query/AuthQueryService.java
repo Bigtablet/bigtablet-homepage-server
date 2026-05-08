@@ -7,12 +7,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AuthQueryService {
 
     private final PasswordEncoder passwordEncoder;
@@ -39,7 +39,7 @@ public class AuthQueryService {
     public void checkAuthNum(String email, String authCode) {
         log.info("[AuthQueryService] checkAuthNum - email={}", email);
         String code = redisRepository.getByKey(email, String.class);
-        if (!Objects.equals(code, authCode)) {
+        if (code == null || !code.equals(authCode)) {
             throw EmailCodeValidException.EXCEPTION;
         }
         redisRepository.delete(email);
