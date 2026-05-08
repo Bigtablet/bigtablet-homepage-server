@@ -98,7 +98,7 @@ public class GcpService {
      * 파일 비어있는지 검증
      * @param multipartFile MultipartFile 검증할 파일
      */
-    public void checkFileIsEmpty(MultipartFile multipartFile) {
+    private void checkFileIsEmpty(MultipartFile multipartFile) {
         if (multipartFile.isEmpty()) {
             throw FileIsEmptyException.EXCEPTION;
         }
@@ -108,7 +108,7 @@ public class GcpService {
      * 허용된 파일 타입인지 검증 (PDF, PNG, JPG, JPEG, MP4)
      * @param contentType String 파일 콘텐츠 타입
      */
-    public void checkFileType(String contentType) {
+    private void checkFileType(String contentType) {
         if (
                 !contentType.equalsIgnoreCase("application/pdf") &&
                 !contentType.equalsIgnoreCase("image/png") &&

@@ -58,8 +58,10 @@ public class NewsService {
     @Transactional
     public void delete(Long idx) {
         log.info("[NewsService] delete - idx={}", idx);
-        NewsEntity entity = getNewsEntity(idx);
-        newsJpaRepository.deleteById(entity.getIdx());
+        if (!newsJpaRepository.existsById(idx)) {
+            throw NewsNotFoundException.EXCEPTION;
+        }
+        newsJpaRepository.deleteById(idx);
     }
 
     /**

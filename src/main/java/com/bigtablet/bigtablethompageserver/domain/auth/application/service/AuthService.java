@@ -19,6 +19,9 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class AuthService {
 
+    // 이메일 인증 코드 Redis TTL (초 단위)
+    private static final int AUTH_CODE_TTL_SECONDS = 180;
+
     private final JwtProvider jwtProvider;
     private final RedisRepository redisRepository;
 
@@ -61,7 +64,7 @@ public class AuthService {
             randomNumber.append(r.nextInt(10));
         }
         String authcode = randomNumber.toString();
-        redisRepository.save(email, authcode, 180, TimeUnit.SECONDS);
+        redisRepository.save(email, authcode, AUTH_CODE_TTL_SECONDS, TimeUnit.SECONDS);
         return authcode;
     }
 
