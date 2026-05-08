@@ -1,5 +1,6 @@
 package com.bigtablet.bigtablethompageserver.domain.auth.application.usecase;
 
+import com.bigtablet.bigtablethompageserver.domain.auth.application.query.AuthQueryService;
 import com.bigtablet.bigtablethompageserver.domain.auth.application.response.JsonWebTokenResponse;
 import com.bigtablet.bigtablethompageserver.domain.auth.application.response.RefreshTokenResponse;
 import com.bigtablet.bigtablethompageserver.domain.auth.application.service.AuthService;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Component;
 public class AuthUseCase {
 
     private final AuthService authService;
+    private final AuthQueryService authQueryService;
     private final UserService userService;
     private final UserQueryService userQueryService;
     private final EmailService emailService;
@@ -51,7 +53,7 @@ public class AuthUseCase {
     public JsonWebTokenResponse signIn(SignInRequest request) {
         log.info("[AuthUseCase] signIn - email={}", request.email());
         User user = userQueryService.find(request.email());
-        authService.checkPassword(request.password(), user.password());
+        authQueryService.checkPassword(request.password(), user.password());
         return JsonWebTokenResponse.of(authService.generateToken(request.email()));
     }
 
@@ -85,7 +87,7 @@ public class AuthUseCase {
      */
     public void checkAuthCode(String email, String authCode) {
         log.info("[AuthUseCase] checkAuthCode - email={}", email);
-        authService.checkAuthNum(email, authCode);
+        authQueryService.checkAuthNum(email, authCode);
     }
 
 }
