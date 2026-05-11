@@ -55,6 +55,9 @@ jobs:
           spring.data.redis.host: ${{ secrets.REDIS_HOST }}
           spring.data.redis.port: ${{ secrets.REDIS_PORT }}
           spring.data.redis.password: ${{ secrets.REDIS_PASSWORD }}
+          application.webauthn.rpId: ${{ secrets.WEBAUTHN_RP_ID }}
+          application.webauthn.rpName: ${{ secrets.WEBAUTHN_RP_NAME }}
+          application.webauthn.allowedOrigins: ${{ secrets.WEBAUTHN_ALLOWED_ORIGINS }}
           slack.webhook-url: ${{ secrets.SLACK_WEBHOOK }}
 
       - name: Create GCP Service Account Key File
