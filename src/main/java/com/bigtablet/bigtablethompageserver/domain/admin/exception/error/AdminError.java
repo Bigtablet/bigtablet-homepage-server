@@ -13,6 +13,12 @@ public enum AdminError implements ErrorProperty {
     ADMIN_NOT_FOUND(HttpStatus.NOT_FOUND, "Admin not found."),
     // 허용되지 않는 이메일 도메인
     INVALID_EMAIL_DOMAIN(HttpStatus.FORBIDDEN, "Email domain is not allowed."),
+    // 이메일 인증이 선행되지 않음
+    EMAIL_NOT_CERTIFIED(HttpStatus.UNAUTHORIZED, "Email verification is required."),
+    // 이메일 인증 코드 불일치
+    EMAIL_CODE_MISMATCH(HttpStatus.BAD_REQUEST, "Email verification code is invalid or expired."),
+    // 이미 크레덴셜이 등록된 어드민에 대한 등록 시도 (계정 탈취 방어)
+    CREDENTIAL_ALREADY_REGISTERED(HttpStatus.CONFLICT, "Credential is already registered for this admin. Contact an existing admin to add another key."),
     // WebAuthn 등록 실패
     WEBAUTHN_REGISTRATION_FAILED(HttpStatus.BAD_REQUEST, "WebAuthn registration failed."),
     // WebAuthn 인증 실패

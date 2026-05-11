@@ -1,6 +1,7 @@
 package com.bigtablet.bigtablethompageserver.domain.admin.application.usecase;
 
 import com.bigtablet.bigtablethompageserver.domain.admin.application.query.AdminQueryService;
+import com.bigtablet.bigtablethompageserver.domain.admin.application.query.EmailVerificationQueryService;
 import com.bigtablet.bigtablethompageserver.domain.admin.application.query.WebAuthnQueryService;
 import com.bigtablet.bigtablethompageserver.domain.admin.application.response.JsonWebTokenResponse;
 import com.bigtablet.bigtablethompageserver.domain.admin.application.response.WebAuthnOptionsResponse;
@@ -12,6 +13,7 @@ import com.bigtablet.bigtablethompageserver.domain.admin.client.dto.request.WebA
 import com.bigtablet.bigtablethompageserver.domain.admin.client.dto.request.WebAuthnRegisterFinishRequest;
 import com.bigtablet.bigtablethompageserver.domain.admin.client.dto.request.WebAuthnRegisterStartRequest;
 import com.bigtablet.bigtablethompageserver.domain.admin.domain.model.Admin;
+import com.bigtablet.bigtablethompageserver.domain.admin.exception.CredentialAlreadyRegisteredException;
 import com.bigtablet.bigtablethompageserver.domain.admin.exception.InvalidEmailDomainException;
 import com.bigtablet.bigtablethompageserver.domain.admin.exception.WebAuthnAuthenticationFailedException;
 import com.bigtablet.bigtablethompageserver.domain.admin.exception.WebAuthnRegistrationFailedException;
@@ -55,13 +57,14 @@ public class WebAuthnUseCase {
     private static final String WEBAUTHN_REG_KEY_PREFIX = "webauthn-reg:";
     private static final String WEBAUTHN_LOGIN_KEY_PREFIX = "webauthn-login:";
     private static final int CHALLENGE_TTL_MINUTES = 5;
-    private static final String ALLOWED_EMAIL_DOMAIN = "@bigtablet.com";
+    private static final String ALLOWED_EMAIL_DOMAIN = "bigtablet.com";
 
     private final RelyingParty relyingParty;
     private final AdminQueryService adminQueryService;
     private final AdminService adminService;
     private final WebAuthnService webAuthnService;
     private final WebAuthnQueryService webAuthnQueryService;
+    private final EmailVerificationQueryService emailVerificationQueryService;
     private final JwtTokenService jwtTokenService;
     private final RedisRepository redisRepository;
     private final ObjectMapper objectMapper;
@@ -74,6 +77,7 @@ public class WebAuthnUseCase {
     public WebAuthnOptionsResponse registerStart(WebAuthnRegisterStartRequest request) {
         log.info("[WebAuthnUseCase] registerStart - email={}", request.email());
         validateEmailDomain(request.email());
+        emailVerificationQueryService.checkCertified(request.email());
         String adminId = findOrCreateAdmin(request.email());
         UserIdentity userIdentity = UserIdentity.builder()
                 .name(request.email())
@@ -228,17 +232,23 @@ public class WebAuthnUseCase {
         }
     }
 
-    // 이메일 도메인 검증 (@bigtablet.com만 허용)
+    // 이메일 도메인 검증 (@bigtablet.com 도메인만 허용, 서브도메인 차단)
     private void validateEmailDomain(String email) {
-        if (!email.toLowerCase().endsWith(ALLOWED_EMAIL_DOMAIN)) {
+        String[] parts = email.split("@");
+        if (parts.length != 2 || !parts[1].equalsIgnoreCase(ALLOWED_EMAIL_DOMAIN)) {
             throw InvalidEmailDomainException.EXCEPTION;
         }
     }
 
     // 어드민 조회 또는 신규 생성 (등록용, 동시성 안전)
+    // 이미 크레덴셜이 등록된 어드민에 대해서는 등록 차단 — 계정 탈취 방어
     private String findOrCreateAdmin(String email) {
         Admin existing = adminQueryService.findByEmailOrNull(email);
         if (existing != null) {
+            if (webAuthnQueryService.hasCredential(existing.id())) {
+                log.warn("[WebAuthnUseCase] 기존 크레덴셜 보유 어드민에 대한 등록 시도 차단 - email={}", email);
+                throw CredentialAlreadyRegisteredException.EXCEPTION;
+            }
             return existing.id();
         }
         try {
@@ -248,6 +258,9 @@ public class WebAuthnUseCase {
             Admin retried = adminQueryService.findByEmailOrNull(email);
             if (retried == null) {
                 throw ex;
+            }
+            if (webAuthnQueryService.hasCredential(retried.id())) {
+                throw CredentialAlreadyRegisteredException.EXCEPTION;
             }
             return retried.id();
         }
