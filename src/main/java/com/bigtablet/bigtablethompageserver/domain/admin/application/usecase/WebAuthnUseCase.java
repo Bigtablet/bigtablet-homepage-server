@@ -59,6 +59,10 @@ public class WebAuthnUseCase {
     private static final int CHALLENGE_TTL_MINUTES = 5;
     private static final String ALLOWED_EMAIL_DOMAIN = "bigtablet.com";
 
+    // Yubico WebAuthn 라이브러리가 Jackson 2.x 기반이라 동일 버전을 직접 인스턴스화한다.
+    // Spring Boot 4의 자동 설정 ObjectMapper는 Jackson 3 (tools.jackson) 빈이라 호환 안 됨.
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     private final RelyingParty relyingParty;
     private final AdminQueryService adminQueryService;
     private final AdminService adminService;
@@ -67,7 +71,6 @@ public class WebAuthnUseCase {
     private final EmailVerificationQueryService emailVerificationQueryService;
     private final JwtTokenService jwtTokenService;
     private final RedisRepository redisRepository;
-    private final ObjectMapper objectMapper;
 
     /**
      * 물리키 등록 시작 — 챌린지 발급 + Redis 캐싱 (5분)
