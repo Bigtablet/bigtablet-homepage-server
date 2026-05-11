@@ -60,16 +60,18 @@ public class JwtProvider {
 
     /**
      * 액세스 토큰 생성
-     * @param email String 사용자 이메일
+     * @param subject String 토큰 subject (어드민 ID)
+     * @param role String 권한 클레임 (예: ADMIN)
      * @return String JWT 토큰
      */
-    public String generateAccessToken(final String email) {
+    public String generateAccessToken(final String subject, final String role) {
         Instant now = Instant.now();
         return Jwts.builder()
                 .header()
                 .type("JWT")
                 .and()
-                .subject(email)
+                .subject(subject)
+                .claim("role", role)
                 .claim("token_type", JwtType.ACCESS.name())
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(now.plus(jwtProperties.getExpiration(), ChronoUnit.MILLIS)))
@@ -79,16 +81,16 @@ public class JwtProvider {
 
     /**
      * 리프레시 토큰 생성
-     * @param email String 사용자 이메일
+     * @param subject String 토큰 subject (어드민 ID)
      * @return String JWT 토큰
      */
-    public String generateRefreshToken(final String email) {
+    public String generateRefreshToken(final String subject) {
         Instant now = Instant.now();
         return Jwts.builder()
                 .header()
                 .type("JWT")
                 .and()
-                .subject(email)
+                .subject(subject)
                 .claim("token_type", JwtType.REFRESH.name())
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(now.plus(jwtProperties.getRefreshExpiration(), ChronoUnit.MILLIS)))

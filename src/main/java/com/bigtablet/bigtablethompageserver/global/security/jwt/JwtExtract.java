@@ -1,8 +1,8 @@
 package com.bigtablet.bigtablethompageserver.global.security.jwt;
 
-import com.bigtablet.bigtablethompageserver.domain.user.domain.model.User;
-import com.bigtablet.bigtablethompageserver.domain.user.domain.repository.jpa.UserJpaRepository;
-import com.bigtablet.bigtablethompageserver.domain.user.exception.UserNotFoundException;
+import com.bigtablet.bigtablethompageserver.domain.admin.domain.model.Admin;
+import com.bigtablet.bigtablethompageserver.domain.admin.domain.repository.jpa.AdminJpaRepository;
+import com.bigtablet.bigtablethompageserver.domain.admin.exception.AdminNotFoundException;
 import com.bigtablet.bigtablethompageserver.global.security.auth.CustomUserDetails;
 import com.bigtablet.bigtablethompageserver.global.security.jwt.enums.JwtType;
 import com.bigtablet.bigtablethompageserver.global.security.jwt.exception.TokenTypeException;
@@ -20,7 +20,7 @@ import org.springframework.util.StringUtils;
 @RequiredArgsConstructor
 public class JwtExtract {
 
-    private final UserJpaRepository userRepository;
+    private final AdminJpaRepository adminJpaRepository;
     private final JwtProvider jwtProvider;
 
     /**
@@ -34,11 +34,11 @@ public class JwtExtract {
         if (isWrongType(claims, JwtType.ACCESS)) {
             throw TokenTypeException.EXCEPTION;
         }
-        User user = userRepository
-                .findByEmail(claims.getSubject())
-                .map(User::of)
-                .orElseThrow(() -> UserNotFoundException.EXCEPTION);
-        final CustomUserDetails details = new CustomUserDetails(user);
+        Admin admin = adminJpaRepository
+                .findById(claims.getSubject())
+                .map(Admin::of)
+                .orElseThrow(() -> AdminNotFoundException.EXCEPTION);
+        final CustomUserDetails details = new CustomUserDetails(admin);
         return new UsernamePasswordAuthenticationToken(details, null, details.getAuthorities());
     }
 

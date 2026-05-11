@@ -77,7 +77,7 @@ public class BlogService {
         BlogEntity entity = blogJpaRepository
                 .findById(idx)
                 .orElseThrow(() -> BlogNotFoundException.EXCEPTION);
-        blogJpaRepository.deleteById(entity.getIdx());
+        blogJpaRepository.delete(entity);
     }
 
     /**

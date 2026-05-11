@@ -59,7 +59,7 @@ public class NewsService {
     public void delete(Long idx) {
         log.info("[NewsService] delete - idx={}", idx);
         NewsEntity entity = getNewsEntity(idx);
-        newsJpaRepository.deleteById(entity.getIdx());
+        newsJpaRepository.delete(entity);
     }
 
     /**

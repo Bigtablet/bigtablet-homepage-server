@@ -57,11 +57,7 @@ public class TalentService {
         TalentEntity entity = talentJpaRepository
                 .findById(idx)
                 .orElseThrow(() -> TalentNotFoundException.EXCEPTION);
-        if (isActive) {
-            entity.activate();
-        } else {
-            entity.deactivate();
-        }
+        entity.editActive(isActive);
     }
 
 }
