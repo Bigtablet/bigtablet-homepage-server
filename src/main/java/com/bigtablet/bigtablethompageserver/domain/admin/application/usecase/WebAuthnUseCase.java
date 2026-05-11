@@ -61,7 +61,9 @@ public class WebAuthnUseCase {
 
     // Yubico WebAuthn 라이브러리가 Jackson 2.x 기반이라 동일 버전을 직접 인스턴스화한다.
     // Spring Boot 4의 자동 설정 ObjectMapper는 Jackson 3 (tools.jackson) 빈이라 호환 안 됨.
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    // findAndRegisterModules()로 classpath에 있는 모듈(parameter-names, jsr310 등)을 자동 등록하여
+    // record 역직렬화와 Java 8 시간 타입 처리를 안전하게 지원한다.
+    private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
 
     private final RelyingParty relyingParty;
     private final AdminQueryService adminQueryService;
