@@ -61,6 +61,9 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-impl:0.13.0'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.13.0'
 
+    // WebAuthn (Yubico)
+    implementation 'com.yubico:webauthn-server-core:2.5.3'
+
     // validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
