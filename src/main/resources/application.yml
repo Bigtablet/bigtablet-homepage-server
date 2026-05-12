@@ -61,6 +61,10 @@ application:
     rpId: ${secrets.WEBAUTHN_RP_ID}
     rpName: ${secrets.WEBAUTHN_RP_NAME}
     allowedOrigins: ${secrets.WEBAUTHN_ALLOWED_ORIGINS}
+  admin:
+    otp-ttl: 3m
+    cert-ttl: 30m
+    challenge-ttl: 5m
 
 slack:
   webhook-url: ${secrets.SLACK_WEBHOOK}
