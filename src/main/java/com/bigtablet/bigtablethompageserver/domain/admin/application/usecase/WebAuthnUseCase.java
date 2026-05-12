@@ -16,6 +16,7 @@ import com.bigtablet.bigtablethompageserver.domain.admin.exception.CredentialAlr
 import com.bigtablet.bigtablethompageserver.domain.admin.exception.WebAuthnAuthenticationFailedException;
 import com.bigtablet.bigtablethompageserver.domain.admin.exception.WebAuthnRegistrationFailedException;
 import com.bigtablet.bigtablethompageserver.global.common.repository.redis.RedisRepository;
+import com.bigtablet.bigtablethompageserver.global.security.admin.config.AdminAuthProperties;
 import com.bigtablet.bigtablethompageserver.global.security.jwt.JwtProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -55,7 +56,6 @@ public class WebAuthnUseCase {
 
     private static final String WEBAUTHN_REG_KEY_PREFIX = "webauthn-reg:";
     private static final String WEBAUTHN_LOGIN_KEY_PREFIX = "webauthn-login:";
-    private static final int CHALLENGE_TTL_MINUTES = 5;
 
     // Yubico WebAuthn 라이브러리가 Jackson 2.x 기반이라 동일 버전을 직접 인스턴스화한다.
     // Spring Boot 4의 자동 설정 ObjectMapper는 Jackson 3 (tools.jackson) 빈이라 호환 안 됨.
@@ -71,6 +71,7 @@ public class WebAuthnUseCase {
     private final EmailVerificationQueryService emailVerificationQueryService;
     private final JwtProvider jwtProvider;
     private final RedisRepository redisRepository;
+    private final AdminAuthProperties adminAuthProperties;
 
     /**
      * 물리키 등록 시작 — 챌린지 발급 + Redis 캐싱 (5분)
@@ -102,7 +103,7 @@ public class WebAuthnUseCase {
             redisRepository.save(
                     redisKey,
                     objectMapper.writeValueAsString(challenge),
-                    CHALLENGE_TTL_MINUTES * 60,
+                    adminAuthProperties.challengeTtlSeconds(),
                     TimeUnit.SECONDS
             );
             return WebAuthnOptionsResponse.builder()
@@ -182,7 +183,7 @@ public class WebAuthnUseCase {
             redisRepository.save(
                     redisKey,
                     assertionRequest.toJson(),
-                    CHALLENGE_TTL_MINUTES * 60,
+                    adminAuthProperties.challengeTtlSeconds(),
                     TimeUnit.SECONDS
             );
             return WebAuthnOptionsResponse.builder()
