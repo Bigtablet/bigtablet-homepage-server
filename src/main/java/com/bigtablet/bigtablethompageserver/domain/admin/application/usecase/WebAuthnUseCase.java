@@ -6,7 +6,6 @@ import com.bigtablet.bigtablethompageserver.domain.admin.application.query.WebAu
 import com.bigtablet.bigtablethompageserver.domain.admin.application.response.JsonWebTokenResponse;
 import com.bigtablet.bigtablethompageserver.domain.admin.application.response.WebAuthnOptionsResponse;
 import com.bigtablet.bigtablethompageserver.domain.admin.application.service.AdminService;
-import com.bigtablet.bigtablethompageserver.domain.admin.application.service.JwtTokenService;
 import com.bigtablet.bigtablethompageserver.domain.admin.application.service.WebAuthnService;
 import com.bigtablet.bigtablethompageserver.domain.admin.client.dto.request.WebAuthnLoginFinishRequest;
 import com.bigtablet.bigtablethompageserver.domain.admin.client.dto.request.WebAuthnLoginStartRequest;
@@ -18,6 +17,7 @@ import com.bigtablet.bigtablethompageserver.domain.admin.exception.InvalidEmailD
 import com.bigtablet.bigtablethompageserver.domain.admin.exception.WebAuthnAuthenticationFailedException;
 import com.bigtablet.bigtablethompageserver.domain.admin.exception.WebAuthnRegistrationFailedException;
 import com.bigtablet.bigtablethompageserver.global.common.repository.redis.RedisRepository;
+import com.bigtablet.bigtablethompageserver.global.security.jwt.JwtProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yubico.webauthn.AssertionRequest;
@@ -71,7 +71,7 @@ public class WebAuthnUseCase {
     private final WebAuthnService webAuthnService;
     private final WebAuthnQueryService webAuthnQueryService;
     private final EmailVerificationQueryService emailVerificationQueryService;
-    private final JwtTokenService jwtTokenService;
+    private final JwtProvider jwtProvider;
     private final RedisRepository redisRepository;
 
     /**
@@ -228,8 +228,8 @@ public class WebAuthnUseCase {
             redisRepository.delete(redisKey);
             log.info("[WebAuthnUseCase] loginFinish 성공 - adminId={}", admin.id());
             return JsonWebTokenResponse.builder()
-                    .accessToken(jwtTokenService.generateAccessToken(admin.id(), admin.role()))
-                    .refreshToken(jwtTokenService.generateRefreshToken(admin.id()))
+                    .accessToken(jwtProvider.generateAccessToken(admin.id(), admin.role().name()))
+                    .refreshToken(jwtProvider.generateRefreshToken(admin.id()))
                     .build();
         } catch (AssertionFailedException | IOException e) {
             log.error("[WebAuthnUseCase] loginFinish 실패 - email={}", request.email(), e);
