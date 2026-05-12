@@ -3,6 +3,7 @@ package com.bigtablet.bigtablethompageserver.domain.admin.application.query;
 import com.bigtablet.bigtablethompageserver.domain.admin.domain.model.Admin;
 import com.bigtablet.bigtablethompageserver.domain.admin.domain.repository.jpa.AdminJpaRepository;
 import com.bigtablet.bigtablethompageserver.domain.admin.exception.AdminNotFoundException;
+import com.bigtablet.bigtablethompageserver.domain.admin.exception.InvalidEmailDomainException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AdminQueryService {
+
+    // 허용된 어드민 이메일 도메인 — bigtablet.com 정확 매치만 통과 (서브도메인 차단)
+    private static final String ALLOWED_EMAIL_DOMAIN = "bigtablet.com";
 
     private final AdminJpaRepository adminJpaRepository;
 
@@ -45,6 +49,21 @@ public class AdminQueryService {
         return adminJpaRepository.findById(id)
                 .map(Admin::of)
                 .orElseThrow(() -> AdminNotFoundException.EXCEPTION);
+    }
+
+    /**
+     * 어드민 이메일 도메인 검증 (서브도메인 차단, 정확 매치만 통과)
+     * @param email String 어드민 이메일 (null 허용 — null이면 도메인 불일치 처리)
+     * @return void (도메인 불일치 시 예외)
+     */
+    public void checkEmailDomain(String email) {
+        if (email == null) {
+            throw InvalidEmailDomainException.EXCEPTION;
+        }
+        String[] parts = email.split("@");
+        if (parts.length != 2 || !parts[1].equalsIgnoreCase(ALLOWED_EMAIL_DOMAIN)) {
+            throw InvalidEmailDomainException.EXCEPTION;
+        }
     }
 
 }
