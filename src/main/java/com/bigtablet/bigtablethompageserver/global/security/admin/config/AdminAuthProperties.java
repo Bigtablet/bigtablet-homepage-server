@@ -13,5 +13,7 @@ public record AdminAuthProperties(
         // OTP 검증 성공 후 인증 완료 윈도 (예: 30m)
         @DefaultValue("30m") Duration certTtl,
         // WebAuthn 챌린지 캐싱 유효 기간 (예: 5m)
-        @DefaultValue("5m") Duration challengeTtl
+        @DefaultValue("5m") Duration challengeTtl,
+        // 어드민 회원가입 허용 이메일 도메인 (정확 매치만 통과, 서브도메인 차단)
+        @DefaultValue("bigtablet.com") String allowedEmailDomain
 ) {}

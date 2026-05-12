@@ -65,6 +65,7 @@ application:
     otp-ttl: 3m
     cert-ttl: 30m
     challenge-ttl: 5m
+    allowed-email-domain: bigtablet.com
 
 slack:
   webhook-url: ${secrets.SLACK_WEBHOOK}
