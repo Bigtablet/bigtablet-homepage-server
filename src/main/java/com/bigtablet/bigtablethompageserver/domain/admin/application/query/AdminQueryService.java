@@ -61,9 +61,9 @@ public class AdminQueryService {
             throw InvalidEmailDomainException.EXCEPTION;
         }
         // split("@", -1)로 트레일링 빈 토큰 보존 — "user@bigtablet.com@" 같은 비정상 입력 차단
-        // parts[0] 빈 체크 — "@bigtablet.com" 같이 로컬 파트 없는 입력 차단
+        // parts[0] blank 체크 — "@bigtablet.com" / " @bigtablet.com" 같이 로컬 파트가 비거나 공백뿐인 입력 차단
         String[] parts = email.split("@", -1);
-        if (parts.length != 2 || parts[0].isEmpty() || !parts[1].equalsIgnoreCase(ALLOWED_EMAIL_DOMAIN)) {
+        if (parts.length != 2 || parts[0].isBlank() || !parts[1].equalsIgnoreCase(ALLOWED_EMAIL_DOMAIN)) {
             throw InvalidEmailDomainException.EXCEPTION;
         }
     }
