@@ -3,6 +3,8 @@ package com.bigtablet.bigtablethompageserver.domain.admin.application.query;
 import com.bigtablet.bigtablethompageserver.domain.admin.domain.model.Admin;
 import com.bigtablet.bigtablethompageserver.domain.admin.domain.repository.jpa.AdminJpaRepository;
 import com.bigtablet.bigtablethompageserver.domain.admin.exception.AdminNotFoundException;
+import com.bigtablet.bigtablethompageserver.domain.admin.exception.InvalidEmailDomainException;
+import com.bigtablet.bigtablethompageserver.global.security.admin.config.AdminAuthProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminQueryService {
 
     private final AdminJpaRepository adminJpaRepository;
+    private final AdminAuthProperties adminAuthProperties;
 
     /**
      * 이메일로 어드민 조회
@@ -45,6 +48,24 @@ public class AdminQueryService {
         return adminJpaRepository.findById(id)
                 .map(Admin::of)
                 .orElseThrow(() -> AdminNotFoundException.EXCEPTION);
+    }
+
+    /**
+     * 어드민 이메일 도메인 검증 (서브도메인 차단, 정확 매치만 통과)
+     * 허용 도메인은 application.admin.allowed-email-domain 프로퍼티로 외부화됨
+     * @param email String 어드민 이메일 (null 허용 — null이면 도메인 불일치 처리)
+     * @return void (도메인 불일치 시 예외)
+     */
+    public void checkEmailDomain(String email) {
+        if (email == null) {
+            throw InvalidEmailDomainException.EXCEPTION;
+        }
+        // split("@", -1)로 트레일링 빈 토큰 보존 — "user@bigtablet.com@" 같은 비정상 입력 차단
+        // parts[0] blank 체크 — "@bigtablet.com" / " @bigtablet.com" 같이 로컬 파트가 비거나 공백뿐인 입력 차단
+        String[] parts = email.split("@", -1);
+        if (parts.length != 2 || parts[0].isBlank() || !parts[1].equalsIgnoreCase(adminAuthProperties.allowedEmailDomain())) {
+            throw InvalidEmailDomainException.EXCEPTION;
+        }
     }
 
 }

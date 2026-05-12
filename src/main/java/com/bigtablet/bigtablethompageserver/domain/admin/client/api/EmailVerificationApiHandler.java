@@ -1,9 +1,9 @@
 package com.bigtablet.bigtablethompageserver.domain.admin.client.api;
 
+import com.bigtablet.bigtablethompageserver.domain.admin.application.query.AdminQueryService;
 import com.bigtablet.bigtablethompageserver.domain.admin.application.service.EmailVerificationService;
 import com.bigtablet.bigtablethompageserver.domain.admin.client.dto.request.EmailSendRequest;
 import com.bigtablet.bigtablethompageserver.domain.admin.client.dto.request.EmailVerifyRequest;
-import com.bigtablet.bigtablethompageserver.domain.admin.exception.InvalidEmailDomainException;
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/email-verification")
 public class EmailVerificationApiHandler {
 
-    private static final String ALLOWED_EMAIL_DOMAIN = "bigtablet.com";
-
+    private final AdminQueryService adminQueryService;
     private final EmailVerificationService emailVerificationService;
 
     /**
@@ -33,7 +32,7 @@ public class EmailVerificationApiHandler {
     @PostMapping("/send")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponse send(@RequestBody @Valid final EmailSendRequest request) {
-        validateEmailDomain(request.email());
+        adminQueryService.checkEmailDomain(request.email());
         emailVerificationService.sendCode(request.email());
         return BaseResponse.ok("OTP 발송 성공");
     }
@@ -46,17 +45,9 @@ public class EmailVerificationApiHandler {
     @PostMapping("/verify")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponse verify(@RequestBody @Valid final EmailVerifyRequest request) {
-        validateEmailDomain(request.email());
+        adminQueryService.checkEmailDomain(request.email());
         emailVerificationService.verifyCode(request.email(), request.code());
         return BaseResponse.ok("이메일 인증 성공");
-    }
-
-    // 이메일 도메인 정합성 검증 (@bigtablet.com만 허용, 서브도메인 차단)
-    private void validateEmailDomain(String email) {
-        String[] parts = email.split("@");
-        if (parts.length != 2 || !parts[1].equalsIgnoreCase(ALLOWED_EMAIL_DOMAIN)) {
-            throw InvalidEmailDomainException.EXCEPTION;
-        }
     }
 
 }

@@ -6,7 +6,6 @@ import com.bigtablet.bigtablethompageserver.domain.admin.application.query.WebAu
 import com.bigtablet.bigtablethompageserver.domain.admin.application.response.JsonWebTokenResponse;
 import com.bigtablet.bigtablethompageserver.domain.admin.application.response.WebAuthnOptionsResponse;
 import com.bigtablet.bigtablethompageserver.domain.admin.application.service.AdminService;
-import com.bigtablet.bigtablethompageserver.domain.admin.application.service.JwtTokenService;
 import com.bigtablet.bigtablethompageserver.domain.admin.application.service.WebAuthnService;
 import com.bigtablet.bigtablethompageserver.domain.admin.client.dto.request.WebAuthnLoginFinishRequest;
 import com.bigtablet.bigtablethompageserver.domain.admin.client.dto.request.WebAuthnLoginStartRequest;
@@ -14,10 +13,11 @@ import com.bigtablet.bigtablethompageserver.domain.admin.client.dto.request.WebA
 import com.bigtablet.bigtablethompageserver.domain.admin.client.dto.request.WebAuthnRegisterStartRequest;
 import com.bigtablet.bigtablethompageserver.domain.admin.domain.model.Admin;
 import com.bigtablet.bigtablethompageserver.domain.admin.exception.CredentialAlreadyRegisteredException;
-import com.bigtablet.bigtablethompageserver.domain.admin.exception.InvalidEmailDomainException;
 import com.bigtablet.bigtablethompageserver.domain.admin.exception.WebAuthnAuthenticationFailedException;
 import com.bigtablet.bigtablethompageserver.domain.admin.exception.WebAuthnRegistrationFailedException;
 import com.bigtablet.bigtablethompageserver.global.common.repository.redis.RedisRepository;
+import com.bigtablet.bigtablethompageserver.global.security.admin.config.AdminAuthProperties;
+import com.bigtablet.bigtablethompageserver.global.security.jwt.JwtProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yubico.webauthn.AssertionRequest;
@@ -56,8 +56,6 @@ public class WebAuthnUseCase {
 
     private static final String WEBAUTHN_REG_KEY_PREFIX = "webauthn-reg:";
     private static final String WEBAUTHN_LOGIN_KEY_PREFIX = "webauthn-login:";
-    private static final int CHALLENGE_TTL_MINUTES = 5;
-    private static final String ALLOWED_EMAIL_DOMAIN = "bigtablet.com";
 
     // Yubico WebAuthn 라이브러리가 Jackson 2.x 기반이라 동일 버전을 직접 인스턴스화한다.
     // Spring Boot 4의 자동 설정 ObjectMapper는 Jackson 3 (tools.jackson) 빈이라 호환 안 됨.
@@ -71,8 +69,9 @@ public class WebAuthnUseCase {
     private final WebAuthnService webAuthnService;
     private final WebAuthnQueryService webAuthnQueryService;
     private final EmailVerificationQueryService emailVerificationQueryService;
-    private final JwtTokenService jwtTokenService;
+    private final JwtProvider jwtProvider;
     private final RedisRepository redisRepository;
+    private final AdminAuthProperties adminAuthProperties;
 
     /**
      * 물리키 등록 시작 — 챌린지 발급 + Redis 캐싱 (5분)
@@ -81,7 +80,7 @@ public class WebAuthnUseCase {
      */
     public WebAuthnOptionsResponse registerStart(WebAuthnRegisterStartRequest request) {
         log.info("[WebAuthnUseCase] registerStart - email={}", request.email());
-        validateEmailDomain(request.email());
+        adminQueryService.checkEmailDomain(request.email());
         emailVerificationQueryService.checkCertified(request.email());
         String adminId = findOrCreateAdmin(request.email());
         UserIdentity userIdentity = UserIdentity.builder()
@@ -104,7 +103,7 @@ public class WebAuthnUseCase {
             redisRepository.save(
                     redisKey,
                     objectMapper.writeValueAsString(challenge),
-                    CHALLENGE_TTL_MINUTES * 60,
+                    (int) adminAuthProperties.challengeTtl().toSeconds(),
                     TimeUnit.SECONDS
             );
             return WebAuthnOptionsResponse.builder()
@@ -169,7 +168,7 @@ public class WebAuthnUseCase {
      */
     public WebAuthnOptionsResponse loginStart(WebAuthnLoginStartRequest request) {
         log.info("[WebAuthnUseCase] loginStart - email={}", request.email());
-        validateEmailDomain(request.email());
+        adminQueryService.checkEmailDomain(request.email());
         Admin admin = adminQueryService.findByEmail(request.email());
         if (!webAuthnQueryService.hasCredential(admin.id())) {
             throw WebAuthnAuthenticationFailedException.EXCEPTION;
@@ -184,7 +183,7 @@ public class WebAuthnUseCase {
             redisRepository.save(
                     redisKey,
                     assertionRequest.toJson(),
-                    CHALLENGE_TTL_MINUTES * 60,
+                    (int) adminAuthProperties.challengeTtl().toSeconds(),
                     TimeUnit.SECONDS
             );
             return WebAuthnOptionsResponse.builder()
@@ -204,7 +203,7 @@ public class WebAuthnUseCase {
     @Transactional
     public JsonWebTokenResponse loginFinish(WebAuthnLoginFinishRequest request) {
         log.info("[WebAuthnUseCase] loginFinish - email={}", request.email());
-        validateEmailDomain(request.email());
+        adminQueryService.checkEmailDomain(request.email());
         Admin admin = adminQueryService.findByEmail(request.email());
         String redisKey = WEBAUTHN_LOGIN_KEY_PREFIX + admin.id();
         String assertionRequestJson = redisRepository.getByKey(redisKey, String.class);
@@ -228,20 +227,12 @@ public class WebAuthnUseCase {
             redisRepository.delete(redisKey);
             log.info("[WebAuthnUseCase] loginFinish 성공 - adminId={}", admin.id());
             return JsonWebTokenResponse.builder()
-                    .accessToken(jwtTokenService.generateAccessToken(admin.id(), admin.role()))
-                    .refreshToken(jwtTokenService.generateRefreshToken(admin.id()))
+                    .accessToken(jwtProvider.generateAccessToken(admin.id(), admin.role().name()))
+                    .refreshToken(jwtProvider.generateRefreshToken(admin.id()))
                     .build();
         } catch (AssertionFailedException | IOException e) {
             log.error("[WebAuthnUseCase] loginFinish 실패 - email={}", request.email(), e);
             throw WebAuthnAuthenticationFailedException.EXCEPTION;
-        }
-    }
-
-    // 이메일 도메인 검증 (@bigtablet.com 도메인만 허용, 서브도메인 차단)
-    private void validateEmailDomain(String email) {
-        String[] parts = email.split("@");
-        if (parts.length != 2 || !parts[1].equalsIgnoreCase(ALLOWED_EMAIL_DOMAIN)) {
-            throw InvalidEmailDomainException.EXCEPTION;
         }
     }
 
