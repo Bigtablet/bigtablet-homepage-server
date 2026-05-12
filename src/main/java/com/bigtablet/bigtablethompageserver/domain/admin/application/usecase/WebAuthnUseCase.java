@@ -103,7 +103,7 @@ public class WebAuthnUseCase {
             redisRepository.save(
                     redisKey,
                     objectMapper.writeValueAsString(challenge),
-                    adminAuthProperties.challengeTtlSeconds(),
+                    (int) adminAuthProperties.challengeTtl().toSeconds(),
                     TimeUnit.SECONDS
             );
             return WebAuthnOptionsResponse.builder()
@@ -183,7 +183,7 @@ public class WebAuthnUseCase {
             redisRepository.save(
                     redisKey,
                     assertionRequest.toJson(),
-                    adminAuthProperties.challengeTtlSeconds(),
+                    (int) adminAuthProperties.challengeTtl().toSeconds(),
                     TimeUnit.SECONDS
             );
             return WebAuthnOptionsResponse.builder()
