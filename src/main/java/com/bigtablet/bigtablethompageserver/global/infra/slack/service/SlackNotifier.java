@@ -18,7 +18,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class SlackNotifier {
 
-    private final RestTemplate restTemplate;
+    private final RestTemplate slackRestTemplate;
 
     @Value("${slack.webhook-url}")
     private String webhookUrl;
@@ -62,7 +62,7 @@ public class SlackNotifier {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
-        restTemplate.postForEntity(webhookUrl, entity, String.class);
+        slackRestTemplate.postForEntity(webhookUrl, entity, String.class);
     }
 
 }
