@@ -1,12 +1,14 @@
 package com.bigtablet.bigtablethompageserver.global.infra.slack.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -14,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class SlackNotifier {
@@ -62,7 +65,12 @@ public class SlackNotifier {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
-        slackRestTemplate.postForEntity(webhookUrl, entity, String.class);
+        try {
+            slackRestTemplate.postForEntity(webhookUrl, entity, String.class);
+        } catch (RestClientException e) {
+            log.warn("[SlackNotifier] Slack 알림 발송 실패 - jobTitle={}, applicantName={}, recruitIdx={}, reason={}",
+                    jobTitle, applicantName, recruitIdx, e.getMessage());
+        }
     }
 
 }
