@@ -1,5 +1,6 @@
 package com.bigtablet.bigtablethompageserver.domain.talent.application.usecase;
 
+import com.bigtablet.bigtablethompageserver.domain.recruit.application.constant.RecruitMailSubject;
 import com.bigtablet.bigtablethompageserver.domain.talent.application.query.TalentQueryService;
 import com.bigtablet.bigtablethompageserver.domain.talent.application.response.TalentResponse;
 import com.bigtablet.bigtablethompageserver.domain.talent.application.service.TalentService;
@@ -45,7 +46,7 @@ public class TalentUseCase {
                 request.etcUrl()
         );
         String content = mailTemplateRenderer.renderTalentEmail(request.name(), LocalDateTime.now());
-        emailService.sendRecruit(request.email(), "[Bigtablet, Inc. 채용]", content);
+        emailService.sendRecruit(request.email(), RecruitMailSubject.brand(), content);
     }
 
     /**
@@ -58,7 +59,7 @@ public class TalentUseCase {
         Talent talent = talentQueryService.find(request.idx());
         talentService.editActive(talent.idx(), false);
         String content = mailTemplateRenderer.renderOfferEmail(talent.name(), request.text());
-        emailService.sendRecruit(talent.email(), "[Bigtablet, Inc. 채용]", content);
+        emailService.sendRecruit(talent.email(), RecruitMailSubject.brand(), content);
     }
 
     /**
