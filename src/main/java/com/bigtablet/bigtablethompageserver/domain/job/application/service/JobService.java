@@ -57,13 +57,17 @@ public class JobService {
     }
 
     /**
-     * 채용 공고 삭제
+     * 채용 공고 삭제 (존재하지 않으면 JobNotFoundException).
+     * `edit`/`deactivate`와 동일하게 존재 여부를 명시적으로 검증해 404 응답 contract을 유지한다.
      * @param idx Long 채용 공고 ID
      * @return void
      */
     @Transactional
     public void delete(Long idx) {
         log.info("[JobService] delete - idx={}", idx);
+        if (!jobJpaRepository.existsById(idx)) {
+            throw JobNotFoundException.EXCEPTION;
+        }
         jobJpaRepository.deleteById(idx);
     }
 
