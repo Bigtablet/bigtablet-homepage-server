@@ -56,7 +56,7 @@ public class TalentApiHandler {
     }
 
     @GetMapping("/list")
-    public BaseResponseData<List<TalentResponse>> getTalentList(@ModelAttribute final GetTalentListRequest request) {
+    public BaseResponseData<List<TalentResponse>> getTalentList(@ModelAttribute @Valid final GetTalentListRequest request) {
         return BaseResponseData.ok(
                 "조회 성공",
                 talentUseCase.getTalentList(request)
@@ -64,7 +64,7 @@ public class TalentApiHandler {
     }
 
     @GetMapping("/search")
-    public BaseResponseData<List<TalentResponse>> searchTalent(@ModelAttribute final SearchTalentRequest request) {
+    public BaseResponseData<List<TalentResponse>> searchTalent(@ModelAttribute @Valid final SearchTalentRequest request) {
         return BaseResponseData.ok(
                 "검색 성공",
                 talentUseCase.searchTalent(request)
