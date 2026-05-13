@@ -108,8 +108,7 @@ public class JobUseCase {
      */
     public void deleteJob(Long idx) {
         log.info("[JobUseCase] deleteJob - idx={}", idx);
-        Job job = jobQueryService.find(idx);
-        jobService.delete(job.idx());
+        jobService.delete(idx);
     }
 
 }
