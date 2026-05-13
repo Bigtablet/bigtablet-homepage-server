@@ -11,6 +11,7 @@ import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.Status;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.model.Recruit;
 import com.bigtablet.bigtablethompageserver.global.infra.email.renderer.MailTemplateRenderer;
 import com.bigtablet.bigtablethompageserver.global.infra.email.service.EmailService;
+import com.bigtablet.bigtablethompageserver.global.infra.email.subject.RecruitMailSubject;
 import com.bigtablet.bigtablethompageserver.global.infra.slack.service.SlackNotifier;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +46,7 @@ public class RecruitUseCase {
         String content = mailTemplateRenderer.renderApplyConfirmEmail(request.name(), job.title(), LocalDateTime.now());
         emailService.sendRecruit(
                 request.email(),
-                "[Bigtablet, Inc. 채용] " + request.name() + "님, 지원 접수 완료 안내드립니다",
+                RecruitMailSubject.applyConfirmed(request.name()),
                 content
         );
         try {
@@ -103,7 +104,7 @@ public class RecruitUseCase {
         recruitService.editStatus(status, idx);
         emailService.sendRecruit(
                 recruit.email(),
-                "[Bigtablet, Inc. 채용] " + recruit.name() + "님, 면접 전형 안내드립니다",
+                RecruitMailSubject.interviewGuide(recruit.name()),
                 content
         );
     }
@@ -122,7 +123,7 @@ public class RecruitUseCase {
         recruitService.accept(recruit.idx());
         emailService.sendRecruit(
                 recruit.email(),
-                "[Bigtablet, Inc. 채용] " + recruit.name() + "님, 채용 전형 최종 결과 안내드립니다",
+                RecruitMailSubject.finalResult(recruit.name()),
                 content
         );
     }
@@ -140,7 +141,7 @@ public class RecruitUseCase {
         recruitService.reject(recruit.idx());
         emailService.sendRecruit(
                 recruit.email(),
-                "[Bigtablet, Inc. 채용] " + recruit.name() + "님, 채용 전형 최종 결과 안내드립니다",
+                RecruitMailSubject.finalResult(recruit.name()),
                 content
         );
     }

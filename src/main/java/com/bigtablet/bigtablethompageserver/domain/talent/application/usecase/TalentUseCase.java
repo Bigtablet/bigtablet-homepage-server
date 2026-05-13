@@ -12,6 +12,7 @@ import com.bigtablet.bigtablethompageserver.domain.talent.exception.TalentIsEmpt
 import com.bigtablet.bigtablethompageserver.global.common.util.CollectionValidator;
 import com.bigtablet.bigtablethompageserver.global.infra.email.renderer.MailTemplateRenderer;
 import com.bigtablet.bigtablethompageserver.global.infra.email.service.EmailService;
+import com.bigtablet.bigtablethompageserver.global.infra.email.subject.RecruitMailSubject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -45,7 +46,7 @@ public class TalentUseCase {
                 request.etcUrl()
         );
         String content = mailTemplateRenderer.renderTalentEmail(request.name(), LocalDateTime.now());
-        emailService.sendRecruit(request.email(), "[Bigtablet, Inc. 채용]", content);
+        emailService.sendRecruit(request.email(), RecruitMailSubject.brand(), content);
     }
 
     /**
@@ -58,7 +59,7 @@ public class TalentUseCase {
         Talent talent = talentQueryService.find(request.idx());
         talentService.editActive(talent.idx(), false);
         String content = mailTemplateRenderer.renderOfferEmail(talent.name(), request.text());
-        emailService.sendRecruit(talent.email(), "[Bigtablet, Inc. 채용]", content);
+        emailService.sendRecruit(talent.email(), RecruitMailSubject.brand(), content);
     }
 
     /**
