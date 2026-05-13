@@ -52,7 +52,7 @@ public class JobApiHandler {
     
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponseData<List<JobResponse>> getJobList(@ModelAttribute final GetJobListRequest request) {
+    public BaseResponseData<List<JobResponse>> getJobList(@ModelAttribute @Valid final GetJobListRequest request) {
         return BaseResponseData.ok(
                 "조회 성공",
                 jobUseCase.getJobList(request)
@@ -61,7 +61,7 @@ public class JobApiHandler {
 
     @GetMapping("/list/deactivate")
     @ResponseStatus(HttpStatus.OK)
-    public BaseResponseData<List<JobResponse>> getDeactivateJobList(@ModelAttribute final GetJobListRequest request) {
+    public BaseResponseData<List<JobResponse>> getDeactivateJobList(@ModelAttribute @Valid final GetJobListRequest request) {
         return BaseResponseData.ok(
                 "조회 성공",
                 jobUseCase.getDeactivateJobList(request)
