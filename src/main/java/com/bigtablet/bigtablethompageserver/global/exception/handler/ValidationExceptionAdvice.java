@@ -7,7 +7,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -16,16 +15,22 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ValidationExceptionAdvice {
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ErrorResponse catchValidationException(MethodArgumentNotValidException exception) {
-        return ErrorResponse.of(firstDefaultMessage(exception));
-    }
-
+    /**
+     * `@RequestBody @Valid`(MethodArgumentNotValidException) / `@ModelAttribute @Valid`(BindException) 양쪽 검증 실패를
+     * BindException 부모 핸들러 하나로 통합 처리한다. MethodArgumentNotValidException은 BindException 자식.
+     * @param exception BindException 검증 실패 예외
+     * @return ErrorResponse 첫 검증 오류 메시지 응답
+     */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BindException.class)
     public ErrorResponse catchBindException(BindException exception) {
-        return ErrorResponse.of(firstDefaultMessage(exception));
+        return ErrorResponse.of(
+                exception
+                        .getBindingResult()
+                        .getAllErrors()
+                        .getFirst()
+                        .getDefaultMessage()
+        );
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -37,20 +42,6 @@ public class ValidationExceptionAdvice {
             return ErrorResponse.of("ENUM 값이 올바르지 않습니다.");
         }
         return ErrorResponse.of("요청 본문이 올바르지 않습니다.");
-    }
-
-    /**
-     * BindingResult에서 첫 번째 default message를 추출한다.
-     * MethodArgumentNotValidException은 BindException의 자식이라 공통 처리 가능.
-     * @param exception BindException 검증 예외
-     * @return String 첫 검증 오류의 default message
-     */
-    private String firstDefaultMessage(BindException exception) {
-        return exception
-                .getBindingResult()
-                .getAllErrors()
-                .getFirst()
-                .getDefaultMessage();
     }
 
 }

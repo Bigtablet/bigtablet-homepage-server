@@ -36,7 +36,7 @@ public interface JobJpaRepository extends JpaRepository<JobEntity, Long> {
      * @param modifiedAt LocalDateTime 갱신 시각
      * @return int 영향받은 row 수
      */
-    @Modifying(clearAutomatically = true)
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE JobEntity j SET j.isActive = false, j.modifiedAt = :modifiedAt WHERE j.endDate <= :endDate AND j.isActive = true")
     int deactivateAllByEndDate(@Param("endDate") LocalDate endDate, @Param("modifiedAt") LocalDateTime modifiedAt);
 
