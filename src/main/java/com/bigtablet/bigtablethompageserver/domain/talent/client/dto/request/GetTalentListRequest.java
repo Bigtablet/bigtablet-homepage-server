@@ -10,6 +10,6 @@ import lombok.Setter;
 public class GetTalentListRequest extends PageRequest {
 
     @NotNull
-    private boolean isActive;
+    private Boolean isActive;
 
 }

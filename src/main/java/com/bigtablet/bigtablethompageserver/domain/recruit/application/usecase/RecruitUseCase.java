@@ -2,6 +2,7 @@ package com.bigtablet.bigtablethompageserver.domain.recruit.application.usecase;
 
 import com.bigtablet.bigtablethompageserver.domain.job.application.query.JobQueryService;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.model.Job;
+import com.bigtablet.bigtablethompageserver.domain.recruit.application.constant.RecruitMailSubject;
 import com.bigtablet.bigtablethompageserver.domain.recruit.application.query.RecruitQueryService;
 import com.bigtablet.bigtablethompageserver.domain.recruit.application.response.RecruitResponse;
 import com.bigtablet.bigtablethompageserver.domain.recruit.application.service.RecruitService;
@@ -45,7 +46,7 @@ public class RecruitUseCase {
         String content = mailTemplateRenderer.renderApplyConfirmEmail(request.name(), job.title(), LocalDateTime.now());
         emailService.sendRecruit(
                 request.email(),
-                "[Bigtablet, Inc. 채용] " + request.name() + "님, 지원 접수 완료 안내드립니다",
+                RecruitMailSubject.applyConfirmed(request.name()),
                 content
         );
         try {
@@ -103,7 +104,7 @@ public class RecruitUseCase {
         recruitService.editStatus(status, idx);
         emailService.sendRecruit(
                 recruit.email(),
-                "[Bigtablet, Inc. 채용] " + recruit.name() + "님, 면접 전형 안내드립니다",
+                RecruitMailSubject.interviewGuide(recruit.name()),
                 content
         );
     }
@@ -122,7 +123,7 @@ public class RecruitUseCase {
         recruitService.accept(recruit.idx());
         emailService.sendRecruit(
                 recruit.email(),
-                "[Bigtablet, Inc. 채용] " + recruit.name() + "님, 채용 전형 최종 결과 안내드립니다",
+                RecruitMailSubject.finalResult(recruit.name()),
                 content
         );
     }
@@ -140,7 +141,7 @@ public class RecruitUseCase {
         recruitService.reject(recruit.idx());
         emailService.sendRecruit(
                 recruit.email(),
-                "[Bigtablet, Inc. 채용] " + recruit.name() + "님, 채용 전형 최종 결과 안내드립니다",
+                RecruitMailSubject.finalResult(recruit.name()),
                 content
         );
     }

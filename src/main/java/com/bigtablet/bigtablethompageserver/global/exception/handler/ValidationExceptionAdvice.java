@@ -6,7 +6,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -15,16 +15,24 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ValidationExceptionAdvice {
 
+    /**
+     * `@RequestBody @Valid`(MethodArgumentNotValidException) / `@ModelAttribute @Valid`(BindException) 양쪽 검증 실패를
+     * BindException 부모 핸들러 하나로 통합 처리한다. MethodArgumentNotValidException은 BindException 자식.
+     * @param exception BindException 검증 실패 예외
+     * @return ErrorResponse 첫 검증 오류 메시지 응답
+     */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ErrorResponse catchValidationException(MethodArgumentNotValidException exception) {
-        String message = exception
-                .getBindingResult()
-                .getAllErrors()
-                .getFirst()
-                .getDefaultMessage();
-        return ErrorResponse.of(message);
+    @ExceptionHandler(BindException.class)
+    public ErrorResponse catchBindException(BindException exception) {
+        return ErrorResponse.of(
+                exception
+                        .getBindingResult()
+                        .getAllErrors()
+                        .getFirst()
+                        .getDefaultMessage()
+        );
     }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ErrorResponse handleHttpMessageNotReadable(HttpMessageNotReadableException exception) {
