@@ -18,7 +18,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class SlackNotifier {
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
 
     @Value("${slack.webhook-url}")
     private String webhookUrl;
