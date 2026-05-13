@@ -1,5 +1,6 @@
 package com.bigtablet.bigtablethompageserver.domain.talent.application.usecase;
 
+import com.bigtablet.bigtablethompageserver.domain.recruit.application.constant.RecruitMailSubject;
 import com.bigtablet.bigtablethompageserver.domain.talent.application.query.TalentQueryService;
 import com.bigtablet.bigtablethompageserver.domain.talent.application.response.TalentResponse;
 import com.bigtablet.bigtablethompageserver.domain.talent.application.service.TalentService;
@@ -12,7 +13,6 @@ import com.bigtablet.bigtablethompageserver.domain.talent.exception.TalentIsEmpt
 import com.bigtablet.bigtablethompageserver.global.common.util.CollectionValidator;
 import com.bigtablet.bigtablethompageserver.global.infra.email.renderer.MailTemplateRenderer;
 import com.bigtablet.bigtablethompageserver.global.infra.email.service.EmailService;
-import com.bigtablet.bigtablethompageserver.global.infra.email.subject.RecruitMailSubject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

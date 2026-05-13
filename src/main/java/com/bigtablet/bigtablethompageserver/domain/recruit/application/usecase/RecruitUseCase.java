@@ -2,6 +2,7 @@ package com.bigtablet.bigtablethompageserver.domain.recruit.application.usecase;
 
 import com.bigtablet.bigtablethompageserver.domain.job.application.query.JobQueryService;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.model.Job;
+import com.bigtablet.bigtablethompageserver.domain.recruit.application.constant.RecruitMailSubject;
 import com.bigtablet.bigtablethompageserver.domain.recruit.application.query.RecruitQueryService;
 import com.bigtablet.bigtablethompageserver.domain.recruit.application.response.RecruitResponse;
 import com.bigtablet.bigtablethompageserver.domain.recruit.application.service.RecruitService;
@@ -11,7 +12,6 @@ import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.Status;
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.model.Recruit;
 import com.bigtablet.bigtablethompageserver.global.infra.email.renderer.MailTemplateRenderer;
 import com.bigtablet.bigtablethompageserver.global.infra.email.service.EmailService;
-import com.bigtablet.bigtablethompageserver.global.infra.email.subject.RecruitMailSubject;
 import com.bigtablet.bigtablethompageserver.global.infra.slack.service.SlackNotifier;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

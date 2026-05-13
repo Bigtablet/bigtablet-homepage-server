@@ -1,4 +1,4 @@
-package com.bigtablet.bigtablethompageserver.global.infra.email.subject;
+package com.bigtablet.bigtablethompageserver.domain.recruit.application.constant;
 
 public final class RecruitMailSubject {
 
@@ -23,7 +23,7 @@ public final class RecruitMailSubject {
      * @return String 이메일 제목
      */
     public static String applyConfirmed(String name) {
-        return PREFIX + " " + name + "님, 지원 접수 완료 안내드립니다";
+        return personalized(name, "지원 접수 완료 안내드립니다");
     }
 
     /**
@@ -32,7 +32,7 @@ public final class RecruitMailSubject {
      * @return String 이메일 제목
      */
     public static String interviewGuide(String name) {
-        return PREFIX + " " + name + "님, 면접 전형 안내드립니다";
+        return personalized(name, "면접 전형 안내드립니다");
     }
 
     /**
@@ -41,7 +41,17 @@ public final class RecruitMailSubject {
      * @return String 이메일 제목
      */
     public static String finalResult(String name) {
-        return PREFIX + " " + name + "님, 채용 전형 최종 결과 안내드립니다";
+        return personalized(name, "채용 전형 최종 결과 안내드립니다");
+    }
+
+    /**
+     * 공통 포맷: `{PREFIX} {name}님, {message}` — 호칭/구분자 변경 시 이 메서드만 수정.
+     * @param name String 수신자 이름
+     * @param message String 안내 메시지 본문
+     * @return String 조립된 이메일 제목
+     */
+    private static String personalized(String name, String message) {
+        return PREFIX + " " + name + "님, " + message;
     }
 
 }
