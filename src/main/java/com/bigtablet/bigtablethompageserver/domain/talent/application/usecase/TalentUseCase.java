@@ -78,8 +78,8 @@ public class TalentUseCase {
      * @return List<TalentResponse> 인재 응답 목록
      */
     public List<TalentResponse> getTalentList(GetTalentListRequest request) {
-        log.info("[TalentUseCase] getTalentList - isActive={}, page={}, size={}", request.isActive(), request.getPage(), request.getSize());
-        List<Talent> talents = talentQueryService.findAllTalents(request.isActive(), request.getPage(), request.getSize());
+        log.info("[TalentUseCase] getTalentList - isActive={}, page={}, size={}", request.getIsActive(), request.getPage(), request.getSize());
+        List<Talent> talents = talentQueryService.findAllTalents(request.getIsActive(), request.getPage(), request.getSize());
         CollectionValidator.throwIfEmpty(talents, TalentIsEmptyException.EXCEPTION);
         return talents.stream().map(TalentResponse::of).toList();
     }
