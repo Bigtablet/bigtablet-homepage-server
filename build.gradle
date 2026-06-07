@@ -25,7 +25,7 @@ repositories {
 }
 
 ext {
-    querydslVersion = "7.1"
+    querydslVersion = "7.3.0"
     set('tomcat.version', '11.0.21')
     set('thymeleaf.version', '3.1.5.RELEASE')
     set('jackson-bom.version', '3.1.2')
