@@ -79,7 +79,7 @@ public class WebAuthnUseCase {
      * @return WebAuthnOptionsResponse 등록 옵션 JSON
      */
     public WebAuthnOptionsResponse registerStart(WebAuthnRegisterStartRequest request) {
-        log.info("[WebAuthnUseCase] registerStart - email={}", request.email());
+        log.info("[WebAuthnUseCase] registerStart - email={}", mask(request.email()));
         adminQueryService.checkEmailDomain(request.email());
         emailVerificationQueryService.checkCertified(request.email());
         String adminId = findOrCreateAdmin(request.email());
@@ -110,7 +110,7 @@ public class WebAuthnUseCase {
                     .options(optionsJson)
                     .build();
         } catch (JsonProcessingException e) {
-            log.error("[WebAuthnUseCase] registerStart 직렬화 실패 - email={}", request.email(), e);
+            log.error("[WebAuthnUseCase] registerStart 직렬화 실패 - email={}", mask(request.email()), e);
             throw WebAuthnRegistrationFailedException.EXCEPTION;
         }
     }
@@ -122,7 +122,7 @@ public class WebAuthnUseCase {
      */
     @Transactional
     public void registerFinish(WebAuthnRegisterFinishRequest request) {
-        log.info("[WebAuthnUseCase] registerFinish - email={}", request.email());
+        log.info("[WebAuthnUseCase] registerFinish - email={}", mask(request.email()));
         String redisKey = WEBAUTHN_REG_KEY_PREFIX + request.email().toLowerCase();
         String challengeJson = redisRepository.getByKey(redisKey, String.class);
         if (challengeJson == null) {
@@ -132,7 +132,7 @@ public class WebAuthnUseCase {
         try {
             challenge = objectMapper.readValue(challengeJson, WebAuthnRegisterChallenge.class);
         } catch (JsonProcessingException e) {
-            log.error("[WebAuthnUseCase] 챌린지 역직렬화 실패 - email={}", request.email(), e);
+            log.error("[WebAuthnUseCase] 챌린지 역직렬화 실패 - email={}", mask(request.email()), e);
             throw WebAuthnRegistrationFailedException.EXCEPTION;
         }
         try {
@@ -156,7 +156,7 @@ public class WebAuthnUseCase {
             redisRepository.delete(redisKey);
             log.info("[WebAuthnUseCase] registerFinish 성공 - adminId={}, credentialId={}", challenge.adminId(), credentialId);
         } catch (RegistrationFailedException | IOException e) {
-            log.error("[WebAuthnUseCase] registerFinish 실패 - email={}", request.email(), e);
+            log.error("[WebAuthnUseCase] registerFinish 실패 - email={}", mask(request.email()), e);
             throw WebAuthnRegistrationFailedException.EXCEPTION;
         }
     }
@@ -167,7 +167,7 @@ public class WebAuthnUseCase {
      * @return WebAuthnOptionsResponse 로그인 옵션 JSON
      */
     public WebAuthnOptionsResponse loginStart(WebAuthnLoginStartRequest request) {
-        log.info("[WebAuthnUseCase] loginStart - email={}", request.email());
+        log.info("[WebAuthnUseCase] loginStart - email={}", mask(request.email()));
         adminQueryService.checkEmailDomain(request.email());
         Admin admin = adminQueryService.findByEmail(request.email());
         if (!webAuthnQueryService.hasCredential(admin.id())) {
@@ -190,7 +190,7 @@ public class WebAuthnUseCase {
                     .options(optionsJson)
                     .build();
         } catch (JsonProcessingException e) {
-            log.error("[WebAuthnUseCase] loginStart 직렬화 실패 - email={}", request.email(), e);
+            log.error("[WebAuthnUseCase] loginStart 직렬화 실패 - email={}", mask(request.email()), e);
             throw WebAuthnAuthenticationFailedException.EXCEPTION;
         }
     }
@@ -202,7 +202,7 @@ public class WebAuthnUseCase {
      */
     @Transactional
     public JsonWebTokenResponse loginFinish(WebAuthnLoginFinishRequest request) {
-        log.info("[WebAuthnUseCase] loginFinish - email={}", request.email());
+        log.info("[WebAuthnUseCase] loginFinish - email={}", mask(request.email()));
         adminQueryService.checkEmailDomain(request.email());
         Admin admin = adminQueryService.findByEmail(request.email());
         String redisKey = WEBAUTHN_LOGIN_KEY_PREFIX + admin.id();
@@ -231,7 +231,7 @@ public class WebAuthnUseCase {
                     .refreshToken(jwtProvider.generateRefreshToken(admin.id()))
                     .build();
         } catch (AssertionFailedException | IOException e) {
-            log.error("[WebAuthnUseCase] loginFinish 실패 - email={}", request.email(), e);
+            log.error("[WebAuthnUseCase] loginFinish 실패 - email={}", mask(request.email()), e);
             throw WebAuthnAuthenticationFailedException.EXCEPTION;
         }
     }
@@ -242,7 +242,7 @@ public class WebAuthnUseCase {
         Admin existing = adminQueryService.findByEmailOrNull(email);
         if (existing != null) {
             if (webAuthnQueryService.hasCredential(existing.id())) {
-                log.warn("[WebAuthnUseCase] 기존 크레덴셜 보유 어드민에 대한 등록 시도 차단 - email={}", email);
+                log.warn("[WebAuthnUseCase] 기존 크레덴셜 보유 어드민에 대한 등록 시도 차단 - email={}", mask(email));
                 throw CredentialAlreadyRegisteredException.EXCEPTION;
             }
             return existing.id();
@@ -250,7 +250,7 @@ public class WebAuthnUseCase {
         try {
             return adminService.save(email);
         } catch (DataIntegrityViolationException ex) {
-            log.warn("[WebAuthnUseCase] 동시 요청으로 어드민 중복 생성 시도 - email={}", email);
+            log.warn("[WebAuthnUseCase] 동시 요청으로 어드민 중복 생성 시도 - email={}", mask(email));
             Admin retried = adminQueryService.findByEmailOrNull(email);
             if (retried == null) {
                 throw ex;
@@ -260,6 +260,18 @@ public class WebAuthnUseCase {
             }
             return retried.id();
         }
+    }
+
+    // 이메일 로컬파트를 마스킹하여 로그 PII 노출을 줄인다 (예: a***@bigtablet.com)
+    private String mask(String email) {
+        if (email == null) {
+            return "null";
+        }
+        int at = email.indexOf('@');
+        if (at <= 0) {
+            return "***";
+        }
+        return email.charAt(0) + "***" + email.substring(at);
     }
 
     // Redis 저장용 챌린지 record
