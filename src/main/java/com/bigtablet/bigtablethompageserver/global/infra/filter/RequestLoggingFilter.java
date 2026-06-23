@@ -34,7 +34,6 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
         } finally {
             int status = response.getStatus();
-
             org.slf4j.LoggerFactory.getLogger(RequestLoggingFilter.class).info(
                     "traceId={} ip={} method={} uri={}{} status={} ua={}",
                     traceId, clientIp, method, decodedUri, (query != null ? "?" + query : ""), status, ua

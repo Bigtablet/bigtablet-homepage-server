@@ -54,7 +54,6 @@ public class SecurityConfig implements WebMvcConfigurer {
                         authorize -> authorize
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                                 .requestMatchers("/", "/index.html").permitAll()
-
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                                 .requestMatchers("/admin/email-verification/**").permitAll()
                                 .requestMatchers("/admin/webauthn/register/**").permitAll()
