@@ -2,7 +2,9 @@ package com.bigtablet.bigtablethompageserver.global.infra.gcp.api;
 
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponse;
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponseData;
+import com.bigtablet.bigtablethompageserver.global.common.util.RateLimiter;
 import com.bigtablet.bigtablethompageserver.global.infra.gcp.service.GcpService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.Duration;
 
 @Validated
 @RestController
@@ -27,10 +30,15 @@ import java.io.IOException;
 public class GcpApiHandler {
 
     private final GcpService gcpService;
+    private final RateLimiter rateLimiter;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public BaseResponseData<String> upload(@RequestPart @NotNull final MultipartFile multipartFile) throws IOException {
+    public BaseResponseData<String> upload(
+            @RequestPart @NotNull final MultipartFile multipartFile,
+            final HttpServletRequest servletRequest
+    ) throws IOException {
+        rateLimiter.check("gcp-upload:" + RateLimiter.clientIp(servletRequest), 20, Duration.ofHours(1));
         return BaseResponseData.created(
                 "업로드 성공",
                 gcpService.upload(multipartFile));

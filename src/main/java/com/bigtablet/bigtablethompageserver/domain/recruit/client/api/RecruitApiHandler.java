@@ -7,6 +7,8 @@ import com.bigtablet.bigtablethompageserver.domain.recruit.client.dto.request.Re
 import com.bigtablet.bigtablethompageserver.domain.recruit.domain.enums.Status;
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponse;
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponseData;
+import com.bigtablet.bigtablethompageserver.global.common.util.RateLimiter;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Duration;
 import java.util.List;
 
 @Validated
@@ -31,10 +34,15 @@ import java.util.List;
 public class RecruitApiHandler {
 
     private final RecruitUseCase recruitUseCase;
+    private final RateLimiter rateLimiter;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public BaseResponse registerRecruit(@RequestBody @Valid final RegisterRecruitRequest request) {
+    public BaseResponse registerRecruit(
+            @RequestBody @Valid final RegisterRecruitRequest request,
+            final HttpServletRequest servletRequest
+    ) {
+        rateLimiter.check("recruit:" + RateLimiter.clientIp(servletRequest), 5, Duration.ofHours(1));
         recruitUseCase.registerRecruit(request);
         return BaseResponse.created("등록 성공");
     }
