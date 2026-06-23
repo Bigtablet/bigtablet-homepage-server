@@ -16,7 +16,7 @@ public class CustomUserDetails implements UserDetails {
 
     /**
      * CustomUserDetails 생성자
-     * @param admin Admin 어드민 도메인 객체
+     * @param admin 어드민 도메인 객체
      */
     public CustomUserDetails(final Admin admin) {
         this.admin = admin;

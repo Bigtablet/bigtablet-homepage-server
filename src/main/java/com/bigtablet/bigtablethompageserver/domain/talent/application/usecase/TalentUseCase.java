@@ -32,8 +32,7 @@ public class TalentUseCase {
 
     /**
      * 인재풀 등록 (등록 확인 이메일 발송)
-     * @param request RegisterTalentRequest 인재풀 등록 요청 정보
-     * @return void
+     * @param request 인재풀 등록 요청 정보
      */
     public void registerTalent(RegisterTalentRequest request) {
         log.info("[TalentUseCase] registerTalent - email={}, name={}", request.email(), request.name());
@@ -51,8 +50,7 @@ public class TalentUseCase {
 
     /**
      * 인재풀 대상 면접 제안 이메일 발송
-     * @param request SendEmailToTalentRequest 인재 이메일 발송 요청 정보
-     * @return void
+     * @param request 인재 이메일 발송 요청 정보
      */
     public void sendMailToTalent(SendEmailToTalentRequest request) {
         log.info("[TalentUseCase] sendMailToTalent - idx={}", request.idx());
@@ -64,7 +62,7 @@ public class TalentUseCase {
 
     /**
      * 인재 단건 조회
-     * @param idx Long 인재 식별자
+     * @param idx 인재 식별자
      * @return TalentResponse 인재 응답
      */
     public TalentResponse getTalent(Long idx) {
@@ -75,7 +73,7 @@ public class TalentUseCase {
 
     /**
      * 인재풀 목록 조회
-     * @param request GetTalentListRequest 인재풀 목록 조회 요청 정보
+     * @param request 인재풀 목록 조회 요청 정보
      * @return List<TalentResponse> 인재 응답 목록
      */
     public List<TalentResponse> getTalentList(GetTalentListRequest request) {
@@ -87,7 +85,7 @@ public class TalentUseCase {
 
     /**
      * 인재풀 키워드 검색
-     * @param request SearchTalentRequest 인재풀 검색 요청 정보
+     * @param request 인재풀 검색 요청 정보
      * @return List<TalentResponse> 인재 응답 목록
      */
     public List<TalentResponse> searchTalent(SearchTalentRequest request) {

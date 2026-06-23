@@ -25,8 +25,7 @@ public class BlogUseCase {
 
     /**
      * 블로그 등록
-     * @param request RegisterBlogRequest 블로그 등록 요청 정보
-     * @return void
+     * @param request 블로그 등록 요청 정보
      */
     public void registerBlog(RegisterBlogRequest request) {
         log.info("[BlogUseCase] registerBlog - titleKr={}", request.titleKr());
@@ -41,7 +40,7 @@ public class BlogUseCase {
 
     /**
      * 블로그 단건 조회
-     * @param idx Long 블로그 식별자
+     * @param idx 블로그 식별자
      * @return BlogResponse 블로그 응답
      */
     public BlogResponse getBlog(Long idx) {
@@ -52,7 +51,7 @@ public class BlogUseCase {
 
     /**
      * 블로그 목록 페이지 조회
-     * @param request PageRequest 페이지 요청 정보
+     * @param request 페이지 요청 정보
      * @return List<BlogResponse> 블로그 응답 목록
      */
     public List<BlogResponse> getAllBlogList(PageRequest request) {
@@ -66,8 +65,8 @@ public class BlogUseCase {
 
     /**
      * 제목으로 블로그 검색
-     * @param request PageRequest 페이지 요청 정보
-     * @param title String 검색할 블로그 제목
+     * @param request 페이지 요청 정보
+     * @param title 검색할 블로그 제목
      * @return List<BlogResponse> 블로그 응답 목록
      */
     public List<BlogResponse> searchBlogByTitle(PageRequest request, String title) {
@@ -81,8 +80,7 @@ public class BlogUseCase {
 
     /**
      * 블로그 수정
-     * @param request EditBlogRequest 블로그 수정 요청 정보
-     * @return void
+     * @param request 블로그 수정 요청 정보
      */
     public void updateBlog(EditBlogRequest request) {
         log.info("[BlogUseCase] updateBlog - idx={}", request.idx());
@@ -98,8 +96,7 @@ public class BlogUseCase {
 
     /**
      * 블로그 삭제
-     * @param idx Long 블로그 식별자
-     * @return void
+     * @param idx 블로그 식별자
      */
     public void deleteBlog(Long idx) {
         log.info("[BlogUseCase] deleteBlog - idx={}", idx);
@@ -108,8 +105,7 @@ public class BlogUseCase {
 
     /**
      * 블로그 조회수 증가
-     * @param idx Long 블로그 식별자
-     * @return void
+     * @param idx 블로그 식별자
      */
     public void addViews(Long idx) {
         log.info("[BlogUseCase] addViews - idx={}", idx);

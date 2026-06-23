@@ -56,11 +56,11 @@ public class BlogEntity extends BaseEntity {
 
     /**
      * 블로그 정보를 수정한다
-     * @param titleKr String 한국어 제목
-     * @param titleEn String 영문 제목
-     * @param contentKr String 한국어 내용
-     * @param contentEn String 영문 내용
-     * @param imageUrl String 대표 이미지 URL
+     * @param titleKr 한국어 제목
+     * @param titleEn 영문 제목
+     * @param contentKr 한국어 내용
+     * @param contentEn 영문 내용
+     * @param imageUrl 대표 이미지 URL
      */
     public void editBlog(
             String titleKr,

@@ -31,8 +31,7 @@ public class EmailVerificationService {
 
     /**
      * 6자리 OTP 생성 후 Redis에 저장하고 이메일로 발송 (application.admin.otp-ttl 적용)
-     * @param email String 어드민 이메일
-     * @return void
+     * @param email 어드민 이메일
      */
     public void sendCode(String email) {
         log.info("[EmailVerificationService] sendCode - email={}", email);
@@ -53,9 +52,8 @@ public class EmailVerificationService {
 
     /**
      * OTP 검증 후 인증 완료 플래그를 저장 (application.admin.cert-ttl 적용, 검증 성공 시 OTP는 즉시 삭제)
-     * @param email String 어드민 이메일
-     * @param authCode String 클라이언트가 입력한 OTP
-     * @return void
+     * @param email 어드민 이메일
+     * @param authCode 클라이언트가 입력한 OTP
      */
     public void verifyCode(String email, String authCode) {
         log.info("[EmailVerificationService] verifyCode - email={}", email);

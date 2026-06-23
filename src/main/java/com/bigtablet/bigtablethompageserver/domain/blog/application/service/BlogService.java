@@ -17,12 +17,11 @@ public class BlogService {
 
     /**
      * 블로그 저장
-     * @param titleKr String 한국어 제목
-     * @param titleEn String 영어 제목
-     * @param contentKr String 한국어 내용
-     * @param contentEn String 영어 내용
-     * @param imageUrl String 이미지 URL
-     * @return void
+     * @param titleKr 한국어 제목
+     * @param titleEn 영어 제목
+     * @param contentKr 한국어 내용
+     * @param contentEn 영어 내용
+     * @param imageUrl 이미지 URL
      */
     @Transactional
     public void save(String titleKr, String titleEn, String contentKr, String contentEn, String imageUrl) {
@@ -39,13 +38,12 @@ public class BlogService {
 
     /**
      * 블로그 수정
-     * @param idx Long 블로그 ID
-     * @param titleKr String 한국어 제목
-     * @param titleEn String 영어 제목
-     * @param contentKr String 한국어 내용
-     * @param contentEn String 영어 내용
-     * @param imageUrl String 이미지 URL
-     * @return void
+     * @param idx 블로그 ID
+     * @param titleKr 한국어 제목
+     * @param titleEn 영어 제목
+     * @param contentKr 한국어 내용
+     * @param contentEn 영어 내용
+     * @param imageUrl 이미지 URL
      */
     @Transactional
     public void edit(Long idx, String titleKr, String titleEn, String contentKr, String contentEn, String imageUrl) {
@@ -56,8 +54,7 @@ public class BlogService {
 
     /**
      * 블로그 조회수 증가
-     * @param idx Long 블로그 ID
-     * @return void
+     * @param idx 블로그 ID
      */
     @Transactional
     public void addViews(Long idx) {
@@ -68,8 +65,7 @@ public class BlogService {
 
     /**
      * 블로그 삭제
-     * @param idx Long 블로그 ID
-     * @return void
+     * @param idx 블로그 ID
      */
     @Transactional
     public void delete(Long idx) {
@@ -82,7 +78,7 @@ public class BlogService {
 
     /**
      * ID로 BlogEntity 조회 (비관적 락)
-     * @param idx Long 블로그 ID
+     * @param idx 블로그 ID
      * @return BlogEntity 블로그 엔티티
      */
     private BlogEntity getBlogEntity(Long idx) {

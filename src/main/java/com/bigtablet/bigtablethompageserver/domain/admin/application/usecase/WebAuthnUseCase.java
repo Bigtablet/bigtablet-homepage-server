@@ -75,7 +75,7 @@ public class WebAuthnUseCase {
 
     /**
      * 물리키 등록 시작 — 챌린지 발급 + Redis 캐싱 (5분)
-     * @param request WebAuthnRegisterStartRequest 등록 시작 요청
+     * @param request 등록 시작 요청
      * @return WebAuthnOptionsResponse 등록 옵션 JSON
      */
     public WebAuthnOptionsResponse registerStart(WebAuthnRegisterStartRequest request) {
@@ -117,8 +117,7 @@ public class WebAuthnUseCase {
 
     /**
      * 물리키 등록 완료 — 크레덴셜 검증 후 저장
-     * @param request WebAuthnRegisterFinishRequest 등록 완료 요청
-     * @return void
+     * @param request 등록 완료 요청
      */
     @Transactional
     public void registerFinish(WebAuthnRegisterFinishRequest request) {
@@ -163,7 +162,7 @@ public class WebAuthnUseCase {
 
     /**
      * 물리키 로그인 시작 — 챌린지 발급 + Redis 캐싱 (5분)
-     * @param request WebAuthnLoginStartRequest 로그인 시작 요청
+     * @param request 로그인 시작 요청
      * @return WebAuthnOptionsResponse 로그인 옵션 JSON
      */
     public WebAuthnOptionsResponse loginStart(WebAuthnLoginStartRequest request) {
@@ -197,7 +196,7 @@ public class WebAuthnUseCase {
 
     /**
      * 물리키 로그인 완료 — 어설션 검증 후 JWT 발급
-     * @param request WebAuthnLoginFinishRequest 로그인 완료 요청
+     * @param request 로그인 완료 요청
      * @return JsonWebTokenResponse JWT (access + refresh)
      */
     @Transactional

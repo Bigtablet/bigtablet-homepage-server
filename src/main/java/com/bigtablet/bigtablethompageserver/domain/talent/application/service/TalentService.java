@@ -19,12 +19,11 @@ public class TalentService {
 
     /**
      * 인재풀 등록
-     * @param email String 이메일
-     * @param name String 이름
-     * @param department String 부서
-     * @param portfolioUrl String 포트폴리오 URL
-     * @param etcUrl List<String> 기타 URL 목록
-     * @return void
+     * @param email 이메일
+     * @param name 이름
+     * @param department 부서
+     * @param portfolioUrl 포트폴리오 URL
+     * @param etcUrl 기타 URL 목록
      */
     @Transactional
     public void save(
@@ -47,9 +46,8 @@ public class TalentService {
 
     /**
      * 인재 활성 상태 변경
-     * @param idx Long 인재 ID
-     * @param isActive boolean 활성 여부
-     * @return void
+     * @param idx 인재 ID
+     * @param isActive 활성 여부
      */
     @Transactional
     public void editActive(Long idx, boolean isActive) {

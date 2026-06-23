@@ -17,11 +17,10 @@ public class NewsService {
 
     /**
      * 뉴스 저장
-     * @param titleKr String 한국어 제목
-     * @param titleEn String 영어 제목
-     * @param newsUrl String 뉴스 URL
-     * @param thumbnailImageUrl String 썸네일 이미지 URL
-     * @return void
+     * @param titleKr 한국어 제목
+     * @param titleEn 영어 제목
+     * @param newsUrl 뉴스 URL
+     * @param thumbnailImageUrl 썸네일 이미지 URL
      */
     @Transactional
     public void save(String titleKr, String titleEn, String newsUrl, String thumbnailImageUrl) {
@@ -36,12 +35,11 @@ public class NewsService {
 
     /**
      * 뉴스 수정
-     * @param idx Long 뉴스 ID
-     * @param titleKr String 한국어 제목
-     * @param titleEn String 영어 제목
-     * @param newsUrl String 뉴스 URL
-     * @param thumbnailImageUrl String 썸네일 이미지 URL
-     * @return void
+     * @param idx 뉴스 ID
+     * @param titleKr 한국어 제목
+     * @param titleEn 영어 제목
+     * @param newsUrl 뉴스 URL
+     * @param thumbnailImageUrl 썸네일 이미지 URL
      */
     @Transactional
     public void edit(Long idx, String titleKr, String titleEn, String newsUrl, String thumbnailImageUrl) {
@@ -52,8 +50,7 @@ public class NewsService {
 
     /**
      * 뉴스 삭제
-     * @param idx Long 뉴스 ID
-     * @return void
+     * @param idx 뉴스 ID
      */
     @Transactional
     public void delete(Long idx) {
@@ -64,7 +61,7 @@ public class NewsService {
 
     /**
      * ID로 NewsEntity 조회 (내부용)
-     * @param idx Long 뉴스 ID
+     * @param idx 뉴스 ID
      * @return NewsEntity 뉴스 엔티티
      */
     private NewsEntity getNewsEntity(Long idx) {

@@ -18,7 +18,7 @@ public class ValidationExceptionAdvice {
     /**
      * `@RequestBody @Valid`(MethodArgumentNotValidException) / `@ModelAttribute @Valid`(BindException) 양쪽 검증 실패를
      * BindException 부모 핸들러 하나로 통합 처리한다. MethodArgumentNotValidException은 BindException 자식.
-     * @param exception BindException 검증 실패 예외
+     * @param exception 검증 실패 예외
      * @return ErrorResponse 첫 검증 오류 메시지 응답
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)

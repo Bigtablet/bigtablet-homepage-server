@@ -19,7 +19,7 @@ public record BlogResponse(
 ) {
     /**
      * Blog 도메인 객체를 BlogResponse로 변환합니다.
-     * @param blog Blog 변환할 도메인 객체
+     * @param blog 변환할 도메인 객체
      * @return BlogResponse 변환된 응답 DTO
      */
     public static BlogResponse of(Blog blog) {

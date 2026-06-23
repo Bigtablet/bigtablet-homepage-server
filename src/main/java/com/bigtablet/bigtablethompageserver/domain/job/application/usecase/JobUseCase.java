@@ -25,8 +25,7 @@ public class JobUseCase {
 
     /**
      * 채용 공고 등록
-     * @param request RegisterJobRequest 채용 공고 등록 요청 정보
-     * @return void
+     * @param request 채용 공고 등록 요청 정보
      */
     public void registerJob(RegisterJobRequest request) {
         log.info("[JobUseCase] registerJob - title={}", request.title());
@@ -35,7 +34,7 @@ public class JobUseCase {
 
     /**
      * 채용 공고 단건 조회
-     * @param idx Long 채용 공고 식별자
+     * @param idx 채용 공고 식별자
      * @return JobResponse 채용 공고 응답
      */
     public JobResponse getJob(Long idx) {
@@ -45,7 +44,7 @@ public class JobUseCase {
 
     /**
      * 활성 채용 공고 목록 조회
-     * @param request GetJobListRequest 채용 공고 목록 조회 요청 정보
+     * @param request 채용 공고 목록 조회 요청 정보
      * @return List<JobResponse> 채용 공고 응답 목록
      */
     public List<JobResponse> getJobList(GetJobListRequest request) {
@@ -64,7 +63,7 @@ public class JobUseCase {
 
     /**
      * 비활성 채용 공고 목록 조회
-     * @param request GetJobListRequest 채용 공고 목록 조회 요청 정보
+     * @param request 채용 공고 목록 조회 요청 정보
      * @return List<JobResponse> 비활성 채용 공고 응답 목록
      */
     public List<JobResponse> getDeactivateJobList(GetJobListRequest request) {
@@ -83,8 +82,7 @@ public class JobUseCase {
 
     /**
      * 채용 공고 수정
-     * @param request EditJobRequest 채용 공고 수정 요청 정보
-     * @return void
+     * @param request 채용 공고 수정 요청 정보
      */
     public void updateJob(EditJobRequest request) {
         log.info("[JobUseCase] updateJob - idx={}", request.idx());
@@ -93,8 +91,7 @@ public class JobUseCase {
 
     /**
      * 채용 공고 비활성화
-     * @param idx Long 채용 공고 식별자
-     * @return void
+     * @param idx 채용 공고 식별자
      */
     public void deactivateJob(Long idx) {
         log.info("[JobUseCase] deactivateJob - idx={}", idx);
@@ -103,8 +100,7 @@ public class JobUseCase {
 
     /**
      * 채용 공고 삭제
-     * @param idx Long 채용 공고 식별자
-     * @return void
+     * @param idx 채용 공고 식별자
      */
     public void deleteJob(Long idx) {
         log.info("[JobUseCase] deleteJob - idx={}", idx);

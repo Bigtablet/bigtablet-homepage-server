@@ -94,7 +94,7 @@ public class JobEntity extends BaseEntity {
 
     /**
      * JobInput으로 새 활성 상태 채용 공고 엔티티를 생성한다
-     * @param input JobInput 채용 공고 입력 데이터
+     * @param input 채용 공고 입력 데이터
      * @return JobEntity 신규 채용 공고 엔티티
      */
     public static JobEntity create(JobInput input) {
@@ -118,7 +118,7 @@ public class JobEntity extends BaseEntity {
 
     /**
      * 채용 공고 정보를 수정한다
-     * @param input JobInput 채용 공고 입력 데이터
+     * @param input 채용 공고 입력 데이터
      */
     public void editJob(JobInput input) {
         this.title = input.title();

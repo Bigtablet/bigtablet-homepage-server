@@ -25,8 +25,7 @@ public class NewsUseCase {
 
     /**
      * 뉴스 등록
-     * @param request RegisterNewsRequest 뉴스 등록 요청 정보
-     * @return void
+     * @param request 뉴스 등록 요청 정보
      */
     public void registerNews(RegisterNewsRequest request) {
         log.info("[NewsUseCase] registerNews - titleKr={}", request.titleKr());
@@ -40,7 +39,7 @@ public class NewsUseCase {
 
     /**
      * 뉴스 단건 조회
-     * @param idx Long 뉴스 식별자
+     * @param idx 뉴스 식별자
      * @return NewsResponse 뉴스 응답
      */
     public NewsResponse getNews(Long idx) {
@@ -51,7 +50,7 @@ public class NewsUseCase {
 
     /**
      * 뉴스 목록 페이지 조회
-     * @param request PageRequest 페이지 요청 정보
+     * @param request 페이지 요청 정보
      * @return List<NewsResponse> 뉴스 응답 목록
      */
     public List<NewsResponse> getAllNewsList(PageRequest request) {
@@ -65,8 +64,7 @@ public class NewsUseCase {
 
     /**
      * 뉴스 수정
-     * @param request EditNewsRequest 뉴스 수정 요청 정보
-     * @return void
+     * @param request 뉴스 수정 요청 정보
      */
     public void updateNews(EditNewsRequest request) {
         log.info("[NewsUseCase] updateNews - idx={}", request.idx());
@@ -81,8 +79,7 @@ public class NewsUseCase {
 
     /**
      * 뉴스 삭제
-     * @param idx Long 뉴스 식별자
-     * @return void
+     * @param idx 뉴스 식별자
      */
     public void deleteNews(Long idx) {
         log.info("[NewsUseCase] deleteNews - idx={}", idx);

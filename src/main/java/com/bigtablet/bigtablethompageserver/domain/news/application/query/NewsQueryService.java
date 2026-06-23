@@ -21,7 +21,7 @@ public class NewsQueryService {
 
     /**
      * ID로 뉴스 조회
-     * @param idx Long 뉴스 ID
+     * @param idx 뉴스 ID
      * @return News 뉴스 도메인 객체
      */
     public News find(Long idx) {
@@ -33,8 +33,8 @@ public class NewsQueryService {
 
     /**
      * 뉴스 목록 페이지 조회
-     * @param page int 페이지 번호
-     * @param size int 페이지 크기
+     * @param page 페이지 번호
+     * @param size 페이지 크기
      * @return List<News> 뉴스 도메인 객체 목록
      */
     public List<News> findAll(int page, int size) {

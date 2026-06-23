@@ -26,7 +26,7 @@ public class EmailVerificationApiHandler {
 
     /**
      * 어드민 이메일에 OTP 발송 API (3분 TTL)
-     * @param request EmailSendRequest 이메일 발송 요청
+     * @param request 이메일 발송 요청
      * @return BaseResponse 발송 완료 응답
      */
     @PostMapping("/send")
@@ -39,7 +39,7 @@ public class EmailVerificationApiHandler {
 
     /**
      * OTP 검증 후 인증 완료 플래그 발행 API (30분 TTL)
-     * @param request EmailVerifyRequest 인증 코드 검증 요청
+     * @param request 인증 코드 검증 요청
      * @return BaseResponse 검증 완료 응답
      */
     @PostMapping("/verify")

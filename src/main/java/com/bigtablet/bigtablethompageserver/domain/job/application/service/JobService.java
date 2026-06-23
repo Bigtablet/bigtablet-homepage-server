@@ -18,8 +18,7 @@ public class JobService {
 
     /**
      * 채용 공고 저장
-     * @param input JobInput 채용 공고 입력 데이터
-     * @return void
+     * @param input 채용 공고 입력 데이터
      */
     @Transactional
     public void save(JobInput input) {
@@ -29,9 +28,8 @@ public class JobService {
 
     /**
      * 채용 공고 수정
-     * @param idx Long 채용 공고 ID
-     * @param input JobInput 채용 공고 입력 데이터
-     * @return void
+     * @param idx 채용 공고 ID
+     * @param input 채용 공고 입력 데이터
      */
     @Transactional
     public void edit(Long idx, JobInput input) {
@@ -44,8 +42,7 @@ public class JobService {
 
     /**
      * 채용 공고 비활성화
-     * @param idx Long 채용 공고 ID
-     * @return void
+     * @param idx 채용 공고 ID
      */
     @Transactional
     public void deactivate(Long idx) {
@@ -59,8 +56,7 @@ public class JobService {
     /**
      * 채용 공고 삭제 (존재하지 않으면 JobNotFoundException).
      * `edit`/`deactivate`와 동일하게 존재 여부를 명시적으로 검증해 404 응답 contract을 유지한다.
-     * @param idx Long 채용 공고 ID
-     * @return void
+     * @param idx 채용 공고 ID
      */
     @Transactional
     public void delete(Long idx) {
