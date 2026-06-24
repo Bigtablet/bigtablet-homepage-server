@@ -50,7 +50,7 @@ jobs:
       - name: chmod gradlew
         run: chmod +x ./gradlew
 
-      - name: Build with Gradle
+      - name: Build and test with Gradle
         run: |
           set -euo pipefail
-          ./gradlew --no-daemon --stacktrace build -x test
+          ./gradlew --no-daemon --stacktrace build
