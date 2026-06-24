@@ -16,7 +16,6 @@ import com.bigtablet.bigtablethompageserver.global.infra.slack.service.SlackNoti
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -94,11 +93,11 @@ public class RecruitUseCase {
      * @param status 변경할 지원서 상태
      * @param idx 지원서 식별자
      */
-    @Transactional
     public void updateStatus(Status status, Long idx) {
         log.info("[RecruitUseCase] updateStatus - idx={}, status={}", idx, status);
         Recruit recruit = recruitQueryService.find(idx);
         String content = mailTemplateRenderer.renderRecruitEmail(recruit.name(), status);
+        // 상태 변경(recruitService 자체 @Transactional)이 커밋된 뒤 메일 발송 — UseCase를 트랜잭션으로 묶으면 롤백 시 오발송되므로 묶지 않는다
         recruitService.editStatus(status, idx);
         emailService.sendRecruit(
                 recruit.email(),
@@ -111,12 +110,12 @@ public class RecruitUseCase {
      * 지원자 최종 합격 처리 (합격 이메일 발송)
      * @param idx 지원서 식별자
      */
-    @Transactional
     public void acceptRecruit(Long idx) {
         log.info("[RecruitUseCase] acceptRecruit - idx={}", idx);
         Recruit recruit = recruitQueryService.find(idx);
         String content = mailTemplateRenderer.renderAcceptEmail(recruit.name());
         recruitQueryService.checkStatus(recruit);
+        // 합격 처리(recruitService 자체 @Transactional) 커밋 뒤 메일 발송 — 롤백 시 오발송 방지
         recruitService.accept(recruit.idx());
         emailService.sendRecruit(
                 recruit.email(),
@@ -129,11 +128,11 @@ public class RecruitUseCase {
      * 지원자 최종 불합격 처리 (불합격 이메일 발송)
      * @param idx 지원서 식별자
      */
-    @Transactional
     public void rejectRecruit(Long idx) {
         log.info("[RecruitUseCase] rejectRecruit - idx={}", idx);
         Recruit recruit = recruitQueryService.find(idx);
         String content = mailTemplateRenderer.renderRejectEmail(recruit.name());
+        // 불합격 처리(recruitService 자체 @Transactional) 커밋 뒤 메일 발송 — 롤백 시 오발송 방지
         recruitService.reject(recruit.idx());
         emailService.sendRecruit(
                 recruit.email(),
