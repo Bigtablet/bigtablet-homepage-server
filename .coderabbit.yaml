@@ -1,0 +1,40 @@
+# CodeRabbit 설정 — https://docs.coderabbit.ai/guides/configure-coderabbit
+# 리뷰 언어: 한국어
+language: ko-KR
+
+reviews:
+  # chill = 신호 위주(노이즈↓). 더 깐깐하게 보려면 assertive 로 변경.
+  profile: chill
+  high_level_summary: true
+  review_status: true
+  auto_review:
+    enabled: true
+    drafts: false
+    # 모든 base 브랜치의 PR 을 자동 리뷰한다 (정규식 ".*" — 전체 매칭).
+    # main/develop/release 등 어떤 브랜치를 타깃하든 CodeRabbit 이 자동 리뷰한다.
+    base_branches:
+      - ".*"
+  # 경로별 리뷰 지침 — 저장소에 커밋된 컨벤션 문서를 기준으로 삼게 한다.
+  path_instructions:
+    - path: "src/main/java/**/*.java"
+      instructions: >-
+        이 백엔드의 컨벤션 위반을 리뷰 기준으로 삼아라.
+        (컨벤션 원문 CLAUDE.md / .claude/*.md 는 이 저장소에서 .gitignore 대상이라 커밋돼 있지 않으니, 아래 인라인 핵심 규칙만으로 판단하라.)
+        아래 핵심 규칙 위반은 반드시 지적하라.
+        (1) 레이어 흐름 ApiHandler→UseCase→Service/QueryService→Repository.
+        ApiHandler 가 Service/QueryService/Repository 를 직접 의존하면 안 됨(UseCase 경유).
+        (2) Service=command 전용(save/edit/delete), QueryService=query 전용(find/exists/check).
+        Service 에 query 메서드, QueryService 에 command 메서드가 있으면 지적.
+        (3) Service 는 한 도메인의 Repository 만 주입. Service↔Service 직접 주입 금지(UseCase 로 조합).
+        QueryService 는 한 도메인의 JpaRepository 와/또는 QueryRepository 만 주입(타 도메인 레포 금지).
+        (4) Service 레이어에서 BaseResponse / Request·Response DTO 사용 금지.
+        (5) 도메인 model 에 JPA 어노테이션 금지, Entity 에 불필요한 @Setter 금지, Entity mutator 는 edit{Field} 네이밍.
+        (6) wildcard import, var 타입추론, C-style 배열(String[] 가 아닌 String x[]), 메서드 내부 빈 줄 금지.
+        (7) import 그룹/정렬(java→javax→org→com, static 마지막, 그룹 내 알파벳순),
+        어노테이션은 길이순(짧은→긴) 정렬, Javadoc 은 public/protected API 에만(구현 주석엔 //).
+    - path: "src/test/**/*.java"
+      instructions: >-
+        테스트는 동작 검증 중심으로 보고, 위 컨벤션 중 스타일 규칙은 완화해서 적용하라.
+
+chat:
+  auto_reply: true
