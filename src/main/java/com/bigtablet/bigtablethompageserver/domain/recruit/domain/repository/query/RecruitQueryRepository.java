@@ -19,10 +19,10 @@ public class RecruitQueryRepository {
 
     /**
      * 페이지네이션 + jobId/status 필터로 지원서 목록 조회
-     * @param page int 페이지 번호 (1부터 시작)
-     * @param size int 페이지 크기
-     * @param jobId Long 채용 공고 ID (필수)
-     * @param status Status 지원서 상태 (nullable)
+     * @param page 페이지 번호 (1부터 시작)
+     * @param size 페이지 크기
+     * @param jobId 채용 공고 ID (필수)
+     * @param status 지원서 상태 (nullable)
      * @return List<Recruit> 지원서 도메인 객체 목록
      */
     public List<Recruit> findRecruits(
@@ -46,8 +46,8 @@ public class RecruitQueryRepository {
 
     /**
      * jobId/status 조건 BooleanBuilder 생성
-     * @param jobId Long 채용 공고 ID (필수, null 시 IllegalArgumentException)
-     * @param status Status 지원서 상태 (nullable)
+     * @param jobId 채용 공고 ID (필수, null 시 IllegalArgumentException)
+     * @param status 지원서 상태 (nullable)
      * @return BooleanBuilder QueryDSL 조건 빌더
      */
     private BooleanBuilder builder(

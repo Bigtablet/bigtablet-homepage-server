@@ -36,7 +36,7 @@ public class JwtProvider {
 
     /**
      * JWT 토큰 파싱 및 검증
-     * @param token String JWT 토큰 문자열
+     * @param token JWT 토큰 문자열
      * @return Jws<Claims> 검증된 클레임 정보
      */
     public Jws<Claims> getClaims(final String token) {
@@ -60,8 +60,8 @@ public class JwtProvider {
 
     /**
      * 액세스 토큰 생성
-     * @param subject String 토큰 subject (어드민 ID)
-     * @param role String 권한 클레임 (예: ADMIN)
+     * @param subject 토큰 subject (어드민 ID)
+     * @param role 권한 클레임 (예: ADMIN)
      * @return String JWT 토큰
      */
     public String generateAccessToken(final String subject, final String role) {
@@ -81,7 +81,7 @@ public class JwtProvider {
 
     /**
      * 리프레시 토큰 생성
-     * @param subject String 토큰 subject (어드민 ID)
+     * @param subject 토큰 subject (어드민 ID)
      * @return String JWT 토큰
      */
     public String generateRefreshToken(final String subject) {

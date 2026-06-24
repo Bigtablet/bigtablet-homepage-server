@@ -8,6 +8,8 @@ import com.bigtablet.bigtablethompageserver.domain.talent.client.dto.request.Sea
 import com.bigtablet.bigtablethompageserver.domain.talent.client.dto.request.SendEmailToTalentRequest;
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponse;
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponseData;
+import com.bigtablet.bigtablethompageserver.global.common.util.RateLimiter;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Duration;
 import java.util.List;
 
 @Validated
@@ -31,10 +34,15 @@ import java.util.List;
 public class TalentApiHandler {
 
     private final TalentUseCase talentUseCase;
+    private final RateLimiter rateLimiter;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public BaseResponse registerTalent(@RequestBody @Valid final RegisterTalentRequest request) {
+    public BaseResponse registerTalent(
+            @RequestBody @Valid final RegisterTalentRequest request,
+            final HttpServletRequest servletRequest
+    ) {
+        rateLimiter.check("talent:" + RateLimiter.clientIp(servletRequest), 5, Duration.ofHours(1));
         talentUseCase.registerTalent(request);
         return BaseResponse.created("등록 성공");
     }

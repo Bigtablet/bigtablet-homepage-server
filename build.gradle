@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '4.0.6'
+    id 'org.springframework.boot' version '4.1.0'
     id 'io.spring.dependency-management' version '1.1.7'
 }
 
@@ -26,10 +26,14 @@ repositories {
 
 ext {
     querydslVersion = "7.3.0"
-    set('tomcat.version', '11.0.21')
+    // tomcat 11.0.22: fixes CVEs (security-constraint bypass, digest-auth bypass, HTTP/2 header validation, WebDAV unbounded read)
+    set('tomcat.version', '11.0.22')
     set('thymeleaf.version', '3.1.5.RELEASE')
     set('jackson-bom.version', '3.1.2')
     set('netty.version', '4.2.13.Final')
+    // opentelemetry 1.62.0: fixes unbounded memory allocation in W3C baggage propagation
+    // (commons-lang3 already resolves to a patched 3.19.0 transitively — no override needed)
+    set('opentelemetry.version', '1.62.0')
 }
 
 dependencies {
@@ -63,7 +67,7 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-jackson:0.13.0'
 
     // WebAuthn (Yubico)
-    implementation 'com.yubico:webauthn-server-core:2.5.3'
+    implementation 'com.yubico:webauthn-server-core:2.9.0'
 
     // validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -75,7 +79,7 @@ dependencies {
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
     // GCP
-    implementation platform("com.google.cloud:spring-cloud-gcp-dependencies:8.0.2")
+    implementation platform("com.google.cloud:spring-cloud-gcp-dependencies:8.0.4")
     implementation("com.google.cloud:spring-cloud-gcp-starter") {
         exclude group: "com.google.oauth-client", module: "google-oauth-client"
     }

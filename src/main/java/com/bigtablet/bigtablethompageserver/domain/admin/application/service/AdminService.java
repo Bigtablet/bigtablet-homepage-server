@@ -19,7 +19,7 @@ public class AdminService {
 
     /**
      * 신규 어드민 저장 (UUID 자동 생성, 권한은 ADMIN 고정)
-     * @param email String 어드민 이메일
+     * @param email 어드민 이메일
      * @return String 생성된 어드민 ID
      */
     @Transactional

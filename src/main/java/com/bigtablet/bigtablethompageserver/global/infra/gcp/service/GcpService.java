@@ -31,7 +31,7 @@ public class GcpService {
 
     /**
      * GCS에 파일 업로드
-     * @param multipartFile MultipartFile 업로드할 파일
+     * @param multipartFile 업로드할 파일
      * @return String 이미지 URL
      */
     public String upload(MultipartFile multipartFile) throws IOException {
@@ -41,18 +41,20 @@ public class GcpService {
             throw FileErrorException.EXCEPTION;
         }
         checkFileType(contentType);
+        byte[] bytes = multipartFile.getBytes();
+        checkMagicBytes(bytes, contentType);
         String uuid = UUID.randomUUID().toString();
         String imageUrl = createImageUrl(uuid);
         BlobInfo blobInfo = BlobInfo.newBuilder(bucketName, uuid)
                 .setContentType(contentType).build();
         Storage storage = getStorage();
-        storage.create(blobInfo, multipartFile.getInputStream());
+        storage.create(blobInfo, bytes);
         return imageUrl;
     }
 
     /**
      * GCS에서 파일 삭제
-     * @param fileUrl String 삭제할 파일 URL
+     * @param fileUrl 삭제할 파일 URL
      */
     public void delete(String fileUrl) {
         String fileName = extractFileNameFromUrl(fileUrl);
@@ -83,7 +85,7 @@ public class GcpService {
 
     /**
      * URL에서 파일명 추출
-     * @param url String 파일 URL
+     * @param url 파일 URL
      * @return String 파일명
      */
     private String extractFileNameFromUrl(String url) {
@@ -96,7 +98,7 @@ public class GcpService {
 
     /**
      * 파일 비어있는지 검증
-     * @param multipartFile MultipartFile 검증할 파일
+     * @param multipartFile 검증할 파일
      */
     private void checkFileIsEmpty(MultipartFile multipartFile) {
         if (multipartFile.isEmpty()) {
@@ -106,7 +108,7 @@ public class GcpService {
 
     /**
      * 허용된 파일 타입인지 검증 (PDF, PNG, JPG, JPEG, MP4)
-     * @param contentType String 파일 콘텐츠 타입
+     * @param contentType 파일 콘텐츠 타입
      */
     private void checkFileType(String contentType) {
         if (
@@ -120,9 +122,42 @@ public class GcpService {
         }
     }
 
+    // 선언된 content-type과 실제 매직바이트 일치 여부 검증 (확장자/헤더 위장 업로드 차단)
+    private void checkMagicBytes(byte[] bytes, String contentType) {
+        String type = contentType.toLowerCase();
+        boolean valid;
+        if (type.equals("image/png")) {
+            valid = matchesPrefix(bytes, 0x89, 0x50, 0x4E, 0x47);
+        } else if (type.equals("image/jpg") || type.equals("image/jpeg")) {
+            valid = matchesPrefix(bytes, 0xFF, 0xD8, 0xFF);
+        } else if (type.equals("application/pdf")) {
+            valid = matchesPrefix(bytes, 0x25, 0x50, 0x44, 0x46);
+        } else if (type.equals("video/mp4")) {
+            valid = bytes.length >= 8 && bytes[4] == 'f' && bytes[5] == 't' && bytes[6] == 'y' && bytes[7] == 'p';
+        } else {
+            valid = false;
+        }
+        if (!valid) {
+            throw FileWrongTypeException.EXCEPTION;
+        }
+    }
+
+    // 바이트 배열이 주어진 시그니처(부호 없는 바이트)로 시작하는지 확인
+    private boolean matchesPrefix(byte[] bytes, int... signature) {
+        if (bytes.length < signature.length) {
+            return false;
+        }
+        for (int i = 0; i < signature.length; i++) {
+            if ((bytes[i] & 0xFF) != signature[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * GCS 이미지 URL 생성
-     * @param uuid String 파일 고유 식별자
+     * @param uuid 파일 고유 식별자
      * @return String URL
      */
     public String createImageUrl(String uuid) {

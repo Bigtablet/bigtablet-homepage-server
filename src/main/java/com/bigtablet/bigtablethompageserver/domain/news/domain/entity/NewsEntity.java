@@ -42,10 +42,10 @@ public class NewsEntity extends BaseEntity {
 
     /**
      * 뉴스 정보를 수정한다
-     * @param titleKr String 한국어 제목
-     * @param titleEn String 영문 제목
-     * @param newsUrl String 뉴스 URL
-     * @param thumbnailImageUrl String 썸네일 이미지 URL
+     * @param titleKr 한국어 제목
+     * @param titleEn 영문 제목
+     * @param newsUrl 뉴스 URL
+     * @param thumbnailImageUrl 썸네일 이미지 URL
      */
     public void editNews(
             String titleKr,

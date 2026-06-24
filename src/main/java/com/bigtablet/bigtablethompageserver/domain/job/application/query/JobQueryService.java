@@ -25,7 +25,7 @@ public class JobQueryService {
 
     /**
      * ID로 채용 공고 조회
-     * @param idx Long 채용 공고 ID
+     * @param idx 채용 공고 ID
      * @return Job 채용 공고 도메인 객체
      */
     public Job find(Long idx) {
@@ -37,8 +37,7 @@ public class JobQueryService {
 
     /**
      * 채용 공고 만료 여부 검증 (비활성 시 예외 발생)
-     * @param job Job 검증할 채용 공고 도메인 객체
-     * @return void
+     * @param job 검증할 채용 공고 도메인 객체
      */
     public void checkIsExpired(Job job) {
         if (!job.isActive()) {
@@ -48,12 +47,12 @@ public class JobQueryService {
 
     /**
      * 활성 채용 공고 목록 조건 조회
-     * @param page int 페이지 번호
-     * @param size int 페이지 크기
-     * @param title String 검색할 채용 공고 제목
-     * @param department Department 부서 필터
-     * @param education Education 학력 필터
-     * @param recruitType RecruitType 채용 유형 필터
+     * @param page 페이지 번호
+     * @param size 페이지 크기
+     * @param title 검색할 채용 공고 제목
+     * @param department 부서 필터
+     * @param education 학력 필터
+     * @param recruitType 채용 유형 필터
      * @return List<Job> 채용 공고 도메인 객체 목록
      */
     public List<Job> findJobList(
@@ -76,12 +75,12 @@ public class JobQueryService {
 
     /**
      * 비활성 채용 공고 목록 조건 조회
-     * @param page int 페이지 번호
-     * @param size int 페이지 크기
-     * @param title String 검색할 채용 공고 제목
-     * @param department Department 부서 필터
-     * @param education Education 학력 필터
-     * @param recruitType RecruitType 채용 유형 필터
+     * @param page 페이지 번호
+     * @param size 페이지 크기
+     * @param title 검색할 채용 공고 제목
+     * @param department 부서 필터
+     * @param education 학력 필터
+     * @param recruitType 채용 유형 필터
      * @return List<Job> 채용 공고 도메인 객체 목록
      */
     public List<Job> findDeactivateJobList(

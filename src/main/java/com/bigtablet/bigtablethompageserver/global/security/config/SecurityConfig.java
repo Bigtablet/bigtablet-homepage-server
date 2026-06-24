@@ -54,7 +54,6 @@ public class SecurityConfig implements WebMvcConfigurer {
                         authorize -> authorize
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                                 .requestMatchers("/", "/index.html").permitAll()
-
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                                 .requestMatchers("/admin/email-verification/**").permitAll()
                                 .requestMatchers("/admin/webauthn/register/**").permitAll()
@@ -62,7 +61,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                                 .requestMatchers(HttpMethod.GET, "/job").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/job/list").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/recruit").permitAll()
-                                .requestMatchers("/gcp/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/gcp").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/blog/**").permitAll()
                                 .requestMatchers(HttpMethod.PATCH, "/blog").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/news/**").permitAll()
@@ -92,7 +91,9 @@ public class SecurityConfig implements WebMvcConfigurer {
             "Origin",
             "Cache-Control"
         ));
-        config.setAllowCredentials(true);
+        // 인증은 Authorization 헤더(Bearer JWT) 기반이라 쿠키 자격증명이 불필요하다.
+        // allowedOriginPatterns("*") 와 allowCredentials(true) 조합은 임의 출처 credentialed 요청을 허용하는 취약 설정이므로 false 로 둔다.
+        config.setAllowCredentials(false);
         config.setMaxAge(Duration.ofHours(1));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

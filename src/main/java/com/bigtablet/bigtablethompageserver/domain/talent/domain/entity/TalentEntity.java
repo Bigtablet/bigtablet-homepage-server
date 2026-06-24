@@ -61,7 +61,7 @@ public class TalentEntity extends BaseEntity {
 
     /**
      * 인재의 활성 상태를 변경한다
-     * @param isActive boolean 활성 여부
+     * @param isActive 활성 여부
      */
     public void editActive(boolean isActive) {
         this.isActive = isActive;
