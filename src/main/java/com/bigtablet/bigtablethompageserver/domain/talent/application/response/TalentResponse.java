@@ -18,7 +18,7 @@ public record TalentResponse(
 ) {
     /**
      * Talent 도메인 객체를 TalentResponse로 변환합니다.
-     * @param talent Talent 변환할 도메인 객체
+     * @param talent 변환할 도메인 객체
      * @return TalentResponse 변환된 응답 DTO
      */
     public static TalentResponse of(Talent talent) {

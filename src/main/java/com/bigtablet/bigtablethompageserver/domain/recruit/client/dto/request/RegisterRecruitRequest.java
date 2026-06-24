@@ -56,7 +56,7 @@ public record RegisterRecruitRequest(
 ) {
     /**
      * Request DTO를 RecruitInput 도메인 입력 데이터로 변환한다 (jobId 오버라이드 지원)
-     * @param resolvedJobId Long 검증/조회된 채용 공고 ID
+     * @param resolvedJobId 검증/조회된 채용 공고 ID
      * @return RecruitInput 채용 지원서 입력 데이터
      */
     public RecruitInput toRecruitInput(Long resolvedJobId) {

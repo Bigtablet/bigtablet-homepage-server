@@ -14,7 +14,7 @@ public class WebAuthnQueryService {
 
     /**
      * 어드민에게 등록된 크레덴셜 존재 여부 확인
-     * @param adminId String 어드민 ID
+     * @param adminId 어드민 ID
      * @return boolean 존재 시 true
      */
     public boolean hasCredential(String adminId) {

@@ -23,7 +23,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException, ExpiredJwtException {
-
         String token = jwtExtract.extractTokenFromRequest(request);
         if (token != null) {
             SecurityContextHolder.getContext().setAuthentication(jwtExtract.getAuthentication(token));

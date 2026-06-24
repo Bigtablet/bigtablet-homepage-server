@@ -25,7 +25,7 @@ public class JwtExtract {
 
     /**
      * JWT 토큰에서 인증 정보 추출 및 Authentication 생성
-     * @param token String JWT 토큰 문자열
+     * @param token JWT 토큰 문자열
      * @return Authentication 인증 객체
      */
     public Authentication getAuthentication(final String token) {
@@ -44,7 +44,7 @@ public class JwtExtract {
 
     /**
      * HTTP 요청에서 JWT 토큰 추출
-     * @param request HttpServletRequest HTTP 요청 객체
+     * @param request HTTP 요청 객체
      * @return String 토큰
      */
     public String extractTokenFromRequest(HttpServletRequest request) {
@@ -53,7 +53,7 @@ public class JwtExtract {
 
     /**
      * Bearer 접두사 제거 후 토큰 반환
-     * @param token String Authorization 헤더 값
+     * @param token Authorization 헤더 값
      * @return String 토큰
      */
     public String extractToken(final String token) {
@@ -65,8 +65,8 @@ public class JwtExtract {
 
     /**
      * 토큰 타입 불일치 여부 확인
-     * @param claims Claims JWT 클레임 정보
-     * @param jwtType JwtType 기대하는 토큰 타입
+     * @param claims JWT 클레임 정보
+     * @param jwtType 기대하는 토큰 타입
      * @return boolean 불일치 여부
      */
     public boolean isWrongType(final Claims claims, final JwtType jwtType) {

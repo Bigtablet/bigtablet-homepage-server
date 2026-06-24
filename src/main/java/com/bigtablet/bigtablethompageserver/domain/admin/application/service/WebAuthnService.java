@@ -17,12 +17,11 @@ public class WebAuthnService {
 
     /**
      * WebAuthn 크레덴셜 저장
-     * @param adminId String 어드민 ID
-     * @param credentialId String Credential ID (Base64URL)
-     * @param publicKeyCose String 공개키 (Base64)
-     * @param signatureCount long 서명 카운터
-     * @param keyName String 키 이름
-     * @return void
+     * @param adminId 어드민 ID
+     * @param credentialId Credential ID (Base64URL)
+     * @param publicKeyCose 공개키 (Base64)
+     * @param signatureCount 서명 카운터
+     * @param keyName 키 이름
      */
     @Transactional
     public void save(
@@ -44,9 +43,8 @@ public class WebAuthnService {
 
     /**
      * 서명 카운터 수정 (replay 방지)
-     * @param credentialId String Credential ID (Base64URL)
-     * @param signatureCount long 새 서명 카운터
-     * @return void
+     * @param credentialId Credential ID (Base64URL)
+     * @param signatureCount 새 서명 카운터
      */
     @Transactional
     public void editSignatureCount(String credentialId, long signatureCount) {

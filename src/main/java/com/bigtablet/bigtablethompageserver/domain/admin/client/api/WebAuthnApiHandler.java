@@ -29,7 +29,7 @@ public class WebAuthnApiHandler {
 
     /**
      * 물리키 등록 시작 API — 챌린지 발급
-     * @param request WebAuthnRegisterStartRequest 등록 시작 요청
+     * @param request 등록 시작 요청
      * @return BaseResponseData 등록 옵션 JSON
      */
     @PostMapping("/register/start")
@@ -45,7 +45,7 @@ public class WebAuthnApiHandler {
 
     /**
      * 물리키 등록 완료 API — 크레덴셜 저장
-     * @param request WebAuthnRegisterFinishRequest 등록 완료 요청
+     * @param request 등록 완료 요청
      * @return BaseResponse 등록 완료 응답
      */
     @PostMapping("/register/finish")
@@ -59,7 +59,7 @@ public class WebAuthnApiHandler {
 
     /**
      * 물리키 로그인 시작 API — 챌린지 발급
-     * @param request WebAuthnLoginStartRequest 로그인 시작 요청
+     * @param request 로그인 시작 요청
      * @return BaseResponseData 로그인 옵션 JSON
      */
     @PostMapping("/login/start")
@@ -75,7 +75,7 @@ public class WebAuthnApiHandler {
 
     /**
      * 물리키 로그인 완료 API — JWT 발급
-     * @param request WebAuthnLoginFinishRequest 로그인 완료 요청
+     * @param request 로그인 완료 요청
      * @return BaseResponseData JWT 토큰 응답
      */
     @PostMapping("/login/finish")

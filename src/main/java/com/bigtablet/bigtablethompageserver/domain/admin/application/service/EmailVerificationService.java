@@ -2,6 +2,7 @@ package com.bigtablet.bigtablethompageserver.domain.admin.application.service;
 
 import com.bigtablet.bigtablethompageserver.domain.admin.exception.EmailCodeMismatchException;
 import com.bigtablet.bigtablethompageserver.global.common.repository.redis.RedisRepository;
+import com.bigtablet.bigtablethompageserver.global.common.util.RateLimiter;
 import com.bigtablet.bigtablethompageserver.global.infra.email.renderer.MailTemplateRenderer;
 import com.bigtablet.bigtablethompageserver.global.infra.email.service.EmailService;
 import com.bigtablet.bigtablethompageserver.global.security.admin.config.AdminAuthProperties;
@@ -9,8 +10,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.security.SecureRandom;
-import java.util.Objects;
+import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -28,15 +31,18 @@ public class EmailVerificationService {
     private final EmailService emailService;
     private final MailTemplateRenderer mailTemplateRenderer;
     private final AdminAuthProperties adminAuthProperties;
+    private final RateLimiter rateLimiter;
 
     /**
      * 6자리 OTP 생성 후 Redis에 저장하고 이메일로 발송 (application.admin.otp-ttl 적용)
-     * @param email String 어드민 이메일
-     * @return void
+     * @param email 어드민 이메일
      */
     public void sendCode(String email) {
-        log.info("[EmailVerificationService] sendCode - email={}", email);
+        log.info("[EmailVerificationService] sendCode - email={}", mask(email));
         String normalized = email.toLowerCase();
+        // 발송 남용 방지: 동일 이메일 30초 1회 + 1시간 10회 제한
+        rateLimiter.check("admin-email-send-cd:" + normalized, 1, Duration.ofSeconds(30));
+        rateLimiter.check("admin-email-send:" + normalized, 10, Duration.ofHours(1));
         // 기존 OTP가 남아있으면 덮어쓰기 위해 선제거
         Optional.ofNullable(redisRepository.getByKey(OTP_KEY_PREFIX + normalized, String.class))
                 .ifPresent(value -> redisRepository.delete(OTP_KEY_PREFIX + normalized));
@@ -53,19 +59,38 @@ public class EmailVerificationService {
 
     /**
      * OTP 검증 후 인증 완료 플래그를 저장 (application.admin.cert-ttl 적용, 검증 성공 시 OTP는 즉시 삭제)
-     * @param email String 어드민 이메일
-     * @param authCode String 클라이언트가 입력한 OTP
-     * @return void
+     * @param email 어드민 이메일
+     * @param authCode 클라이언트가 입력한 OTP
      */
     public void verifyCode(String email, String authCode) {
-        log.info("[EmailVerificationService] verifyCode - email={}", email);
+        log.info("[EmailVerificationService] verifyCode - email={}", mask(email));
         String normalized = email.toLowerCase();
         String savedCode = redisRepository.getByKey(OTP_KEY_PREFIX + normalized, String.class);
-        if (savedCode == null || !Objects.equals(savedCode, authCode)) {
+        // 활성 OTP가 없으면 레이트리밋 카운터를 증가시키지 않는다 — 미발급 이메일에 /verify 를 반복해 선제 락아웃하는 DoS 방지
+        if (savedCode == null) {
+            throw EmailCodeMismatchException.EXCEPTION;
+        }
+        // 분산 무차별 대입(다수 IP) 방어: 활성 OTP 수명 동안 이메일별 검증 시도를 비파괴(OTP 미삭제)로 제한 — 1윈도우당 최대 5회
+        rateLimiter.check("otp-verify-email:" + normalized, 5, adminAuthProperties.otpTtl());
+        // 상수 시간 비교로 타이밍 사이드채널 차단
+        if (authCode == null
+                || !MessageDigest.isEqual(savedCode.getBytes(StandardCharsets.UTF_8), authCode.getBytes(StandardCharsets.UTF_8))) {
             throw EmailCodeMismatchException.EXCEPTION;
         }
         redisRepository.delete(OTP_KEY_PREFIX + normalized);
         redisRepository.save(CERT_KEY_PREFIX + normalized, "1", (int) adminAuthProperties.certTtl().toSeconds(), TimeUnit.SECONDS);
+    }
+
+    // 이메일 로컬파트를 마스킹하여 로그 PII 노출을 줄인다 (예: a***@bigtablet.com)
+    private String mask(String email) {
+        if (email == null) {
+            return "null";
+        }
+        int at = email.indexOf('@');
+        if (at <= 0) {
+            return "***";
+        }
+        return email.charAt(0) + "***" + email.substring(at);
     }
 
 }

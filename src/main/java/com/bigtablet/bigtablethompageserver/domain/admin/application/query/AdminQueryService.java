@@ -19,7 +19,7 @@ public class AdminQueryService {
 
     /**
      * 이메일로 어드민 조회
-     * @param email String 어드민 이메일
+     * @param email 어드민 이메일
      * @return Admin 어드민 도메인 객체
      */
     public Admin findByEmail(String email) {
@@ -30,7 +30,7 @@ public class AdminQueryService {
 
     /**
      * 이메일로 어드민 조회 (없으면 null 반환 — 동시성 안전한 신규 생성 분기용)
-     * @param email String 어드민 이메일
+     * @param email 어드민 이메일
      * @return Admin or null
      */
     public Admin findByEmailOrNull(String email) {
@@ -41,7 +41,7 @@ public class AdminQueryService {
 
     /**
      * ID로 어드민 조회
-     * @param id String 어드민 ID
+     * @param id 어드민 ID
      * @return Admin 어드민 도메인 객체
      */
     public Admin find(String id) {
@@ -53,8 +53,7 @@ public class AdminQueryService {
     /**
      * 어드민 이메일 도메인 검증 (서브도메인 차단, 정확 매치만 통과)
      * 허용 도메인은 application.admin.allowed-email-domain 프로퍼티로 외부화됨
-     * @param email String 어드민 이메일 (null 허용 — null이면 도메인 불일치 처리)
-     * @return void (도메인 불일치 시 예외)
+     * @param email 어드민 이메일 (null 허용 — null이면 도메인 불일치 처리)
      */
     public void checkEmailDomain(String email) {
         if (email == null) {

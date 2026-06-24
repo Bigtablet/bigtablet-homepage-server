@@ -3,6 +3,7 @@ package com.bigtablet.bigtablethompageserver.domain.recruit.application.usecase;
 import com.bigtablet.bigtablethompageserver.domain.job.application.query.JobQueryService;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.model.Job;
 import com.bigtablet.bigtablethompageserver.domain.recruit.application.constant.RecruitMailSubject;
+import com.bigtablet.bigtablethompageserver.domain.recruit.application.event.RecruitMailRequestedEvent;
 import com.bigtablet.bigtablethompageserver.domain.recruit.application.query.RecruitQueryService;
 import com.bigtablet.bigtablethompageserver.domain.recruit.application.response.RecruitResponse;
 import com.bigtablet.bigtablethompageserver.domain.recruit.application.service.RecruitService;
@@ -15,6 +16,7 @@ import com.bigtablet.bigtablethompageserver.global.infra.email.service.EmailServ
 import com.bigtablet.bigtablethompageserver.global.infra.slack.service.SlackNotifier;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,11 +34,11 @@ public class RecruitUseCase {
     private final JobQueryService jobQueryService;
     private final MailTemplateRenderer mailTemplateRenderer;
     private final SlackNotifier slackNotifier;
+    private final ApplicationEventPublisher eventPublisher;
 
     /**
      * 채용 지원 등록 (지원 접수 확인 이메일 + 슬랙 알림 발송)
-     * @param request RegisterRecruitRequest 채용 지원 등록 요청 정보
-     * @return void
+     * @param request 채용 지원 등록 요청 정보
      */
     public void registerRecruit(RegisterRecruitRequest request) {
         log.info("[RecruitUseCase] registerRecruit - jobId={}, name={}", request.jobId(), request.name());
@@ -62,7 +64,7 @@ public class RecruitUseCase {
 
     /**
      * 지원서 단건 조회
-     * @param idx Long 지원서 식별자
+     * @param idx 지원서 식별자
      * @return RecruitResponse 지원서 응답
      */
     public RecruitResponse getRecruit(Long idx) {
@@ -73,7 +75,7 @@ public class RecruitUseCase {
 
     /**
      * 페이지네이션 + jobId/status 필터로 지원서 목록 조회
-     * @param request GetRecruitListRequest 지원서 목록 조회 요청 (page, size, jobId, status)
+     * @param request 지원서 목록 조회 요청 (page, size, jobId, status)
      * @return List<RecruitResponse> 지원서 응답 목록
      */
     public List<RecruitResponse> getRecruitList(GetRecruitListRequest request) {
@@ -92,9 +94,8 @@ public class RecruitUseCase {
 
     /**
      * 지원서 상태 변경 (면접 안내 이메일 발송)
-     * @param status Status 변경할 지원서 상태
-     * @param idx Long 지원서 식별자
-     * @return void
+     * @param status 변경할 지원서 상태
+     * @param idx 지원서 식별자
      */
     @Transactional
     public void updateStatus(Status status, Long idx) {
@@ -102,17 +103,17 @@ public class RecruitUseCase {
         Recruit recruit = recruitQueryService.find(idx);
         String content = mailTemplateRenderer.renderRecruitEmail(recruit.name(), status);
         recruitService.editStatus(status, idx);
-        emailService.sendRecruit(
+        // 메일은 RecruitMailEventListener가 AFTER_COMMIT 에서 발송 — 트랜잭션 롤백 시 오발송 방지
+        eventPublisher.publishEvent(new RecruitMailRequestedEvent(
                 recruit.email(),
                 RecruitMailSubject.interviewGuide(recruit.name()),
                 content
-        );
+        ));
     }
 
     /**
      * 지원자 최종 합격 처리 (합격 이메일 발송)
-     * @param idx Long 지원서 식별자
-     * @return void
+     * @param idx 지원서 식별자
      */
     @Transactional
     public void acceptRecruit(Long idx) {
@@ -121,17 +122,16 @@ public class RecruitUseCase {
         String content = mailTemplateRenderer.renderAcceptEmail(recruit.name());
         recruitQueryService.checkStatus(recruit);
         recruitService.accept(recruit.idx());
-        emailService.sendRecruit(
+        eventPublisher.publishEvent(new RecruitMailRequestedEvent(
                 recruit.email(),
                 RecruitMailSubject.finalResult(recruit.name()),
                 content
-        );
+        ));
     }
 
     /**
      * 지원자 최종 불합격 처리 (불합격 이메일 발송)
-     * @param idx Long 지원서 식별자
-     * @return void
+     * @param idx 지원서 식별자
      */
     @Transactional
     public void rejectRecruit(Long idx) {
@@ -139,11 +139,11 @@ public class RecruitUseCase {
         Recruit recruit = recruitQueryService.find(idx);
         String content = mailTemplateRenderer.renderRejectEmail(recruit.name());
         recruitService.reject(recruit.idx());
-        emailService.sendRecruit(
+        eventPublisher.publishEvent(new RecruitMailRequestedEvent(
                 recruit.email(),
                 RecruitMailSubject.finalResult(recruit.name()),
                 content
-        );
+        ));
     }
 
 }

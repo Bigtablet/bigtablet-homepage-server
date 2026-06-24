@@ -17,7 +17,7 @@ public record NewsResponse(
 ) {
     /**
      * News 도메인 객체를 NewsResponse로 변환합니다.
-     * @param news News 변환할 도메인 객체
+     * @param news 변환할 도메인 객체
      * @return NewsResponse 변환된 응답 DTO
      */
     public static NewsResponse of(News news) {

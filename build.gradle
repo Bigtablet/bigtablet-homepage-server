@@ -1,11 +1,11 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '4.0.6'
+    id 'org.springframework.boot' version '4.1.0'
     id 'io.spring.dependency-management' version '1.1.7'
 }
 
 group = 'com.bigtablet'
-version = '1.6.3'
+version = '1.7.0'
 description = 'bigtablet-homepage-server'
 
 java {
@@ -25,11 +25,10 @@ repositories {
 }
 
 ext {
-    querydslVersion = "7.1"
-    set('tomcat.version', '11.0.21')
+    querydslVersion = "7.3.0"
     set('thymeleaf.version', '3.1.5.RELEASE')
-    set('jackson-bom.version', '3.1.2')
-    set('netty.version', '4.2.13.Final')
+    // tomcat/jackson-bom/netty/opentelemetry 핀 제거: Spring Boot 4.1.0 BOM이 이미 동등 이상(패치) 버전을 관리하며,
+    // 기존 핀은 jackson 3.1.4→3.1.2, netty 4.2.15→4.2.13으로 BOM보다 낮게 강등시키는 부작용이 있었음.
 }
 
 dependencies {
@@ -57,13 +56,16 @@ dependencies {
     // junit
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+    // h2 (test-only in-memory DB for context/unit tests)
+    testRuntimeOnly 'com.h2database:h2'
+
     // JWT
     implementation 'io.jsonwebtoken:jjwt-api:0.13.0'
     implementation 'io.jsonwebtoken:jjwt-impl:0.13.0'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.13.0'
 
     // WebAuthn (Yubico)
-    implementation 'com.yubico:webauthn-server-core:2.5.3'
+    implementation 'com.yubico:webauthn-server-core:2.9.0'
 
     // validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -75,7 +77,7 @@ dependencies {
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
     // GCP
-    implementation platform("com.google.cloud:spring-cloud-gcp-dependencies:8.0.2")
+    implementation platform("com.google.cloud:spring-cloud-gcp-dependencies:8.0.4")
     implementation("com.google.cloud:spring-cloud-gcp-starter") {
         exclude group: "com.google.oauth-client", module: "google-oauth-client"
     }

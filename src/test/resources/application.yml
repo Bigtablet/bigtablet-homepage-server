@@ -1,0 +1,67 @@
+# 테스트 전용 설정 — 외부 인프라(MySQL/Redis/GCS/SMTP) 없이 컨텍스트가 기동되도록 더미/임베디드 값으로 구성한다.
+# (테스트 클래스패스가 main보다 우선이라 이 application.yml 이 main 설정을 대체한다.)
+server:
+  forward-headers-strategy: native
+
+spring:
+  # GCS는 GcpService가 자체적으로 lazy 초기화하므로 테스트에선 GCP 자동설정(자격증명/프로젝트ID 필요)을 제외한다.
+  # Redis는 제외하지 않는다: 커스텀 RedisConfig(@Configuration)가 빈을 제공하고 RateLimiter/RedisRepository가 의존하는 핵심 인프라라
+  # 자동설정만 제외해도 빈은 그대로 생성됨(@Profile 분리 시 컨텍스트가 깨짐). Lettuce가 lazy 연결이라 기동 시 실제 연결을 시도하지 않아 인프라 없이도 테스트가 뜬다.
+  autoconfigure:
+    exclude:
+      - com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration
+      - com.google.cloud.spring.autoconfigure.storage.GcpStorageAutoConfiguration
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=MySQL
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: ""
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+  cloud:
+    gcp:
+      project-id: test-project
+      credentials:
+        # GCP 자동설정 제외 + GcpService.getStorage() lazy 라 테스트에서 읽히지 않는 빈 JSON 스텁(YAML-as-creds 편법 제거)
+        location: classpath:gcs-test-stub.json
+      storage:
+        bucket: test-bucket
+  mail:
+    host: localhost
+    port: 1025
+    email_noreply: noreply@test.local
+    password_noreply: dummy
+    email_recruit: recruit@test.local
+    password_recruit: dummy
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.connectiontimeout: 10000
+      mail.smtp.timeout: 10000
+      mail.smtp.writetimeout: 10000
+
+application:
+  jwt:
+    secretKey: test-secret-key-0123456789-0123456789-abcdef
+    expiration: 86400000
+    refreshExpiration: 604800000
+  webauthn:
+    rpId: localhost
+    rpName: bigtablet-test
+    allowedOrigins: http://localhost:8080
+  admin:
+    otp-ttl: 3m
+    cert-ttl: 30m
+    challenge-ttl: 5m
+    allowed-email-domain: bigtablet.com
+
+slack:
+  webhook-url: http://localhost/slack-test

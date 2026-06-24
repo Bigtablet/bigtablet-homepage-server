@@ -32,7 +32,7 @@ public record JobResponse(
 ) {
     /**
      * Job 도메인 객체를 JobResponse로 변환합니다.
-     * @param job Job 변환할 도메인 객체
+     * @param job 변환할 도메인 객체
      * @return JobResponse 변환된 응답 DTO
      */
     public static JobResponse of(Job job) {
