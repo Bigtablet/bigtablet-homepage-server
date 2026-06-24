@@ -1,5 +1,6 @@
 package com.bigtablet.bigtablethompageserver.global.common.repository.redis;
 
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 public interface RedisRepository {
@@ -26,5 +27,13 @@ public interface RedisRepository {
      * @param key 삭제할 키
      */
     void delete(String key);
+
+    /**
+     * 키 값을 원자적으로 1 증가시킨다. 최초 증가(값이 1) 시 TTL을 설정한다. (고정 윈도우 카운터)
+     * @param key 카운터 키
+     * @param ttl 최초 생성 시 적용할 만료 시간
+     * @return 증가 후 카운트
+     */
+    long increment(String key, Duration ttl);
 
 }
