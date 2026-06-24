@@ -19,7 +19,7 @@ public final class RecruitMailSubject {
 
     /**
      * 지원 접수 완료 안내 이메일 제목
-     * @param name String 지원자 이름
+     * @param name 지원자 이름
      * @return String 이메일 제목
      */
     public static String applyConfirmed(String name) {
@@ -28,7 +28,7 @@ public final class RecruitMailSubject {
 
     /**
      * 면접 전형 안내 이메일 제목
-     * @param name String 지원자 이름
+     * @param name 지원자 이름
      * @return String 이메일 제목
      */
     public static String interviewGuide(String name) {
@@ -37,7 +37,7 @@ public final class RecruitMailSubject {
 
     /**
      * 채용 전형 최종 결과(합격/불합격 공통) 안내 이메일 제목
-     * @param name String 지원자 이름
+     * @param name 지원자 이름
      * @return String 이메일 제목
      */
     public static String finalResult(String name) {
@@ -46,8 +46,8 @@ public final class RecruitMailSubject {
 
     /**
      * 공통 포맷: `{PREFIX} {name}님, {message}` — 호칭/구분자 변경 시 이 메서드만 수정.
-     * @param name String 수신자 이름
-     * @param message String 안내 메시지 본문
+     * @param name 수신자 이름
+     * @param message 안내 메시지 본문
      * @return String 조립된 이메일 제목
      */
     private static String personalized(String name, String message) {

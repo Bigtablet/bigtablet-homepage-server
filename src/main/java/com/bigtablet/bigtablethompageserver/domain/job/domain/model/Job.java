@@ -32,7 +32,7 @@ public record Job(
 ) {
     /**
      * JobEntity를 Job 도메인 객체로 변환합니다.
-     * @param entity JobEntity 변환할 엔티티
+     * @param entity 변환할 엔티티
      * @return Job 변환된 도메인 객체
      */
     public static Job of(JobEntity entity) {

@@ -104,7 +104,7 @@ public class RecruitEntity extends BaseEntity {
 
     /**
      * RecruitInput으로 새 지원서 엔티티를 생성한다 (서류 전형 상태)
-     * @param input RecruitInput 채용 지원서 입력 데이터
+     * @param input 채용 지원서 입력 데이터
      * @return RecruitEntity 신규 지원서 엔티티
      */
     public static RecruitEntity create(RecruitInput input) {
@@ -133,7 +133,7 @@ public class RecruitEntity extends BaseEntity {
 
     /**
      * 지원서 전형 상태를 변경한다
-     * @param status Status 변경할 전형 상태
+     * @param status 변경할 전형 상태
      */
     public void editStatus(Status status) {
         this.status = status;

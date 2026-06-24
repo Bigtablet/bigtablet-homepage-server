@@ -19,7 +19,7 @@ public record Blog(
 ) {
     /**
      * BlogEntity를 Blog 도메인 객체로 변환합니다.
-     * @param entity BlogEntity 변환할 엔티티
+     * @param entity 변환할 엔티티
      * @return Blog 변환된 도메인 객체
      */
     public static Blog of(BlogEntity entity) {

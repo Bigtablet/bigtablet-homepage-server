@@ -28,9 +28,9 @@ public class SlackNotifier {
 
     /**
      * 신규 지원자 알림을 Slack으로 발송
-     * @param jobTitle String 채용 공고 제목
-     * @param applicantName String 지원자 이름
-     * @param recruitIdx Long 채용 지원 식별자
+     * @param jobTitle 채용 공고 제목
+     * @param applicantName 지원자 이름
+     * @param recruitIdx 채용 지원 식별자
      */
     @Async
     public void sendApplicantNotification(String jobTitle, String applicantName, Long recruitIdx) {

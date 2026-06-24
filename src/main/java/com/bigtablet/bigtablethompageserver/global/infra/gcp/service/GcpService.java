@@ -31,7 +31,7 @@ public class GcpService {
 
     /**
      * GCS에 파일 업로드
-     * @param multipartFile MultipartFile 업로드할 파일
+     * @param multipartFile 업로드할 파일
      * @return String 이미지 URL
      */
     public String upload(MultipartFile multipartFile) throws IOException {
@@ -52,7 +52,7 @@ public class GcpService {
 
     /**
      * GCS에서 파일 삭제
-     * @param fileUrl String 삭제할 파일 URL
+     * @param fileUrl 삭제할 파일 URL
      */
     public void delete(String fileUrl) {
         String fileName = extractFileNameFromUrl(fileUrl);
@@ -83,7 +83,7 @@ public class GcpService {
 
     /**
      * URL에서 파일명 추출
-     * @param url String 파일 URL
+     * @param url 파일 URL
      * @return String 파일명
      */
     private String extractFileNameFromUrl(String url) {
@@ -96,7 +96,7 @@ public class GcpService {
 
     /**
      * 파일 비어있는지 검증
-     * @param multipartFile MultipartFile 검증할 파일
+     * @param multipartFile 검증할 파일
      */
     private void checkFileIsEmpty(MultipartFile multipartFile) {
         if (multipartFile.isEmpty()) {
@@ -106,7 +106,7 @@ public class GcpService {
 
     /**
      * 허용된 파일 타입인지 검증 (PDF, PNG, JPG, JPEG, MP4)
-     * @param contentType String 파일 콘텐츠 타입
+     * @param contentType 파일 콘텐츠 타입
      */
     private void checkFileType(String contentType) {
         if (
@@ -122,7 +122,7 @@ public class GcpService {
 
     /**
      * GCS 이미지 URL 생성
-     * @param uuid String 파일 고유 식별자
+     * @param uuid 파일 고유 식별자
      * @return String URL
      */
     public String createImageUrl(String uuid) {

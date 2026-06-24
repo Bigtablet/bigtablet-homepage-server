@@ -21,7 +21,7 @@ public class RecruitService {
 
     /**
      * 채용 지원서 저장
-     * @param input RecruitInput 채용 지원서 입력 데이터
+     * @param input 채용 지원서 입력 데이터
      * @return Recruit 도메인 객체
      */
     @Transactional
@@ -33,9 +33,8 @@ public class RecruitService {
 
     /**
      * 지원서 상태 변경
-     * @param status Status 변경할 상태
-     * @param idx Long 지원서 ID
-     * @return void
+     * @param status 변경할 상태
+     * @param idx 지원서 ID
      */
     @Transactional
     public void editStatus(Status status, Long idx) {
@@ -48,8 +47,7 @@ public class RecruitService {
 
     /**
      * 지원자 최종 합격 처리
-     * @param idx Long 지원서 ID
-     * @return void
+     * @param idx 지원서 ID
      */
     @Transactional
     public void accept(Long idx) {
@@ -62,8 +60,7 @@ public class RecruitService {
 
     /**
      * 지원자 최종 불합격 처리
-     * @param idx Long 지원서 ID
-     * @return void
+     * @param idx 지원서 ID
      */
     @Transactional
     public void reject(Long idx) {

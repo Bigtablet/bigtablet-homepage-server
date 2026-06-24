@@ -18,8 +18,7 @@ public class EmailVerificationQueryService {
 
     /**
      * 해당 이메일이 OTP 검증을 통과했는지 확인 (Redis 인증 완료 플래그 존재 여부)
-     * @param email String 어드민 이메일
-     * @return void (검증 실패 시 예외)
+     * @param email 어드민 이메일
      */
     public void checkCertified(String email) {
         String flag = redisRepository.getByKey(CERT_KEY_PREFIX + email.toLowerCase(), String.class);
