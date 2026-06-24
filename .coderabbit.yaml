@@ -18,10 +18,8 @@ reviews:
   path_instructions:
     - path: "src/main/java/**/*.java"
       instructions: >-
-        이 저장소에 커밋된 컨벤션 문서를 리뷰 기준으로 삼아라:
-        CLAUDE.md (컨벤션 인덱스 + Prohibited 목록 + 패키지 구조),
-        .claude/architecture.md, .claude/layer-conventions.md,
-        .claude/java-code-style.md, .claude/infrastructure.md, .claude/git-convention.md.
+        이 백엔드의 컨벤션 위반을 리뷰 기준으로 삼아라.
+        (컨벤션 원문 CLAUDE.md / .claude/*.md 는 이 저장소에서 .gitignore 대상이라 커밋돼 있지 않으니, 아래 인라인 핵심 규칙만으로 판단하라.)
         아래 핵심 규칙 위반은 반드시 지적하라.
         (1) 레이어 흐름 ApiHandler→UseCase→Service/QueryService→Repository.
         ApiHandler 가 Service/QueryService/Repository 를 직접 의존하면 안 됨(UseCase 경유).
