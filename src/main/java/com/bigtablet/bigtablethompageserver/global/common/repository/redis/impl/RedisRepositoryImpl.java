@@ -3,11 +3,13 @@ package com.bigtablet.bigtablethompageserver.global.common.repository.redis.impl
 import com.bigtablet.bigtablethompageserver.global.common.repository.redis.RedisRepository;
 import com.bigtablet.bigtablethompageserver.global.config.redis.RedisConfig;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class RedisRepositoryImpl implements RedisRepository {
@@ -55,11 +57,21 @@ public class RedisRepositoryImpl implements RedisRepository {
     @Override
     public long increment(String key, Duration ttl) {
         Long count = redisConfig.redisTemplate().opsForValue().increment(key);
-        if (count != null && count == 1L) {
-            // ponytail: INCR 후 별도 EXPIRE라 그 사이 프로세스 종료 시 키가 영구화될 수 있다. 레이트리밋엔 무해(보수적). Lua로 원자화는 처리량 필요 시.
-            redisConfig.redisTemplate().expire(key, ttl);
+        if (count == null) {
+            // 드문 경우: INCR 결과가 null. 실제 Redis 연결 장애는 예외로 전파되어 해당 요청이 실패(fail-closed)한다. 모니터링용 경고만 남긴다.
+            log.warn("[RedisRepositoryImpl] increment returned null for key={}", key);
+            return 0L;
         }
-        return count == null ? 0L : count;
+        if (count == 1L) {
+            redisConfig.redisTemplate().expire(key, ttl);
+        } else {
+            // 자가 치유: INCR 직후 EXPIRE 전 장애로 TTL이 유실(-1)된 키에 만료를 재설정해 영구 잠금을 방지
+            Long expire = redisConfig.redisTemplate().getExpire(key);
+            if (expire != null && expire == -1L) {
+                redisConfig.redisTemplate().expire(key, ttl);
+            }
+        }
+        return count;
     }
 
 }

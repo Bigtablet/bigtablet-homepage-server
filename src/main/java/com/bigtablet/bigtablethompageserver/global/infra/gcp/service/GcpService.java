@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PushbackInputStream;
 import java.util.UUID;
 
 @Service
@@ -26,6 +27,9 @@ public class GcpService {
 
     @Value("${spring.cloud.gcp.storage.bucket}")
     private String bucketName;
+
+    // 매직바이트 검증에 필요한 최대 헤더 길이 (mp4 ftyp까지 8바이트)
+    private static final int MAGIC_HEADER_LEN = 8;
 
     private Storage storage;
 
@@ -41,14 +45,19 @@ public class GcpService {
             throw FileErrorException.EXCEPTION;
         }
         checkFileType(contentType);
-        byte[] bytes = multipartFile.getBytes();
-        checkMagicBytes(bytes, contentType);
         String uuid = UUID.randomUUID().toString();
         String imageUrl = createImageUrl(uuid);
         BlobInfo blobInfo = BlobInfo.newBuilder(bucketName, uuid)
                 .setContentType(contentType).build();
         Storage storage = getStorage();
-        storage.create(blobInfo, bytes);
+        // 전체 파일을 메모리에 적재(getBytes)하지 않고 헤더만 읽어 매직바이트 검증 후 스트리밍 업로드 (대용량 OOM 방지)
+        try (InputStream in = multipartFile.getInputStream();
+                PushbackInputStream pushback = new PushbackInputStream(in, MAGIC_HEADER_LEN)) {
+            byte[] header = pushback.readNBytes(MAGIC_HEADER_LEN);
+            checkMagicBytes(header, contentType);
+            pushback.unread(header);
+            storage.create(blobInfo, pushback);
+        }
         return imageUrl;
     }
 

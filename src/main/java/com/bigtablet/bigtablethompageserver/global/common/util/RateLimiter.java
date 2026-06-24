@@ -28,15 +28,13 @@ public class RateLimiter {
     }
 
     /**
-     * 프록시(X-Forwarded-For)를 고려한 클라이언트 IP 추출.
+     * 클라이언트 IP. 클라이언트가 위조 가능한 X-Forwarded-For를 직접 파싱하지 않고,
+     * server.forward-headers-strategy=native로 Tomcat RemoteIpValve가 신뢰 프록시 기준으로 정규화한 remoteAddr를 사용한다.
+     * (신뢰 프록시 범위는 server.tomcat.remoteip.* 로 더 좁힐 수 있다.)
      * @param request HTTP 요청
      * @return 클라이언트 IP 문자열
      */
     public static String clientIp(final HttpServletRequest request) {
-        String forwarded = request.getHeader("X-Forwarded-For");
-        if (forwarded != null && !forwarded.isBlank()) {
-            return forwarded.split(",")[0].trim();
-        }
         return request.getRemoteAddr();
     }
 

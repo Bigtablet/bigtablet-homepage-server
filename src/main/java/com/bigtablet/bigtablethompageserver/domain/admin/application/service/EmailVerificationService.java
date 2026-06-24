@@ -80,7 +80,7 @@ public class EmailVerificationService {
         }
         String savedCode = redisRepository.getByKey(OTP_KEY_PREFIX + normalized, String.class);
         // 상수 시간 비교로 타이밍 사이드채널 차단
-        if (savedCode == null
+        if (savedCode == null || authCode == null
                 || !MessageDigest.isEqual(savedCode.getBytes(StandardCharsets.UTF_8), authCode.getBytes(StandardCharsets.UTF_8))) {
             throw EmailCodeMismatchException.EXCEPTION;
         }
