@@ -3,7 +3,6 @@ package com.bigtablet.bigtablethompageserver.domain.admin.application.service;
 import com.bigtablet.bigtablethompageserver.domain.admin.exception.EmailCodeMismatchException;
 import com.bigtablet.bigtablethompageserver.global.common.repository.redis.RedisRepository;
 import com.bigtablet.bigtablethompageserver.global.common.util.RateLimiter;
-import com.bigtablet.bigtablethompageserver.global.exception.TooManyRequestsException;
 import com.bigtablet.bigtablethompageserver.global.infra.email.renderer.MailTemplateRenderer;
 import com.bigtablet.bigtablethompageserver.global.infra.email.service.EmailService;
 import com.bigtablet.bigtablethompageserver.global.security.admin.config.AdminAuthProperties;
@@ -27,10 +26,6 @@ public class EmailVerificationService {
     private static final String OTP_KEY_PREFIX = "admin-email-otp:";
     // 인증 완료 플래그 Redis 키 접두어
     private static final String CERT_KEY_PREFIX = "admin-email-cert:";
-    // 인증 시도 횟수 카운터 Redis 키 접두어
-    private static final String ATTEMPT_KEY_PREFIX = "admin-email-attempt:";
-    // OTP 검증 최대 시도 횟수 (초과 시 OTP 폐기 + 잠금)
-    private static final int MAX_VERIFY_ATTEMPTS = 5;
 
     private final RedisRepository redisRepository;
     private final EmailService emailService;
@@ -51,8 +46,6 @@ public class EmailVerificationService {
         // 기존 OTP가 남아있으면 덮어쓰기 위해 선제거
         Optional.ofNullable(redisRepository.getByKey(OTP_KEY_PREFIX + normalized, String.class))
                 .ifPresent(value -> redisRepository.delete(OTP_KEY_PREFIX + normalized));
-        // 새 코드 발급 시 검증 시도 횟수 초기화
-        redisRepository.delete(ATTEMPT_KEY_PREFIX + normalized);
         SecureRandom r = new SecureRandom();
         StringBuilder code = new StringBuilder();
         for (int i = 0; i < 6; i++) {
@@ -72,12 +65,8 @@ public class EmailVerificationService {
     public void verifyCode(String email, String authCode) {
         log.info("[EmailVerificationService] verifyCode - email={}", mask(email));
         String normalized = email.toLowerCase();
-        // 무차별 대입 방어: 시도 횟수를 OTP 수명 동안 누적, 초과 시 OTP 폐기 + 잠금
-        long attempts = redisRepository.increment(ATTEMPT_KEY_PREFIX + normalized, adminAuthProperties.otpTtl());
-        if (attempts > MAX_VERIFY_ATTEMPTS) {
-            redisRepository.delete(OTP_KEY_PREFIX + normalized);
-            throw TooManyRequestsException.EXCEPTION;
-        }
+        // 무차별 대입은 엔드포인트의 per-IP 레이트리밋(EmailVerificationApiHandler)으로 차단한다.
+        // 과거의 per-email 시도 카운터는 공격자가 피해자의 활성 OTP를 삭제·잠금하는 DoS 벡터라 제거했다.
         String savedCode = redisRepository.getByKey(OTP_KEY_PREFIX + normalized, String.class);
         // 상수 시간 비교로 타이밍 사이드채널 차단
         if (savedCode == null || authCode == null
@@ -85,7 +74,6 @@ public class EmailVerificationService {
             throw EmailCodeMismatchException.EXCEPTION;
         }
         redisRepository.delete(OTP_KEY_PREFIX + normalized);
-        redisRepository.delete(ATTEMPT_KEY_PREFIX + normalized);
         redisRepository.save(CERT_KEY_PREFIX + normalized, "1", (int) adminAuthProperties.certTtl().toSeconds(), TimeUnit.SECONDS);
     }
 
