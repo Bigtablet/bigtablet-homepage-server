@@ -9,6 +9,8 @@ spring:
     exclude:
       - com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration
       - com.google.cloud.spring.autoconfigure.storage.GcpStorageAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
   datasource:
     url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=MySQL
     username: sa
@@ -28,7 +30,8 @@ spring:
     gcp:
       project-id: test-project
       credentials:
-        location: classpath:application.yml
+        # GCP 자동설정 제외 + GcpService.getStorage() lazy 라 테스트에서 읽히지 않는 빈 JSON 스텁(YAML-as-creds 편법 제거)
+        location: classpath:gcs-test-stub.json
       storage:
         bucket: test-bucket
   mail:
