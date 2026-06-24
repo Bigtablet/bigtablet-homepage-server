@@ -65,8 +65,9 @@ public class EmailVerificationService {
     public void verifyCode(String email, String authCode) {
         log.info("[EmailVerificationService] verifyCode - email={}", mask(email));
         String normalized = email.toLowerCase();
-        // 무차별 대입은 엔드포인트의 per-IP 레이트리밋(EmailVerificationApiHandler)으로 차단한다.
-        // 과거의 per-email 시도 카운터는 공격자가 피해자의 활성 OTP를 삭제·잠금하는 DoS 벡터라 제거했다.
+        // 분산 무차별 대입(다수 IP) 방어: per-IP(핸들러)에 더해 이메일별 검증 시도를 OTP 수명 동안 제한.
+        // OTP를 삭제하지 않는 비파괴 방식이라 기존의 락아웃-삭제 DoS는 없고, 6자리 OTP가 1윈도우당 최대 5회로 묶여 계정 탈취를 차단한다.
+        rateLimiter.check("otp-verify-email:" + normalized, 5, adminAuthProperties.otpTtl());
         String savedCode = redisRepository.getByKey(OTP_KEY_PREFIX + normalized, String.class);
         // 상수 시간 비교로 타이밍 사이드채널 차단
         if (savedCode == null || authCode == null
