@@ -38,5 +38,11 @@ out/
 .vscode/
 
 ### Claude Code ###
-.claude/
-CLAUDE.md
+# .claude 의 로컬 전용 파일(settings.local.json, agents/, skills/)은 무시하되,
+# CodeRabbit 리뷰 기준이 되는 컨벤션 문서는 GitHub 에 올라가도록 추적한다.
+.claude/*
+!.claude/architecture.md
+!.claude/git-convention.md
+!.claude/infrastructure.md
+!.claude/java-code-style.md
+!.claude/layer-conventions.md
