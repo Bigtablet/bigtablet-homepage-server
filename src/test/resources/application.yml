@@ -5,12 +5,12 @@ server:
 
 spring:
   # GCS는 GcpService가 자체적으로 lazy 초기화하므로 테스트에선 GCP 자동설정(자격증명/프로젝트ID 필요)을 제외한다.
+  # Redis는 제외하지 않는다: 커스텀 RedisConfig(@Configuration)가 빈을 제공하고 RateLimiter/RedisRepository가 의존하는 핵심 인프라라
+  # 자동설정만 제외해도 빈은 그대로 생성됨(@Profile 분리 시 컨텍스트가 깨짐). Lettuce가 lazy 연결이라 기동 시 실제 연결을 시도하지 않아 인프라 없이도 테스트가 뜬다.
   autoconfigure:
     exclude:
       - com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration
       - com.google.cloud.spring.autoconfigure.storage.GcpStorageAutoConfiguration
-      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
-      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
   datasource:
     url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=MySQL
     username: sa
