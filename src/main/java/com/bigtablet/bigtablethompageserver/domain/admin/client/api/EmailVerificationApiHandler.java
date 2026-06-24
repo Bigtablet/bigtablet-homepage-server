@@ -40,8 +40,9 @@ public class EmailVerificationApiHandler {
             @RequestBody @Valid final EmailSendRequest request,
             final HttpServletRequest servletRequest
     ) {
-        rateLimiter.check("otp-send-ip:" + RateLimiter.clientIp(servletRequest), 5, Duration.ofHours(1));
+        // 도메인 검증을 먼저 — 허용되지 않은 요청이 IP 레이트리밋 카운터를 소모하지 않도록
         adminQueryService.checkEmailDomain(request.email());
+        rateLimiter.check("otp-send-ip:" + RateLimiter.clientIp(servletRequest), 5, Duration.ofHours(1));
         emailVerificationService.sendCode(request.email());
         return BaseResponse.ok("OTP 발송 성공");
     }
@@ -57,8 +58,9 @@ public class EmailVerificationApiHandler {
             @RequestBody @Valid final EmailVerifyRequest request,
             final HttpServletRequest servletRequest
     ) {
-        rateLimiter.check("otp-verify-ip:" + RateLimiter.clientIp(servletRequest), 10, Duration.ofHours(1));
+        // 도메인 검증을 먼저 — 허용되지 않은 요청이 IP 레이트리밋 카운터를 소모하지 않도록
         adminQueryService.checkEmailDomain(request.email());
+        rateLimiter.check("otp-verify-ip:" + RateLimiter.clientIp(servletRequest), 10, Duration.ofHours(1));
         emailVerificationService.verifyCode(request.email(), request.code());
         return BaseResponse.ok("이메일 인증 성공");
     }
