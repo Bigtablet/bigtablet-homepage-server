@@ -6,6 +6,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -15,7 +16,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
+@RequiredArgsConstructor
 public class JwtExceptionFilter extends OncePerRequestFilter {
+
+    private final ObjectMapper objectMapper;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -33,11 +37,10 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
                                  String message) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(status.value());
-        ObjectMapper mapper = new ObjectMapper();
         Map<String, String> map = new HashMap<>();
         map.put("status", String.valueOf(status.value()));
         map.put("message", message);
-        response.getWriter().write(mapper.writeValueAsString(map));
+        response.getWriter().write(objectMapper.writeValueAsString(map));
     }
 
 }

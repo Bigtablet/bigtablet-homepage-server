@@ -70,7 +70,9 @@ public class BlogService {
     @Transactional
     public void delete(Long idx) {
         log.info("[BlogService] delete - idx={}", idx);
-        BlogEntity entity = getBlogEntity(idx);
+        BlogEntity entity = blogJpaRepository
+                .findById(idx)
+                .orElseThrow(() -> BlogNotFoundException.EXCEPTION);
         blogJpaRepository.delete(entity);
     }
 
