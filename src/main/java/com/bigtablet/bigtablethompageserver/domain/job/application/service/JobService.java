@@ -61,10 +61,10 @@ public class JobService {
     @Transactional
     public void delete(Long idx) {
         log.info("[JobService] delete - idx={}", idx);
-        if (!jobJpaRepository.existsById(idx)) {
-            throw JobNotFoundException.EXCEPTION;
-        }
-        jobJpaRepository.deleteById(idx);
+        JobEntity entity = jobJpaRepository
+                .findById(idx)
+                .orElseThrow(() -> JobNotFoundException.EXCEPTION);
+        jobJpaRepository.delete(entity);
     }
 
 }
