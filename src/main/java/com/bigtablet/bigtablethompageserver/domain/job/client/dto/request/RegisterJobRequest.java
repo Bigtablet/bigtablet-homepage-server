@@ -7,11 +7,13 @@ import com.bigtablet.bigtablethompageserver.domain.job.domain.enums.RecruitType;
 import com.bigtablet.bigtablethompageserver.domain.job.domain.model.JobInput;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 
 public record RegisterJobRequest(
         @NotBlank
+        @Size(max = 255)
         String title,
         @NotNull
         Department department,
@@ -20,18 +22,24 @@ public record RegisterJobRequest(
         @NotNull
         RecruitType recruitType,
         @NotBlank
+        @Size(max = 255)
         String experiment,
         @NotNull
         Education education,
         @NotBlank
+        @Size(max = 10000)
         String companyIntroduction,
         @NotBlank
+        @Size(max = 10000)
         String positionIntroduction,
         @NotBlank
+        @Size(max = 10000)
         String mainResponsibility,
         @NotBlank
+        @Size(max = 10000)
         String qualification,
         @NotBlank
+        @Size(max = 10000)
         String preferredQualification,
         @NotNull
         LocalDate startDate,
