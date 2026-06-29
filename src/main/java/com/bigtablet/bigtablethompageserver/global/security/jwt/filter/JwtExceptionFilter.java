@@ -6,7 +6,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -16,10 +15,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-@RequiredArgsConstructor
 public class JwtExceptionFilter extends OncePerRequestFilter {
 
-    private final ObjectMapper objectMapper;
+    // Spring Boot 4의 자동 설정 ObjectMapper는 Jackson 3(tools.jackson) 빈이라 주입 대신 직접 생성한다.
+    // 싱글톤 필터의 필드로 1회만 생성해 요청마다 재생성하지 않는다. (JwtAuthenticationEntryPoint와 동일 패턴)
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
