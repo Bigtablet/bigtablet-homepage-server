@@ -20,15 +20,11 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
-                                    FilterChain filterChain) throws IOException {
+                                    FilterChain filterChain) throws IOException, ServletException {
         try {
             filterChain.doFilter(request, response);
         } catch (BusinessException e) {
             setErrorResponse(e.getError().getStatus(), response, e.getError().getMessage());
-        } catch (IllegalArgumentException e) {
-            setErrorResponse(HttpStatus.UNAUTHORIZED, response, e.getMessage());
-        } catch (ServletException e) {
-            throw new IOException(e);
         }
     }
 
