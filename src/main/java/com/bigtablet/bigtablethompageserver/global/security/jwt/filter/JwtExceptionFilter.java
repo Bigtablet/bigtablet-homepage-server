@@ -28,7 +28,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         } catch (IllegalArgumentException e) {
             setErrorResponse(HttpStatus.UNAUTHORIZED, response, e.getMessage());
         } catch (ServletException e) {
-            setErrorResponse(HttpStatus.BAD_REQUEST, response, e.getMessage());
+            throw new IOException(e);
         }
     }
 
