@@ -2,15 +2,12 @@ package com.bigtablet.bigtablethompageserver.global.security.jwt;
 
 import com.bigtablet.bigtablethompageserver.global.security.jwt.config.JwtProperties;
 import com.bigtablet.bigtablethompageserver.global.security.jwt.enums.JwtType;
+import com.bigtablet.bigtablethompageserver.global.security.jwt.exception.InvalidTokenException;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -35,7 +32,8 @@ public class JwtProvider {
     }
 
     /**
-     * JWT 토큰 파싱 및 검증
+     * JWT 토큰 파싱 및 검증. 만료/서명 실패/손상 등 모든 검증 실패는
+     * 인증 실패 사유를 노출하지 않도록 InvalidTokenException(401)으로 통일해 던진다.
      * @param token JWT 토큰 문자열
      * @return Jws<Claims> 검증된 클레임 정보
      */
@@ -45,16 +43,8 @@ public class JwtProvider {
                     .verifyWith(getSigningKey())
                     .build()
                     .parseSignedClaims(token);
-        } catch (ExpiredJwtException e) {
-            throw new IllegalArgumentException("만료된 토큰", e);
-        } catch (SecurityException | SignatureException e) {
-            throw new IllegalArgumentException("서명 검증 실패", e);
-        } catch (MalformedJwtException e) {
-            throw new IllegalArgumentException("손상된 토큰", e);
-        } catch (UnsupportedJwtException e) {
-            throw new IllegalArgumentException("지원되지 않는 토큰", e);
         } catch (JwtException | IllegalArgumentException e) {
-            throw new IllegalArgumentException("잘못된 토큰", e);
+            throw InvalidTokenException.EXCEPTION;
         }
     }
 
