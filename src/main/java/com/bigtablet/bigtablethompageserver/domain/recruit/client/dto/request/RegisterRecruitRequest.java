@@ -13,6 +13,7 @@ public record RegisterRecruitRequest(
         @NotNull
         Long jobId,
         @NotBlank
+        @Pattern(regexp = "^[^\\r\\n]+$", message = "이름에 줄바꿈 문자를 포함할 수 없습니다.")
         String name,
         @NotBlank
         String phoneNumber,
