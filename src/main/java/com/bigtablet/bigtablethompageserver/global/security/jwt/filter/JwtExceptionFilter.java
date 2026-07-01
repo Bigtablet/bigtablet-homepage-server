@@ -1,5 +1,6 @@
 package com.bigtablet.bigtablethompageserver.global.security.jwt.filter;
 
+import com.bigtablet.bigtablethompageserver.global.exception.BusinessException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -16,29 +17,30 @@ import java.util.Map;
 @Component
 public class JwtExceptionFilter extends OncePerRequestFilter {
 
+    // Spring Boot 4의 자동 설정 ObjectMapper는 Jackson 3(tools.jackson) 빈이라 주입 대신 직접 생성한다.
+    // 싱글톤 필터의 필드로 1회만 생성해 요청마다 재생성하지 않는다. (JwtAuthenticationEntryPoint와 동일 패턴)
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
-                                    FilterChain filterChain) throws IOException {
+                                    FilterChain filterChain) throws IOException, ServletException {
         try {
             filterChain.doFilter(request, response);
-        } catch (IllegalArgumentException e) {
-            setErrorResponse(HttpStatus.UNAUTHORIZED, response, e);
-        } catch (ServletException e) {
-            setErrorResponse(HttpStatus.BAD_REQUEST, response, e);
+        } catch (BusinessException e) {
+            setErrorResponse(e.getError().getStatus(), response, e.getError().getMessage());
         }
     }
 
     public void setErrorResponse(HttpStatus status,
                                  HttpServletResponse response,
-                                 Throwable ex) throws IOException {
+                                 String message) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(status.value());
-        ObjectMapper mapper = new ObjectMapper();
         Map<String, String> map = new HashMap<>();
         map.put("status", String.valueOf(status.value()));
-        map.put("message", ex.getMessage());
-        response.getWriter().write(mapper.writeValueAsString(map));
+        map.put("message", message);
+        response.getWriter().write(objectMapper.writeValueAsString(map));
     }
 
 }

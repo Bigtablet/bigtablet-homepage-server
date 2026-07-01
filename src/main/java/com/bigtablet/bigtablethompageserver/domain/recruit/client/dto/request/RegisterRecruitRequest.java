@@ -7,32 +7,43 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.URL;
 
 public record RegisterRecruitRequest(
         @NotNull
         Long jobId,
         @NotBlank
+        @Pattern(regexp = "^[^\\r\\n]+$", message = "이름에 줄바꿈 문자를 포함할 수 없습니다.")
+        @Size(max = 255)
         String name,
         @NotBlank
+        @Size(max = 255)
         String phoneNumber,
         @NotBlank
         @Email(message = "이메일 형식이 틀립니다.")
+        @Size(max = 255)
         String email,
         @NotBlank
+        @Size(max = 255)
         String address,
         @NotBlank
+        @Size(max = 255)
         String addressDetail,
         @NotBlank
         @URL(message = "유효한 URL 형식이어야 합니다.")
+        @Size(max = 255)
         String portfolio,
         @URL(message = "유효한 URL 형식이어야 합니다.")
+        @Size(max = 255)
         String coverLetter,
         @NotBlank
         @URL(message = "유효한 URL 형식이어야 합니다.")
+        @Size(max = 255)
         String profileImage,
         @NotNull
         EducationLevel educationLevel,
+        @Size(max = 255)
         String schoolName,
         @Pattern(
                 regexp = "^(19|20)\\d{2}-(0[1-9]|1[0-2])$",
@@ -44,14 +55,18 @@ public record RegisterRecruitRequest(
                 message = "졸업년도는 YYYY-MM 형식이어야 합니다."
         )
         String graduationYear,
+        @Size(max = 255)
         String department,
         @NotNull
         Military military,
         @URL(message = "유효한 URL 형식이어야 합니다.")
+        @Size(max = 255)
         String attachment1,
         @URL(message = "유효한 URL 형식이어야 합니다.")
+        @Size(max = 255)
         String attachment2,
         @URL(message = "유효한 URL 형식이어야 합니다.")
+        @Size(max = 255)
         String attachment3
 ) {
     /**
@@ -82,4 +97,3 @@ public record RegisterRecruitRequest(
                 .build();
     }
 }
-

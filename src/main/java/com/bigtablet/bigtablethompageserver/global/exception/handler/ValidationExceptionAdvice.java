@@ -10,6 +10,7 @@ import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -27,6 +28,23 @@ public class ValidationExceptionAdvice {
         return ErrorResponse.of(
                 exception
                         .getBindingResult()
+                        .getAllErrors()
+                        .getFirst()
+                        .getDefaultMessage()
+        );
+    }
+
+    /**
+     * `@Validated` 컨트롤러의 메서드 파라미터(`@RequestParam`/`@PathVariable` 등) 제약 위반을 공통 형식으로 처리한다.
+     * Spring 6.1+ / Boot 3.2+ 에서 메서드 파라미터 검증 실패는 HandlerMethodValidationException으로 던져진다.
+     * @param exception 메서드 파라미터 검증 실패 예외
+     * @return ErrorResponse 첫 검증 오류 메시지 응답
+     */
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ErrorResponse handleHandlerMethodValidation(HandlerMethodValidationException exception) {
+        return ErrorResponse.of(
+                exception
                         .getAllErrors()
                         .getFirst()
                         .getDefaultMessage()
