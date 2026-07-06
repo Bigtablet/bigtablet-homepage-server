@@ -133,11 +133,11 @@ Follow this procedure for all code modifications:
 - **양식**: 모든 GitHub 릴리즈 노트는 아래 양식을 그대로 따른다. H2 제목에는 저장소(프로젝트) 이름을 적고, `#### 주요 업데이트` 섹션 아래에 업데이트 항목을 개조식으로 나열한다.
 
 ```
-## Notiiv API Server (저장소 이름 작성)
+## Bigtablet Home Page Server (저장소 이름 작성)
 
 #### 주요 업데이트
 
-- Update 1
+- 업데이트 내용 1
 ```
 
 ---
