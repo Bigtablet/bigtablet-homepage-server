@@ -25,7 +25,7 @@ repositories {
 }
 
 ext {
-    querydslVersion = "7.3.0"
+    querydslVersion = "7.4.0"
     set('thymeleaf.version', '3.1.5.RELEASE')
     // tomcat/jackson-bom/netty/opentelemetry 핀 제거: Spring Boot 4.1.0 BOM이 이미 동등 이상(패치) 버전을 관리하며,
     // 기존 핀은 jackson 3.1.4→3.1.2, netty 4.2.15→4.2.13으로 BOM보다 낮게 강등시키는 부작용이 있었음.
