@@ -49,11 +49,11 @@ public class SlackNotifier {
         section2.put("fields", List.of(
                 Map.of(
                         "type", "mrkdwn",
-                        "text", "*공고 제목:*\n" + jobTitle
+                        "text", "*공고 제목:*\n" + escapeMrkdwn(jobTitle)
                 ),
                 Map.of(
                         "type", "mrkdwn",
-                        "text", "*지원자 이름:*\n" + applicantName
+                        "text", "*지원자 이름:*\n" + escapeMrkdwn(applicantName)
                 ),
                 Map.of(
                         "type", "mrkdwn",
@@ -68,9 +68,17 @@ public class SlackNotifier {
         try {
             slackRestTemplate.postForEntity(webhookUrl, entity, String.class);
         } catch (RestClientException e) {
-            log.warn("[SlackNotifier] Slack 알림 발송 실패 - jobTitle={}, applicantName={}, recruitIdx={}, reason={}",
-                    jobTitle, applicantName, recruitIdx, e.getMessage());
+            log.warn("[SlackNotifier] Slack 알림 발송 실패 - jobTitle={}, recruitIdx={}, reason={}",
+                    jobTitle, recruitIdx, e.getMessage());
         }
+    }
+
+    // Slack mrkdwn 특수문자를 이스케이프해 사용자 입력으로 인한 링크/서식 인젝션을 방지한다
+    private static String escapeMrkdwn(String value) {
+        if (value == null) {
+            return "";
+        }
+        return value.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
     }
 
 }

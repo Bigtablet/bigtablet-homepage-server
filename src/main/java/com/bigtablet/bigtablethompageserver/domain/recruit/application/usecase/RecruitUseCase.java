@@ -41,7 +41,7 @@ public class RecruitUseCase {
      * @param request 채용 지원 등록 요청 정보
      */
     public void registerRecruit(RegisterRecruitRequest request) {
-        log.info("[RecruitUseCase] registerRecruit - jobId={}, name={}", request.jobId(), request.name());
+        log.info("[RecruitUseCase] registerRecruit - jobId={}", request.jobId());
         Job job = jobQueryService.find(request.jobId());
         jobQueryService.checkIsExpired(job);
         Recruit recruit = recruitService.save(request.toRecruitInput(job.idx()));

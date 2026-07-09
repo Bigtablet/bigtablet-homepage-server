@@ -26,7 +26,7 @@ public class RecruitService {
      */
     @Transactional
     public Recruit save(RecruitInput input) {
-        log.info("[RecruitService] save - jobId={}, name={}", input.jobId(), input.name());
+        log.info("[RecruitService] save - jobId={}", input.jobId());
         RecruitEntity entity = recruitJpaRepository.save(RecruitEntity.create(input));
         return Recruit.of(entity);
     }

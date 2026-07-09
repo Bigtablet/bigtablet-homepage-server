@@ -11,6 +11,7 @@ import com.bigtablet.bigtablethompageserver.domain.talent.client.dto.request.Sen
 import com.bigtablet.bigtablethompageserver.domain.talent.domain.model.Talent;
 import com.bigtablet.bigtablethompageserver.domain.talent.exception.TalentIsEmptyException;
 import com.bigtablet.bigtablethompageserver.global.common.util.CollectionValidator;
+import com.bigtablet.bigtablethompageserver.global.common.util.LogMaskUtil;
 import com.bigtablet.bigtablethompageserver.global.infra.email.renderer.MailTemplateRenderer;
 import com.bigtablet.bigtablethompageserver.global.infra.email.service.EmailService;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +36,7 @@ public class TalentUseCase {
      * @param request 인재풀 등록 요청 정보
      */
     public void registerTalent(RegisterTalentRequest request) {
-        log.info("[TalentUseCase] registerTalent - email={}, name={}", request.email(), request.name());
+        log.info("[TalentUseCase] registerTalent - email={}", LogMaskUtil.maskEmail(request.email()));
         talentQueryService.checkExistsByEmail(request.email());
         talentService.save(
                 request.email(),
