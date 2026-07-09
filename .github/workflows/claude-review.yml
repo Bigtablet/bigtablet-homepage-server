@@ -60,6 +60,22 @@ jobs:
       pull-requests: write
       issues: write
     steps:
+      # issue_comment 재리뷰 경로는 이벤트 페이로드에 PR head 저장소 정보가 없어
+      # if: 로 fork 여부를 거를 수 없다. secret 이 주입된 이 잡에서 체크아웃 전에
+      # PR head 가 base 와 같은 저장소(비-fork)인지 확인하고, fork 면 즉시 중단한다.
+      # (신뢰 작성자가 외부 포크 PR 에 트리거를 남겨 신뢰불가 head 를 특권 컨텍스트로
+      #  끌어오는 pwn-request 경로 차단. pull_request 경로는 위 if 에서 이미 fork 를 거른다.)
+      - name: Block re-review on fork PRs (untrusted head guard)
+        if: github.event_name == 'issue_comment'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cross=$(gh pr view "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --json isCrossRepository --jq '.isCrossRepository')
+          if [ "$cross" != "false" ]; then
+            echo "::error::Re-review is not allowed on fork PRs (untrusted head checkout)."
+            exit 1
+          fi
+
       # 트리거 접수를 즉시 알리는 👀 리액션 (실제 리뷰는 이후 수십 초 소요).
       # 멘션(issue_comment)이면 그 코멘트에, 자동(pull_request)이면 PR 본문에 단다.
       # 리액션 실패가 리뷰를 막지 않도록 continue-on-error.
