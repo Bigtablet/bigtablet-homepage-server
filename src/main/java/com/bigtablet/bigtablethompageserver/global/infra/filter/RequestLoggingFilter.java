@@ -13,8 +13,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 public class RequestLoggingFilter extends OncePerRequestFilter {
+
+    private static final Pattern CONTROL_CHARS = Pattern.compile("\\p{Cntrl}");
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -35,7 +38,7 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
             int status = response.getStatus();
             org.slf4j.LoggerFactory.getLogger(RequestLoggingFilter.class).info(
                     "traceId={} ip={} method={} uri={} status={} ua={}",
-                    traceId, clientIp, method, decodedUri, status, ua
+                    traceId, sanitize(clientIp), method, sanitize(decodedUri), status, sanitize(ua)
             );
             MDC.remove("traceId");
         }
@@ -51,6 +54,14 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
             return xri;
         }
         return req.getRemoteAddr();
+    }
+
+    // 로그 위조(CRLF 인젝션) 방지: 제어문자(개행 포함)를 '_'로 치환한다
+    private static String sanitize(String value) {
+        if (value == null) {
+            return "-";
+        }
+        return CONTROL_CHARS.matcher(value).replaceAll("_");
     }
 
 }

@@ -3,6 +3,7 @@ package com.bigtablet.bigtablethompageserver.domain.talent.application.service;
 import com.bigtablet.bigtablethompageserver.domain.talent.domain.entity.TalentEntity;
 import com.bigtablet.bigtablethompageserver.domain.talent.domain.repository.jpa.TalentJpaRepository;
 import com.bigtablet.bigtablethompageserver.domain.talent.exception.TalentNotFoundException;
+import com.bigtablet.bigtablethompageserver.global.common.util.LogMaskUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,7 @@ public class TalentService {
             String portfolioUrl,
             List<String> etcUrl
     ) {
-        log.info("[TalentService] save - email={}, name={}", email, name);
+        log.info("[TalentService] save - email={}", LogMaskUtil.maskEmail(email));
         talentJpaRepository.save(TalentEntity.builder()
                 .email(email)
                 .name(name)

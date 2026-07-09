@@ -1,5 +1,6 @@
 package com.bigtablet.bigtablethompageserver.global.common.dto.request;
 
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
@@ -13,8 +14,8 @@ public class PageRequest {
     @Positive
     private int page;
 
-    @NotNull
     @Positive
+    @Max(1000)
     private int size;
 
 }
