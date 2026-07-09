@@ -14,7 +14,6 @@ public class PageRequest {
     @Positive
     private int page;
 
-    @NotNull
     @Positive
     @Max(1000)
     private int size;

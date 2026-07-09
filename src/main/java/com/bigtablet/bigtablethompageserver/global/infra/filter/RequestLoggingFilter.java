@@ -13,8 +13,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 public class RequestLoggingFilter extends OncePerRequestFilter {
+
+    private static final Pattern CONTROL_CHARS = Pattern.compile("\\p{Cntrl}");
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -58,7 +61,7 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
         if (value == null) {
             return "-";
         }
-        return value.replaceAll("\\p{Cntrl}", "_");
+        return CONTROL_CHARS.matcher(value).replaceAll("_");
     }
 
 }
