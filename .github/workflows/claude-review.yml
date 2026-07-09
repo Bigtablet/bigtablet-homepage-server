@@ -1,0 +1,150 @@
+name: Claude PR Review
+
+# 트리거 모델 (비용 절감):
+#  - PR 최초 열림/재오픈/ready 전환 시 1회 자동 리뷰
+#  - 이후 재리뷰는 PR 코멘트에 `@claude review` / `@claude re-review` / `@gemini review`
+#    중 하나를 남길 때만 실행
+#  - synchronize(푸시마다) 자동 리뷰는 비용 때문에 쓰지 않는다
+# GitHub App 없이 레포 secret(CLAUDE_CODE_REVIEW_API_KEY)으로 직접 인증한다.
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review]
+  issue_comment:
+    types: [created]
+
+# 같은 PR 에 새 "리뷰 요청" 이 오면 진행 중인 리뷰를 취소하고 최신 것만 실행.
+# 주의: concurrency 는 job `if:` 보다 먼저 평가된다. 그래서 봇/비-트리거
+# issue_comment(CodeRabbit 등)도 같은 그룹이면 진행 중인 진짜 리뷰를 cancel 시켜버린다
+# (그 run 은 정작 `if:` 에서 skip). → 실제 리뷰 요청 이벤트(pull_request, 또는 트리거
+# 문구가 담긴 issue_comment)만 공유 그룹(`-review`)으로 묶어 supersede 하고,
+# 그 외 run 은 `run_id` 로 고유 그룹을 줘 아무것도 cancel 하지 않게 한다.
+concurrency:
+  group: >-
+    claude-review-${{ github.event.issue.number || github.event.pull_request.number }}-${{
+      (github.event_name == 'pull_request' ||
+       (github.event_name == 'issue_comment' &&
+        contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association) &&
+        (startsWith(github.event.comment.body, '@claude review') ||
+         startsWith(github.event.comment.body, '@claude re-review') ||
+         startsWith(github.event.comment.body, '@gemini review'))))
+      && 'review' || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    # 실행 조건:
+    #  - pull_request: 같은 저장소(포크 아님) + draft 아님 → 최초/재오픈/ready 자동 리뷰
+    #  - issue_comment: PR 에 달린 코멘트 + 봇 아님 + 신뢰 작성자(OWNER/MEMBER/COLLABORATOR) + 본문에 트리거 문구
+    #    (`@claude review` / `@claude re-review` / `@gemini review`) 포함 → 재리뷰
+    #    신뢰 게이트: 저신뢰/외부 작성자가 재리뷰로 신뢰불가 PR head 를 시크릿 환경에 끌어오는 pwn-request 방지.
+    #    잔여 리스크: 신뢰 작성자가 '외부 포크 PR' 에 트리거를 남기면 그 fork head 는 여전히 시크릿 잡에서
+    #    체크아웃됨(pull_request 경로와 달리 여기엔 head.repo 포크 검사가 없음). private repo 라 현재 위험은 낮음.
+    if: >-
+      (github.event_name == 'pull_request' &&
+       github.event.pull_request.head.repo.full_name == github.repository &&
+       !github.event.pull_request.draft)
+      ||
+      (github.event_name == 'issue_comment' &&
+       github.event.issue.pull_request &&
+       github.event.comment.user.type != 'Bot' &&
+       contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association) &&
+       (startsWith(github.event.comment.body, '@claude review') ||
+        startsWith(github.event.comment.body, '@claude re-review') ||
+        startsWith(github.event.comment.body, '@gemini review')))
+    runs-on: ubuntu-latest
+    # 최소 권한: diff 읽기(contents) + PR 대화/인라인 코멘트(pull-requests) +
+    # 👀 접수 리액션(issues — 리액션은 issues 엔드포인트라 issues: write 필요).
+    # github_token 을 명시하면 OIDC 교환을 건너뛰어 id-token: write 는 불필요.
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+    steps:
+      # 트리거 접수를 즉시 알리는 👀 리액션 (실제 리뷰는 이후 수십 초 소요).
+      # 멘션(issue_comment)이면 그 코멘트에, 자동(pull_request)이면 PR 본문에 단다.
+      # 리액션 실패가 리뷰를 막지 않도록 continue-on-error.
+      - name: Acknowledge with eyes reaction
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ "${{ github.event_name }}" = "issue_comment" ]; then
+            gh api --method POST "repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }}/reactions" -f content=eyes
+          else
+            gh api --method POST "repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/reactions" -f content=eyes
+          fi
+
+      # issue_comment 이벤트는 기본 브랜치를 체크아웃하므로 PR head 를 명시적으로 지정한다.
+      # pull_request 이벤트는 ref 를 비우면 기본(merge ref) 체크아웃을 사용한다.
+      # fetch-depth: 0 → base..head diff 를 로컬 git 으로도 읽을 수 있게 전체 히스토리 확보.
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          # 신뢰불가 PR head 체크아웃 시 GITHUB_TOKEN 이 .git/config 에 남지 않게 한다.
+          persist-credentials: false
+          ref: ${{ github.event_name == 'issue_comment' && format('refs/pull/{0}/head', github.event.issue.number) || '' }}
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          # Claude LLM API 인증 (GitHub 인증과 별개).
+          # secret 은 `claude setup-token` 으로 만든 OAuth 토큰(sk-ant-oat...) 이므로
+          # anthropic_api_key(x-api-key 헤더)가 아니라 claude_code_oauth_token(Bearer) 을 쓴다.
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_REVIEW_API_KEY }}
+          # GitHub 코멘트용 토큰을 명시 → OIDC 교환 skip (GitHub App/ id-token 불필요).
+          # 실제 권한은 위 permissions 블록에서 부여된다.
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # 인라인 코멘트에 자동으로 붙는 "Fix" 링크 제거.
+          include_fix_links: false
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
+
+            이 PR 을 시니어 코드 리뷰어 관점에서 리뷰하고, 결과를 한국어로 GitHub 에 게시해줘.
+            게시 형식은 "요약 코멘트 1개 + 라인별 인라인 코멘트" 다.
+
+            1) 전체 요약: `gh pr comment <PR번호> --body "본문"` 단일 명령으로 새 코멘트를 남긴다.
+               - 첫 줄 헤더 `## 코드 리뷰 (Claude)`
+               - 둘째 줄에 `리뷰 대상 커밋: <SHA>` 를 명시한다
+                 (SHA 는 `git log -1 --format=%h` 로 얻은 short SHA).
+               - 이 PR 이 무엇을 바꾸는지 2~4문장 요약
+               - 발견한 핵심 이슈를 심각도와 함께 불릿으로 정리
+
+            2) 구체적 지적: 문제마다 해당 파일의 정확한 라인에
+               `mcp__github_inline_comment__create_inline_comment` (`confirmed: true`) 로
+               인라인 코멘트를 단다. 심각도 높은 순으로 단다.
+               각 인라인 코멘트 형식:
+               - 첫 줄 심각도 배지: `🔴 High` / `🟡 Medium` / `🟢 Low`
+               - 왜 문제인지 설명
+               - 가능하면 GitHub committable suggestion 으로 수정안 제시:
+                 ```suggestion
+                 <해당 라인을 그대로 대체할 수정 코드>
+                 ```
+               - suggestion 은 diff 에서 추가/변경된(+ 쪽) 라인에만 달 수 있고,
+                 라인 번호는 변경 후 파일 기준이다. 라인 범위가 불확실하면
+                 suggestion 없이 설명만 단다.
+
+            리뷰 관점: 정확성/버그, 보안/민감정보, 성능, 레포 컨벤션(AGENTS.md, CLAUDE.md, .claude/docs/*).
+            정확한 라인 번호는 `gh pr diff` / `git diff` 로 확인한다.
+
+            중요:
+            - 어떤 파일도 수정하지 마 (리뷰 코멘트만 게시).
+            - 지적할 사항이 없으면 요약 코멘트에 "특이사항 없음" 만 남기고 인라인은 생략.
+            - 재리뷰 요청 시 이전 인라인 코멘트는 조회할 수 없어 중복될 수 있다.
+              가능하면 최근 변경분 위주로 지적해 중복을 줄인다.
+
+            실행 제약 (CI 샌드박스):
+            - 파이프(`|`), 리다이렉트(`>` `>>`), `&&` 로 이어붙인 복합 명령은 거부된다.
+              한 번에 명령 하나씩 단순하게 실행한다.
+            - 임시 파일에 쓰지 마 (Write/`> file` 불가). 요약 본문은 `--body` 인자로
+              직접 전달한다 (`--body-file` 사용 금지).
+            - diff 는 `gh pr diff` 단일 명령으로 읽는다.
+            - 리뷰 범위는 이 PR 의 diff + 저장소 로컬 파일로 한정. 외부 조회
+              (`gh api`, `gh release` 등)를 하지 말고, 검증이 필요한 권고는 권고로만 남긴다.
+            - 같은 명령이 거부되면 문법만 바꿔 재시도하지 말고, 허용된 단순 명령으로
+              우회하거나 생략한다.
+
+          # 읽기(Read/Grep/Glob/git) + 요약(gh pr comment) + 인라인 코멘트 MCP 툴 허용.
+          # Edit/Write 계열이 없어 파일 수정은 원천 차단된다. (v1 은 claude_args 로 지정)
+          claude_args: |
+            --max-turns 50
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Read,Grep,Glob,Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*),Bash(git diff:*),Bash(git show:*),Bash(git status:*),Bash(git log:*)"
