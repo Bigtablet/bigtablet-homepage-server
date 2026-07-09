@@ -64,7 +64,7 @@ public class BlogApiHandler {
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponseData<List<BlogResponse>> searchBlogByTitle(
-            @ModelAttribute
+            @ModelAttribute @Valid
             final PageRequest request,
             @RequestParam @NotBlank @Size(max = 255)
             final String title
