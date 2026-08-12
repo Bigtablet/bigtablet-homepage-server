@@ -1,1 +1,22 @@
 rootProject.name = 'bigtablet-homepage-server'
+
+// ── 사내 원격 빌드 캐시 (옵트인, 사내망 전용) ────────────────────────────────
+// 사내망(LAN)에서 ~/.gradle/gradle.properties 에 아래 한 줄을 추가하면
+// r240 원격 빌드 캐시를 사용한다. 미설정 시 이 블록은 아무 동작도 하지 않는다.
+//
+//   bigtabletBuildCacheUrl=http://192.168.88.240:5071/cache/
+//
+def bigtabletBuildCacheUrl = providers.gradleProperty('bigtabletBuildCacheUrl').getOrNull()
+if (bigtabletBuildCacheUrl != null) {
+    // 쓰기(push)는 기본 꺼짐 — 공유 캐시 오염을 막기 위해 신뢰 머신(CI 등)만
+    // bigtabletBuildCachePush=true 로 명시 옵트인한다. 개발자 기본은 read-only.
+    def bigtabletBuildCachePush = providers.gradleProperty('bigtabletBuildCachePush').getOrNull() == 'true'
+    buildCache {
+        remote(HttpBuildCache) {
+            url = uri(bigtabletBuildCacheUrl)
+            // 사내망(LAN) 전용 캐시 노드 — 외부 비노출 전제로 HTTP 허용. TLS 도입 시 재검토.
+            allowInsecureProtocol = true
+            push = bigtabletBuildCachePush
+        }
+    }
+}

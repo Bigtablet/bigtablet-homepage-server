@@ -36,6 +36,7 @@ jobs:
         with:
           java-version: "21"
           distribution: "temurin"
+          cache: "gradle"
 
       - name: Set application.yml values
         uses: microsoft/variable-substitution@6287962da9e5b6e68778dc51e840caa03ca84495 # v1
