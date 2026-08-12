@@ -161,6 +161,9 @@ jobs:
 
           # 읽기(Read/Grep/Glob/git) + 요약(gh pr comment) + 인라인 코멘트 MCP 툴 허용.
           # Edit/Write 계열이 없어 파일 수정은 원천 차단된다. (v1 은 claude_args 로 지정)
+          # 구독 시트 OAuth 토큰은 Opus/Sonnet 요청이 플랜 게이트에 즉시 거부된다
+          # (1턴 · cost $0 · is_error:true). 이 토큰으로 성립하는 모델은 Haiku 뿐이라 명시 고정.
           claude_args: |
+            --model claude-haiku-4-5-20251001
             --max-turns 50
             --allowedTools "mcp__github_inline_comment__create_inline_comment,Read,Grep,Glob,Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*),Bash(git diff:*),Bash(git show:*),Bash(git status:*),Bash(git log:*)"
