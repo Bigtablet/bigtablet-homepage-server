@@ -1,0 +1,40 @@
+# 로컬 개발용 프로파일 예시.
+#
+#   cp src/main/resources/application-local.yml.example src/main/resources/application-local.yml
+#
+# 후 docker-compose.local.yml 스택(MySQL/Redis)과 함께 사용한다.
+# application-local.yml 은 .gitignore 되어 있으며, 이 예시의 모든 값은 로컬 전용 더미다.
+# 실제 운영/개발 서버 접속 정보나 실키를 이 파일(예시 포함)에 절대 커밋하지 말 것.
+#
+# 주의: 완전한 기동에는 .gitignore 된 GCP credential 파일
+# (bigtablet-homepage-ffe77aff799f.json)이 src/main/resources/ 에 추가로 필요하다
+# (spring-cloud-gcp 가 기동 시 파일을 읽는다). 팀 시크릿 저장소(1Password)에서 받아서 넣는다.
+
+# application.yml 의 ${secrets.*} 플레이스홀더를 로컬 값으로 채운다.
+secrets:
+  # --- docker-compose.local.yml 과 일치 ---
+  DB_URL: jdbc:mysql://localhost:3306/homepage?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+  DB_USERNAME: homepage
+  DB_PASSWORD: localdev
+  REDIS_HOST: localhost
+  REDIS_PORT: 6379
+  REDIS_PASSWORD: localdev
+
+  # --- 이하 로컬 더미 (해당 기능을 실제로 쓰려면 팀 값으로 교체) ---
+  SMTP_PORT: 587
+  SMTP_EMAIL_NOREPLY: local-noreply@example.com
+  SMTP_PASSWORD_NOREPLY: local-dummy
+  SMTP_EMAIL_RECRUIT: local-recruit@example.com
+  SMTP_PASSWORD_RECRUIT: local-dummy
+  JWT_SECRET_KEY: local-dev-only-jwt-secret-key-0123456789abcdef0123456789abcdef
+  WEBAUTHN_RP_ID: localhost
+  WEBAUTHN_RP_NAME: Bigtablet Local
+  WEBAUTHN_ALLOWED_ORIGINS: http://localhost:3000
+  SLACK_WEBHOOK: http://localhost:9999/dummy-slack-webhook
+
+spring:
+  jpa:
+    hibernate:
+      # 이 레포는 Flyway 가 없고 운영은 ddl-auto: none 이다.
+      # 로컬 빈 DB 에 스키마를 만들기 위해 local 에서만 update 를 쓴다.
+      ddl-auto: update

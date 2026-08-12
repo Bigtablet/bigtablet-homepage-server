@@ -1,0 +1,46 @@
+# 로컬 개발 전용 MySQL / Redis 스택.
+# 사용법: docker compose -f docker-compose.local.yml up -d
+# 값들은 src/main/resources/application-local.yml.example 의 기본값과 일치한다.
+# 여기 비밀번호는 로컬 컨테이너 전용 더미 값이다 — 운영/개발 서버 접속 정보를 절대 넣지 말 것.
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: homepage-local-mysql
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_DATABASE: homepage
+      MYSQL_USER: homepage
+      MYSQL_PASSWORD: localdev
+      MYSQL_ROOT_PASSWORD: localdev
+      TZ: Asia/Seoul
+    ports:
+      - "3306:3306"
+    volumes:
+      - homepage-mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uhomepage", "-plocaldev"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 15s
+
+  redis:
+    image: redis:7-alpine
+    container_name: homepage-local-redis
+    # application.yml 이 spring.data.redis.password 를 요구하므로 requirepass 를 켠다.
+    command: ["redis-server", "--requirepass", "localdev"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - homepage-redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "localdev", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  homepage-mysql-data:
+  homepage-redis-data:
