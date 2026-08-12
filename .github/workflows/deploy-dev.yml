@@ -1,0 +1,212 @@
+name: Deploy dev
+
+on:
+  push:
+    branches:
+      - develop
+
+permissions:
+  contents: read
+
+# develop 연속 push 시 두 배포가 같은 dev 호스트/컨테이너를 동시에 건드려 경합하는 것을 방지.
+# cancel-in-progress: false — 진행 중 배포(SSH deploy job)를 중단하지 않고 큐잉해 순차 실행한다.
+# (notiiv-server deploy-dev 와 동일 정책.)
+concurrency:
+  group: deploy-dev
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      # 체크인된 gradle-wrapper.jar 이 변조되지 않았는지 검증 (빌드 부트스트랩 무결성).
+      - name: Validate Gradle wrapper
+        uses: gradle/actions/wrapper-validation@v5
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: "21"
+          distribution: "temurin"
+
+      # dev 는 prod(deploy.yml)와 달리 application.yml 시크릿 치환을 하지 않는다.
+      # ${secrets.*} 플레이스홀더는 dev 호스트의 env-file(SECRETS_* 환경변수)로 런타임 해석되므로
+      # 이미지에 앱 시크릿이 구워지지 않는다 (dev 값은 호스트 /home/dev-deploy/dev-env/*.env, 0600).
+      # 예외: GCS 서비스 키는 classpath 리소스로 읽으므로 prod 와 동일하게 빌드 시 주입한다.
+      - name: Create GCP Service Account Key File
+        shell: bash
+        env:
+          GCP_JSON: ${{ secrets.GCP_SERVICE_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p src/main/resources
+          printf '%s\n' "$GCP_JSON" > src/main/resources/bigtablet-homepage-ffe77aff799f.json
+
+      - name: chmod gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build with Gradle
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./gradlew --no-daemon --stacktrace bootJar 2>&1 | tee gradle.log
+
+      - name: Upload JAR artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: app-jar
+          path: build/libs/*.jar
+          retention-days: 1
+
+      - name: Upload Gradle log (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: gradle-log
+          path: gradle.log
+          retention-days: 1
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: build
+    env:
+      IMAGE: ${{ secrets.DOCKER_USERNAME }}/bigtablet-homepage-server-dev
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Download JAR artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: app-jar
+          path: build/libs
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4
+
+      - name: Docker login
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+      - name: Build & Push DEV image
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          platforms: linux/amd64
+          tags: |
+            ${{ env.IMAGE }}:latest
+          provenance: true
+          sbom: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build, docker]
+    env:
+      IMAGE: ${{ secrets.DOCKER_USERNAME }}/bigtablet-homepage-server-dev
+
+    steps:
+      - name: Deploy to DEV (SSH)
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HOST_DEV }}
+          username: ${{ secrets.SSH_USER_DEV }}
+          key: ${{ secrets.PRIVATE_KEY_DEV }}
+          port: ${{ secrets.PORT_DEV }}
+          envs: IMAGE
+          script: |
+            set -e
+            docker pull $IMAGE:latest
+            docker rm -f bigtablet-homepage-server-dev 2>/dev/null || true
+            # bt-dev: dev 전용 mysql8/redis7 네트워크. env-file 은 호스트 0600(런타임 시크릿 주입).
+            # --no-healthcheck: Dockerfile HEALTHCHECK 가 /actuator/health 를 찌르지만
+            # actuator 의존성이 없어 상시 unhealthy 로 표기되는 것을 dev 에서는 끈다.
+            docker run -d --name bigtablet-homepage-server-dev --restart unless-stopped \
+              --network bt-dev \
+              --env-file /home/dev-deploy/dev-env/homepage-server.env \
+              --no-healthcheck \
+              -e JAVA_TOOL_OPTIONS="-Xms256m -Xmx768m -Duser.timezone=Asia/Seoul -Dfile.encoding=UTF-8" \
+              $IMAGE:latest
+            # Caddy(intranet_default)가 컨테이너명으로 프록시할 수 있게 두 네트워크에 조인.
+            docker network connect intranet_default bigtablet-homepage-server-dev 2>/dev/null || true
+            docker image prune -af || true
+
+  notify:
+    runs-on: ubuntu-latest
+    needs: [build, docker, deploy]
+    if: always()
+
+    steps:
+      - name: Slack notify (success)
+        if: needs.build.result == 'success' && needs.docker.result == 'success' && needs.deploy.result == 'success'
+        env:
+          GIT_SLACK_WEBHOOK_URL: ${{ secrets.GIT_SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+            --data "$(jq -n \
+              --arg repo "${{ github.repository }}" \
+              --arg branch "${{ github.ref_name }}" \
+              --arg sha "${{ github.sha }}" \
+              --arg actor "${{ github.actor }}" \
+              --arg url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+              '{
+                text: "✅ HOMEPAGE SERVER DEV 배포 성공",
+                blocks: [
+                  {
+                    type: "section",
+                    text: {
+                      type: "mrkdwn",
+                      text: "*✅ HOMEPAGE SERVER DEV 배포 성공*\n*Repo:* \($repo)\n*Branch:* \($branch)\n*SHA:* \($sha | .[0:7])\n*Actor:* \($actor)\n*Run:* <\($url)|Open Actions Run>"
+                    }
+                  }
+                ]
+              }')" \
+            "$GIT_SLACK_WEBHOOK_URL"
+
+      - name: Slack notify (failure)
+        if: needs.build.result == 'failure' || needs.docker.result == 'failure' || needs.deploy.result == 'failure'
+        env:
+          GIT_SLACK_WEBHOOK_URL: ${{ secrets.GIT_SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+            --data "$(jq -n \
+              --arg repo "${{ github.repository }}" \
+              --arg branch "${{ github.ref_name }}" \
+              --arg sha "${{ github.sha }}" \
+              --arg actor "${{ github.actor }}" \
+              --arg url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+              --arg build_result "${{ needs.build.result }}" \
+              --arg docker_result "${{ needs.docker.result }}" \
+              --arg deploy_result "${{ needs.deploy.result }}" \
+              '{
+                text: "❌ HOMEPAGE SERVER DEV 배포 실패",
+                blocks: [
+                  {
+                    type: "section",
+                    text: {
+                      type: "mrkdwn",
+                      text: ("*❌ HOMEPAGE SERVER DEV 배포 실패*\n"
+                            + "*Repo:* \($repo)\n"
+                            + "*Branch:* \($branch)\n"
+                            + "*SHA:* \($sha[0:7])\n"
+                            + "*Actor:* \($actor)\n"
+                            + "*Run:* <\($url)|Open Actions Run>\n\n"
+                            + "*Step results*\n"
+                            + "• Build: `\($build_result)`\n"
+                            + "• Docker: `\($docker_result)`\n"
+                            + "• Deploy: `\($deploy_result)`")
+                    }
+                  }
+                ]
+              }')" \
+            "$GIT_SLACK_WEBHOOK_URL"
