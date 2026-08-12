@@ -16,7 +16,7 @@ services:
       MYSQL_ROOT_PASSWORD: localdev
       TZ: Asia/Seoul
     ports:
-      - "3306:3306"
+      - "127.0.0.1:3306:3306"
     volumes:
       - homepage-mysql-data:/var/lib/mysql
     healthcheck:
@@ -32,7 +32,7 @@ services:
     # application.yml 이 spring.data.redis.password 를 요구하므로 requirepass 를 켠다.
     command: ["redis-server", "--requirepass", "localdev"]
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
     volumes:
       - homepage-redis-data:/data
     healthcheck:
