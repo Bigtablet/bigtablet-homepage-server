@@ -32,6 +32,7 @@ jobs:
         with:
           java-version: "21"
           distribution: "temurin"
+          cache: "gradle"
 
       # dev 는 prod(deploy.yml)와 달리 application.yml 시크릿 치환을 하지 않는다.
       # ${secrets.*} 플레이스홀더는 dev 호스트의 env-file(SECRETS_* 환경변수)로 런타임 해석되므로
