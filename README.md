@@ -14,4 +14,6 @@
 
 ```properties
 bigtabletBuildCacheUrl=http://192.168.88.240:5071/cache/
+# (선택) 캐시 쓰기까지 켜려면 — 기본은 read-only
+# bigtabletBuildCachePush=true
 ```

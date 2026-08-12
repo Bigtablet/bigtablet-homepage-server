@@ -8,11 +8,15 @@ rootProject.name = 'bigtablet-homepage-server'
 //
 def bigtabletBuildCacheUrl = providers.gradleProperty('bigtabletBuildCacheUrl').getOrNull()
 if (bigtabletBuildCacheUrl != null) {
+    // 쓰기(push)는 기본 꺼짐 — 공유 캐시 오염을 막기 위해 신뢰 머신(CI 등)만
+    // bigtabletBuildCachePush=true 로 명시 옵트인한다. 개발자 기본은 read-only.
+    def bigtabletBuildCachePush = providers.gradleProperty('bigtabletBuildCachePush').getOrNull() == 'true'
     buildCache {
         remote(HttpBuildCache) {
             url = uri(bigtabletBuildCacheUrl)
-            allowInsecureProtocol = true // 사내망 HTTP 전용
-            push = true
+            // 사내망(LAN) 전용 캐시 노드 — 외부 비노출 전제로 HTTP 허용. TLS 도입 시 재검토.
+            allowInsecureProtocol = true
+            push = bigtabletBuildCachePush
         }
     }
 }
