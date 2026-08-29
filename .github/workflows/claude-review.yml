@@ -101,6 +101,11 @@ jobs:
           ref: ${{ github.event_name == 'issue_comment' && format('refs/pull/{0}/head', github.event.issue.number) || '' }}
 
       - uses: anthropics/claude-code-action@v1
+        # OTel resource 마커: 러너가 실행마다 새 user.id 를 만들어 인트라넷
+        # /admin/claude-usage 검역소에 휘발 설치로 쌓이는 것을 막는다.
+        # 인트라넷은 bt.worker 마커를 우선 판별해 CI 코드리뷰 워커로 분류한다 (intranet PR #2307).
+        env:
+          OTEL_RESOURCE_ATTRIBUTES: bt.worker=coderev
         with:
           # Claude LLM API 인증 (GitHub 인증과 별개).
           # secret 은 `claude setup-token` 으로 만든 OAuth 토큰(sk-ant-oat...) 이므로
