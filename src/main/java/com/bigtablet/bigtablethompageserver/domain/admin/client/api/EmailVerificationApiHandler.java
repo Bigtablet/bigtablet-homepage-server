@@ -1,11 +1,9 @@
 package com.bigtablet.bigtablethompageserver.domain.admin.client.api;
 
-import com.bigtablet.bigtablethompageserver.domain.admin.application.query.AdminQueryService;
-import com.bigtablet.bigtablethompageserver.domain.admin.application.service.EmailVerificationService;
+import com.bigtablet.bigtablethompageserver.domain.admin.application.usecase.EmailVerificationUseCase;
 import com.bigtablet.bigtablethompageserver.domain.admin.client.dto.request.EmailSendRequest;
 import com.bigtablet.bigtablethompageserver.domain.admin.client.dto.request.EmailVerifyRequest;
 import com.bigtablet.bigtablethompageserver.global.common.dto.response.BaseResponse;
-import com.bigtablet.bigtablethompageserver.global.common.util.RateLimiter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,21 +15,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.Duration;
-
 @Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/email-verification")
 public class EmailVerificationApiHandler {
 
-    private final AdminQueryService adminQueryService;
-    private final EmailVerificationService emailVerificationService;
-    private final RateLimiter rateLimiter;
+    private final EmailVerificationUseCase emailVerificationUseCase;
 
     /**
      * 어드민 이메일에 OTP 발송 API (3분 TTL)
      * @param request 이메일 발송 요청
+     * @param servletRequest IP 레이트리밋 대상 추출용 요청
      * @return BaseResponse 발송 완료 응답
      */
     @PostMapping("/send")
@@ -40,16 +35,14 @@ public class EmailVerificationApiHandler {
             @RequestBody @Valid final EmailSendRequest request,
             final HttpServletRequest servletRequest
     ) {
-        // 도메인 검증을 먼저 — 허용되지 않은 요청이 IP 레이트리밋 카운터를 소모하지 않도록
-        adminQueryService.checkEmailDomain(request.email());
-        rateLimiter.check("otp-send-ip:" + RateLimiter.clientIp(servletRequest), 5, Duration.ofHours(1));
-        emailVerificationService.sendCode(request.email());
+        emailVerificationUseCase.sendCode(request.email(), servletRequest);
         return BaseResponse.ok("OTP 발송 성공");
     }
 
     /**
      * OTP 검증 후 인증 완료 플래그 발행 API (30분 TTL)
      * @param request 인증 코드 검증 요청
+     * @param servletRequest IP 레이트리밋 대상 추출용 요청
      * @return BaseResponse 검증 완료 응답
      */
     @PostMapping("/verify")
@@ -58,10 +51,7 @@ public class EmailVerificationApiHandler {
             @RequestBody @Valid final EmailVerifyRequest request,
             final HttpServletRequest servletRequest
     ) {
-        // 도메인 검증을 먼저 — 허용되지 않은 요청이 IP 레이트리밋 카운터를 소모하지 않도록
-        adminQueryService.checkEmailDomain(request.email());
-        rateLimiter.check("otp-verify-ip:" + RateLimiter.clientIp(servletRequest), 10, Duration.ofHours(1));
-        emailVerificationService.verifyCode(request.email(), request.code());
+        emailVerificationUseCase.verifyCode(request.email(), request.code(), servletRequest);
         return BaseResponse.ok("이메일 인증 성공");
     }
 
