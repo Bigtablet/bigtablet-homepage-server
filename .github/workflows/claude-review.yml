@@ -2,7 +2,7 @@ name: Claude PR Review
 
 # 트리거 모델 (비용 절감):
 #  - PR 최초 열림/재오픈/ready 전환 시 1회 자동 리뷰
-#  - 이후 재리뷰는 PR 코멘트에 `@claude review` / `@claude re-review` / `@gemini review`
+#  - 이후 재리뷰는 PR 코멘트에 `@claude review` / `@claude re-review`
 #    중 하나를 남길 때만 실행
 #  - synchronize(푸시마다) 자동 리뷰는 비용 때문에 쓰지 않는다
 # GitHub App 없이 레포 secret(CLAUDE_CODE_REVIEW_API_KEY)으로 직접 인증한다.
@@ -25,8 +25,7 @@ concurrency:
        (github.event_name == 'issue_comment' &&
         contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association) &&
         (startsWith(github.event.comment.body, '@claude review') ||
-         startsWith(github.event.comment.body, '@claude re-review') ||
-         startsWith(github.event.comment.body, '@gemini review'))))
+         startsWith(github.event.comment.body, '@claude re-review'))))
       && 'review' || github.run_id }}
   cancel-in-progress: true
 
@@ -35,7 +34,7 @@ jobs:
     # 실행 조건:
     #  - pull_request: 같은 저장소(포크 아님) + draft 아님 → 최초/재오픈/ready 자동 리뷰
     #  - issue_comment: PR 에 달린 코멘트 + 봇 아님 + 신뢰 작성자(OWNER/MEMBER/COLLABORATOR) + 본문에 트리거 문구
-    #    (`@claude review` / `@claude re-review` / `@gemini review`) 포함 → 재리뷰
+    #    (`@claude review` / `@claude re-review`) 포함 → 재리뷰
     #    신뢰 게이트: 저신뢰/외부 작성자가 재리뷰로 신뢰불가 PR head 를 시크릿 환경에 끌어오는 pwn-request 방지.
     #    잔여 리스크: 신뢰 작성자가 '외부 포크 PR' 에 트리거를 남기면 그 fork head 는 여전히 시크릿 잡에서
     #    체크아웃됨(pull_request 경로와 달리 여기엔 head.repo 포크 검사가 없음). private repo 라 현재 위험은 낮음.
@@ -49,8 +48,7 @@ jobs:
        github.event.comment.user.type != 'Bot' &&
        contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association) &&
        (startsWith(github.event.comment.body, '@claude review') ||
-        startsWith(github.event.comment.body, '@claude re-review') ||
-        startsWith(github.event.comment.body, '@gemini review')))
+        startsWith(github.event.comment.body, '@claude re-review')))
     runs-on: ubuntu-latest
     # 최소 권한: diff 읽기(contents) + PR 대화/인라인 코멘트(pull-requests) +
     # 👀 접수 리액션(issues — 리액션은 issues 엔드포인트라 issues: write 필요).
