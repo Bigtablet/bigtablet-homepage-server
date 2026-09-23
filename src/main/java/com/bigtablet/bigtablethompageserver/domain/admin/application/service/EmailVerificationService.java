@@ -3,8 +3,6 @@ package com.bigtablet.bigtablethompageserver.domain.admin.application.service;
 import com.bigtablet.bigtablethompageserver.domain.admin.exception.EmailCodeMismatchException;
 import com.bigtablet.bigtablethompageserver.global.common.repository.redis.RedisRepository;
 import com.bigtablet.bigtablethompageserver.global.common.util.RateLimiter;
-import com.bigtablet.bigtablethompageserver.global.infra.email.renderer.MailTemplateRenderer;
-import com.bigtablet.bigtablethompageserver.global.infra.email.service.EmailService;
 import com.bigtablet.bigtablethompageserver.global.security.admin.config.AdminAuthProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,17 +26,19 @@ public class EmailVerificationService {
     private static final String CERT_KEY_PREFIX = "admin-email-cert:";
 
     private final RedisRepository redisRepository;
-    private final EmailService emailService;
-    private final MailTemplateRenderer mailTemplateRenderer;
     private final AdminAuthProperties adminAuthProperties;
     private final RateLimiter rateLimiter;
 
     /**
-     * 6자리 OTP 생성 후 Redis에 저장하고 이메일로 발송 (application.admin.otp-ttl 적용)
+     * 6자리 OTP 를 생성해 Redis 에 저장하고 발급된 코드를 반환한다 (application.admin.otp-ttl 적용)
+     * <p>메일 조립·발송은 호출부(UseCase)가 맡는다 — 이 저장소에서 {@code EmailService} 와
+     * {@code MailTemplateRenderer} 는 UseCase 가 orchestration 하는 인프라다
+     * ({@code TalentUseCase} · {@code RecruitUseCase} 와 같은 구조).
      * @param email 어드민 이메일
+     * @return 발급된 6자리 OTP
      */
-    public void sendCode(String email) {
-        log.info("[EmailVerificationService] sendCode - email={}", mask(email));
+    public String issueCode(String email) {
+        log.info("[EmailVerificationService] issueCode - email={}", mask(email));
         String normalized = email.toLowerCase();
         // 발송 남용 방지: 동일 이메일 30초 1회 + 1시간 10회 제한
         rateLimiter.check("admin-email-send-cd:" + normalized, 1, Duration.ofSeconds(30));
@@ -53,8 +53,7 @@ public class EmailVerificationService {
         }
         String authCode = code.toString();
         redisRepository.save(OTP_KEY_PREFIX + normalized, authCode, (int) adminAuthProperties.otpTtl().toSeconds(), TimeUnit.SECONDS);
-        String content = mailTemplateRenderer.renderAuthCodeEmail(authCode);
-        emailService.sendNoReply(email, "[Bigtablet, Inc.] 어드민 이메일 인증 코드", content);
+        return authCode;
     }
 
     /**
